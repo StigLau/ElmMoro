@@ -1,0 +1,20 @@
+var _user$project$Model$initModel = {
+	players: _elm_lang$core$Native_List.fromArray(
+		[]),
+	name: '',
+	playerId: _elm_lang$core$Maybe$Nothing,
+	plays: _elm_lang$core$Native_List.fromArray(
+		[])
+};
+var _user$project$Model$Model = F4(
+	function (a, b, c, d) {
+		return {players: a, name: b, playerId: c, plays: d};
+	});
+var _user$project$Model$Player = F3(
+	function (a, b, c) {
+		return {id: a, name: b, points: c};
+	});
+var _user$project$Model$Play = F4(
+	function (a, b, c, d) {
+		return {id: a, playerId: b, name: c, points: d};
+	});

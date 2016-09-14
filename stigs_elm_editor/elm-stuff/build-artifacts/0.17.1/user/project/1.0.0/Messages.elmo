@@ -1,0 +1,15 @@
+var _user$project$Messages$DeletePlay = function (a) {
+	return {ctor: 'DeletePlay', _0: a};
+};
+var _user$project$Messages$Cancel = {ctor: 'Cancel'};
+var _user$project$Messages$Save = {ctor: 'Save'};
+var _user$project$Messages$Input = function (a) {
+	return {ctor: 'Input', _0: a};
+};
+var _user$project$Messages$Score = F2(
+	function (a, b) {
+		return {ctor: 'Score', _0: a, _1: b};
+	});
+var _user$project$Messages$Edit = function (a) {
+	return {ctor: 'Edit', _0: a};
+};

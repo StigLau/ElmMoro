@@ -1,0 +1,112 @@
+var _user$project$Controller$add = function (model) {
+	var player = A3(
+		_user$project$Model$Player,
+		_elm_lang$core$List$length(model.players),
+		model.name,
+		0);
+	var newPlayers = A2(_elm_lang$core$List_ops['::'], player, model.players);
+	return _elm_lang$core$Native_Utils.update(
+		model,
+		{players: newPlayers, name: ''});
+};
+var _user$project$Controller$edit = F2(
+	function (model, id) {
+		var newPlays = A2(
+			_elm_lang$core$List$map,
+			function (play) {
+				return _elm_lang$core$Native_Utils.eq(play.playerId, id) ? _elm_lang$core$Native_Utils.update(
+					play,
+					{name: model.name}) : play;
+			},
+			model.plays);
+		var newPlayers = A2(
+			_elm_lang$core$List$map,
+			function (player) {
+				return _elm_lang$core$Native_Utils.eq(player.id, id) ? _elm_lang$core$Native_Utils.update(
+					player,
+					{name: model.name}) : player;
+			},
+			model.players);
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{players: newPlayers, plays: newPlays, name: '', playerId: _elm_lang$core$Maybe$Nothing});
+	});
+var _user$project$Controller$save = function (model) {
+	var _p0 = model.playerId;
+	if (_p0.ctor === 'Just') {
+		return A2(_user$project$Controller$edit, model, _p0._0);
+	} else {
+		return _user$project$Controller$add(model);
+	}
+};
+var _user$project$Controller$score = F3(
+	function (model, scorer, points) {
+		var play = A4(
+			_user$project$Model$Play,
+			_elm_lang$core$List$length(model.plays),
+			scorer.id,
+			scorer.name,
+			points);
+		var newPlayers = A2(
+			_elm_lang$core$List$map,
+			function (player) {
+				return _elm_lang$core$Native_Utils.eq(player.id, scorer.id) ? _elm_lang$core$Native_Utils.update(
+					player,
+					{points: player.points + points}) : player;
+			},
+			model.players);
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				players: newPlayers,
+				plays: A2(_elm_lang$core$List_ops['::'], play, model.plays)
+			});
+	});
+var _user$project$Controller$deletePlay = F2(
+	function (model, play) {
+		var newPlayers = A2(
+			_elm_lang$core$List$map,
+			function (player) {
+				return _elm_lang$core$Native_Utils.eq(player.id, play.playerId) ? _elm_lang$core$Native_Utils.update(
+					player,
+					{points: player.points - (1 * play.points)}) : player;
+			},
+			model.players);
+		var newPlays = A2(
+			_elm_lang$core$List$filter,
+			function (p) {
+				return !_elm_lang$core$Native_Utils.eq(p.id, play.id);
+			},
+			model.plays);
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{plays: newPlays, players: newPlayers});
+	});
+var _user$project$Controller$update = F2(
+	function (msg, model) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
+			case 'Input':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{name: _p1._0});
+			case 'Cancel':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{name: '', playerId: _elm_lang$core$Maybe$Nothing});
+			case 'Save':
+				return _elm_lang$core$String$isEmpty(model.name) ? model : _user$project$Controller$save(model);
+			case 'Score':
+				return A3(_user$project$Controller$score, model, _p1._0, _p1._1);
+			case 'Edit':
+				var _p2 = _p1._0;
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						name: _p2.name,
+						playerId: _elm_lang$core$Maybe$Just(_p2.id)
+					});
+			default:
+				return A2(_user$project$Controller$deletePlay, model, _p1._0);
+		}
+	});
