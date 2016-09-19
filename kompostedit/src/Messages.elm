@@ -2,7 +2,8 @@ module Messages exposing (..)
 
 import Model exposing (..)
 
-type Msg =
-    Input String
+type Msg
+    = Input Segment
+    | Create
 --    | Save
 --    | Cancel
