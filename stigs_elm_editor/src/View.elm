@@ -97,10 +97,11 @@ player player =
             ]
             [ text "2pt" ]
         , button
-            [ type' "button"
-            , onClick (Score player 3)
-            ]
+            [ type' "button", onClick (Score player 3) ]
             [ text "3pt" ]
+        , button
+            [ type' "button", onClick (Edit player) ]
+            [ text "Edit" ]
         , div []
             [ text (toString player.points) ]
         ]

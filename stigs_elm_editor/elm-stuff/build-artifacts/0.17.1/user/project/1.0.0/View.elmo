@@ -124,6 +124,18 @@ var _user$project$View$player = function (player) {
 						_elm_lang$html$Html$text('3pt')
 					])),
 				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$type$('button'),
+						_elm_lang$html$Html_Events$onClick(
+						_user$project$Messages$Edit(player))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Edit')
+					])),
+				A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[]),
