@@ -14,6 +14,7 @@ view komposition =
         [ h1 [] [ text "Kompost dvl editor" ]
         , segmentSection komposition
         , segmentForm komposition
+        , text "Komposition: ", text (toString komposition)
         ]
 
 -- Bytter ut player med segment
@@ -53,8 +54,6 @@ segment segment =
         ]
 
 segmentForm : DvlKomposition -> Html Msg
-segmentForm komposition = text("Hello wazzup")
-{--
 segmentForm komposition =
     Html.form [ onSubmit Create ]
         [ input
@@ -67,4 +66,4 @@ segmentForm komposition =
         , button [ type' "submit" ] [ text "Save" ]
 --        , button [ type' "button", onClick Cancel ] [ text "Cancel" ]
         ]
--}
+

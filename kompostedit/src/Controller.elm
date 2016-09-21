@@ -8,7 +8,7 @@ import String
 update : Msg -> DvlKomposition -> DvlKomposition
 update msg komposition =
     case msg of
-        Input reference -> komposition -- { komposition | reference  = reference  }
+        Input reference -> { komposition | reference  = reference  }
 
         Create -> komposition
 
