@@ -10,6 +10,8 @@ update msg komposition =
     case msg of
         Input reference -> { komposition | reference  = reference  }
 
+        SegmentStartInput start -> { komposition | start = start }
+
         Create -> komposition
 
 

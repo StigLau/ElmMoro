@@ -6,6 +6,8 @@ import Messages exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import List exposing (..)
+import Maybe exposing (..)
 
 
 view : DvlKomposition -> Html Msg
@@ -15,7 +17,11 @@ view komposition =
         , segmentSection komposition
         , segmentForm komposition
         , text "Komposition: ", text (toString komposition)
+
         ]
+
+
+
 
 -- Bytter ut player med segment
 segmentSection : DvlKomposition -> Html Msg
@@ -44,14 +50,28 @@ segmentList komposition =
 segment : Segment -> Html Msg
 segment segment =
     li []
-        [ i
-            [ class "edit"
---            , onClick (Edit segment)
-            ]
-            []
+        [ button [ type' "button", onClick Create ] [ text "Create" ]
+
         , div []
             [ text segment.id, text " ",  text (toString segment.start), text " ",  text (toString segment.end) ]
         ]
+
+{--
+segmentForm2 : Segment -> Html Msg
+segmentForm2 segment =
+    Html.form [  ]
+        [ input
+            [ type' "text"
+            , placeholder "Add segment"
+            , onInput InputSegment
+            , value segment.id
+            ]
+            []
+        ]
+--}
+
+
+
 
 segmentForm : DvlKomposition -> Html Msg
 segmentForm komposition =
@@ -66,4 +86,5 @@ segmentForm komposition =
         , button [ type' "submit" ] [ text "Save" ]
 --        , button [ type' "button", onClick Cancel ] [ text "Cancel" ]
         ]
+
 

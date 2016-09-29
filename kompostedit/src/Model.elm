@@ -6,6 +6,7 @@ import Random exposing (..)
 
 type alias DvlKomposition =
   { reference: String
+  , start: String
   , mediaFile: MediaFile
   , segments: List Segment
   }
@@ -34,5 +35,5 @@ testSegment2 = Segment "Besseggen" 21250000  27625000
 initModel : DvlKomposition
 initModel =
 
-    DvlKomposition "NORWAY-A_Time-Lapse_Adventure" testMediaFile [testSegment1, testSegment2]
+    DvlKomposition "NORWAY-A_Time-Lapse_Adventure" "2" testMediaFile [testSegment1, testSegment2]
 
