@@ -3,6 +3,7 @@ module Controller exposing (..)
 import Messages exposing (..)
 import Model exposing (..)
 import String
+import Debug
 
 
 update : Msg -> Model -> Model
@@ -27,23 +28,11 @@ update msg model =
 
 save : Model -> Model
 save model =
-      case not(validateSegmentFields model)
-      && isValidNr model.start
-      && isValidNr model.end
-      && (validNr model.end) > (validNr model.start)
+      case (isInputfieldsValid model, (isEditingExistingSegment model))
       of
-        True -> add model
-        False -> model
-        --TODO Update a specific segment if its ID is found in list. Socalled "Edit"
---TO BE
-{--    case model.start of
-        Just internalId ->
-            edit model internalId
-
-        Nothing ->
---}
-
-
+        (True, False) -> add model
+        (True, True)  -> updateChanges model
+        _ -> model
 
 
 add : Model -> Model
@@ -62,10 +51,42 @@ add model =
             , end = ""
         }
 
+updateChanges : Model -> Model
+updateChanges model =
+    let
+        newSegments =
+            List.map
+                (\segment ->
+                    if segment.id == model.name then
+                        { segment | start = (validNr model.start), end = (validNr model.end) }
+                    else
+                        segment
+                )
+                model.segments
+    in
+        { model
+            | segments = newSegments
+            , name = ""
+            , start = ""
+            , end = ""
+        }
+
+
+isInputfieldsValid: Model -> Bool
+isInputfieldsValid model =
+  not(validateSegmentFields model)
+      && isValidNr model.start
+      && isValidNr model.end
+      && (validNr model.end) > (validNr model.start)
 
 
 validateSegmentFields: Model -> Bool
 validateSegmentFields model = (String.isEmpty model.name)
+
+
+isEditingExistingSegment: Model-> Bool
+isEditingExistingSegment model =
+  List.length( List.filter (\s -> s.id == model.name) model.segments ) == 1
 
 
 isValidNr : String -> Bool
