@@ -20,6 +20,9 @@ update msg model =
             else
                 save model
 
+        DeleteSegment segment ->
+              deleteSegment model segment
+
 
 
 save : Model -> Model
@@ -31,6 +34,8 @@ save model =
       of
         True -> add model
         False -> model
+        --TODO Update a specific segment if its ID is found in list. Socalled "Edit"
+--TO BE
 {--    case model.start of
         Just internalId ->
             edit model internalId
@@ -79,5 +84,13 @@ validNr value =
     Err _ ->
       -1
 
+
+deleteSegment : Model -> Segment -> Model
+deleteSegment model segment =
+    let
+        newSegments =
+          List.filter (\s -> s.id /= segment.id) model.segments
+    in
+        { model | segments = newSegments }
 
 

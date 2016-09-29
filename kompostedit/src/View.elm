@@ -46,8 +46,8 @@ segmentList model =
 
 segment : Segment -> Html Msg
 segment segment =
-    li []
-        [ button [ type' "button", onClick Create ] [ text "Create" ]
+    li [] --See Play class remove
+        [ button [ type' "button", onClick (DeleteSegment segment)] [ text "Delete" ]
         , div []
             [ text segment.id, text " ",  text (toString segment.start), text " ",  text (toString segment.end) ]
         ]
