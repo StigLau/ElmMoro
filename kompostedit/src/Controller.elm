@@ -5,14 +5,14 @@ import Model exposing (..)
 import String
 
 
-update : Msg -> DvlKomposition -> DvlKomposition
-update msg komposition =
+update : Msg -> Model -> Model
+update msg model =
     case msg of
-        Input reference -> { komposition | reference  = reference  }
+        SetSegmentName name -> { model | name  = name  }
+        SetSegmentStart start -> { model | start = start }
+        SetSegmentEnd end -> { model | end = end }
 
-        SegmentStartInput start -> { komposition | start = start }
-
-        Create -> komposition
+        Create -> model
 
 
 

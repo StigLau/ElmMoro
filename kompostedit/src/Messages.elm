@@ -3,8 +3,9 @@ module Messages exposing (..)
 import Model exposing (..)
 
 type Msg
-    = Input String
-    | SegmentStartInput String
+    = SetSegmentName String
+    | SetSegmentStart String
+    | SetSegmentEnd String
     | Create
 --    | Save
 --    | Cancel

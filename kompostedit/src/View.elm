@@ -10,22 +10,22 @@ import List exposing (..)
 import Maybe exposing (..)
 
 
-view : DvlKomposition -> Html Msg
-view komposition =
+view : Model -> Html Msg
+view model =
     div [ class "scoreboard" ]
         [ h1 [] [ text "Kompost dvl editor" ]
-        , segmentSection komposition
-        , segmentForm komposition
-        , text "Komposition: ", text (toString komposition)
+        , segmentSection model
+        , segmentForm model
+        , text "Komposition: ", text (toString model)
 
         ]
 
 -- Bytter ut player med segment
-segmentSection : DvlKomposition -> Html Msg
-segmentSection komposition =
+segmentSection : Model -> Html Msg
+segmentSection model =
     div []
         [ segmentListHeader
-        , segmentList komposition
+        , segmentList model
         ]
 
 segmentListHeader : Html Msg
@@ -36,9 +36,9 @@ segmentListHeader =
         , div [] [ text "End" ]
         ]
 
-segmentList : DvlKomposition -> Html Msg
-segmentList komposition =
-    komposition.segments
+segmentList : Model -> Html Msg
+segmentList model =
+    model.segments
         |> List.sortBy .start
         |> List.map segment
         |> ul []
@@ -48,24 +48,35 @@ segment : Segment -> Html Msg
 segment segment =
     li []
         [ button [ type' "button", onClick Create ] [ text "Create" ]
-
         , div []
             [ text segment.id, text " ",  text (toString segment.start), text " ",  text (toString segment.end) ]
         ]
 
 
 
-segmentForm : DvlKomposition -> Html Msg
-segmentForm komposition =
+segmentForm : Model -> Html Msg
+segmentForm model =
     Html.form [ onSubmit Create ]
         [ input
             [ type' "text"
-            , placeholder "Add/Edit Player..."
-            , onInput Input
-            , value komposition.reference
-            ]
-            []
-        , button [ type' "submit" ] [ text "Save" ]
+            , placeholder "Segment Name"
+            , onInput SetSegmentName
+            , value model.name
+            ] [],
+        input
+            [ type' "number"
+            , placeholder "Start"
+            , onInput SetSegmentStart
+            , value model.start
+            ] [],
+        input
+            [ type' "number"
+            , placeholder "End"
+            , onInput SetSegmentEnd
+            , value model.end
+            ] [],
+
+        button [ type' "submit" ] [ text "Save" ]
 --        , button [ type' "button", onClick Cancel ] [ text "Cancel" ]
         ]
 
