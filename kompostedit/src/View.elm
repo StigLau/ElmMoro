@@ -20,9 +20,6 @@ view komposition =
 
         ]
 
-
-
-
 -- Bytter ut player med segment
 segmentSection : DvlKomposition -> Html Msg
 segmentSection komposition =
@@ -55,21 +52,6 @@ segment segment =
         , div []
             [ text segment.id, text " ",  text (toString segment.start), text " ",  text (toString segment.end) ]
         ]
-
-{--
-segmentForm2 : Segment -> Html Msg
-segmentForm2 segment =
-    Html.form [  ]
-        [ input
-            [ type' "text"
-            , placeholder "Add segment"
-            , onInput InputSegment
-            , value segment.id
-            ]
-            []
-        ]
---}
-
 
 
 
