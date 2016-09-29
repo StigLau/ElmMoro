@@ -7,5 +7,5 @@ type Msg
     | SetSegmentStart String
     | SetSegmentEnd String
     | Create
---    | Save
+    | Save
 --    | Cancel

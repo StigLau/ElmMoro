@@ -62,22 +62,20 @@ segmentForm model =
             , placeholder "Segment Name"
             , onInput SetSegmentName
             , value model.name
-            ] [],
-        input
+            ] []
+        , input
             [ type' "number"
             , placeholder "Start"
             , onInput SetSegmentStart
             , value model.start
-            ] [],
-        input
+            ] []
+        , input
             [ type' "number"
             , placeholder "End"
             , onInput SetSegmentEnd
             , value model.end
-            ] [],
-
-        button [ type' "submit" ] [ text "Save" ]
---        , button [ type' "button", onClick Cancel ] [ text "Cancel" ]
+            ] []
+        , button [ type' "button", onClick Save ] [ text "Save" ]
         ]
 
 

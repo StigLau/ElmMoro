@@ -14,9 +14,6 @@ update msg model =
 
         Create -> model
 
-
-
-{-
         Save ->
             if (String.isEmpty model.name) then
                 model
@@ -25,31 +22,62 @@ update msg model =
 
 
 
-
 save : Model -> Model
 save model =
-    case model.playerId of
-        Just id ->
-            edit model id
+      case not(validateSegmentFields model)
+      && isValidNr model.start
+      && isValidNr model.end
+      && (validNr model.end) > (validNr model.start)
+      of
+        True -> add model
+        False -> model
+{--    case model.start of
+        Just internalId ->
+            edit model internalId
 
         Nothing ->
-            add model
+--}
+
 
 
 
 add : Model -> Model
 add model =
     let
-        player =
-            Player (List.length model.players) model.name 0
+        segment =
+            Segment model.name (validNr model.start) (validNr model.end)
 
-        newPlayers =
-            player :: model.players
+        newSegments =
+            segment :: model.segments
     in
         { model
-            | players = newPlayers
+            | segments = newSegments
             , name = ""
+            , start = ""
+            , end = ""
         }
 
--}
+
+
+validateSegmentFields: Model -> Bool
+validateSegmentFields model = (String.isEmpty model.name)
+
+
+isValidNr : String -> Bool
+isValidNr value =
+  case String.toInt value of
+    Ok int ->
+      int >= 0
+    Err _ ->
+      False
+
+validNr : String -> Int
+validNr value =
+  case String.toInt value of
+    Ok int ->
+      int
+    Err _ ->
+      -1
+
+
 
