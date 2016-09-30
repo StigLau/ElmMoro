@@ -6,8 +6,6 @@ import Messages exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import List exposing (..)
-import Maybe exposing (..)
 
 
 view : Model -> Html Msg
@@ -17,10 +15,8 @@ view model =
         , segmentSection model
         , segmentForm model
         , text "Komposition: ", text (toString model)
-
         ]
 
--- Bytter ut player med segment
 segmentSection : Model -> Html Msg
 segmentSection model =
     div []
@@ -47,9 +43,9 @@ segmentList model =
 segment : Segment -> Html Msg
 segment segment =
     li [] --See Play class remove
-        [ button [ type' "button", onClick (DeleteSegment segment)] [ text "Delete" ]
-        , div []
+        [ div []
             [ text segment.id, text " ",  text (toString segment.start), text " ",  text (toString segment.end) ]
+            , button [ type' "button", onClick (DeleteSegment segment)] [ text "Delete" ]
         ]
 
 

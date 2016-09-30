@@ -109,9 +109,9 @@ validNr value =
 deleteSegment : Model -> Segment -> Model
 deleteSegment model segment =
     let
-        newSegments =
+        updatedSegments =
           List.filter (\s -> s.id /= segment.id) model.segments
     in
-        { model | segments = newSegments }
+        { model | segments = updatedSegments }
 
 
