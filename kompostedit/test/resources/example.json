@@ -4,7 +4,7 @@
   "komposition": {
     "reference": "99958baec79f84f8218dc3fbc3ce9904",
     "fileSizeChecksum": 43782507,
-    "categories": [],
+    "categories": ["First", "Second"],
     "config": {
       "width": 1280,
       "height": 720,
