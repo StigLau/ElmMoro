@@ -12,8 +12,6 @@ import Json.Decode.Pipeline exposing (decode, required, optional)
 import JsonDecoding exposing (..)
 
 --https://noredink.github.io/json-to-elm/
-
-
 randomJoke : Cmd Msg
 randomJoke =
     let
@@ -41,8 +39,6 @@ init : ( Model, Cmd Msg )
 init = ( initModel, randomJoke )
 
 -- update
-
-
 type Msg
     = Joke Komposition
     | Fail Http.Error
@@ -62,23 +58,19 @@ update msg model =
             ( "fetching reference ...", randomJoke )
 
 
-
 -- view
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick NewJoke ] [ text "Fetch a Joke" ]
+        [ button [ onClick NewJoke ] [ text "Fetch a Komposition" ]
         , br [] []
         , text model
         ]
 
 
-
 -- subscription
 subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
-
+subscriptions model = Sub.none
 
 main : Program Never
 main =
@@ -88,4 +80,3 @@ main =
         , view = view
         , subscriptions = subscriptions
         }
-
