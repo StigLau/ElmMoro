@@ -8,13 +8,20 @@ type alias Model =
   { name: String
   , start: String
   , end: String
-  , mediaFile: MediaFile
+  , mediaFile: Mediafile
   , segments: List Segment
   }
 
-type alias MediaFile =
+type alias Komposition =
+  { mediaFile: Mediafile
+  , segments: List Segment
+  }
+
+type alias Mediafile =
   { fileName: String
-  , extension: String
+  , startingOffset: Int
+  , checksum: String
+  --, extension: String
   }
 
 type alias Segment =
@@ -24,7 +31,7 @@ type alias Segment =
   }
 
 
-testMediaFile = MediaFile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" "mp4"
+testMediaFile = Mediafile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" 0 "A Checksum" --"mp4"
 testSegment1 = Segment "Purple Mountains Clouds" 7541667 19750000
 testSegment2 = Segment "Besseggen" 21250000  27625000
 
@@ -34,7 +41,5 @@ testSegment2 = Segment "Besseggen" 21250000  27625000
 
 
 initModel : Model
-initModel =
-
-    Model "" "" "" testMediaFile [testSegment1, testSegment2]
+initModel = Model "" "" "" testMediaFile [testSegment1, testSegment2]
 
