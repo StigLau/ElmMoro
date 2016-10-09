@@ -13,9 +13,19 @@ type alias Model =
   }
 
 type alias Komposition =
-  { mediaFile: Mediafile
+  {
+    config: Config
+  , mediaFile: Mediafile
   , segments: List Segment
   }
+
+type alias Config =
+    { width : Int
+    , height : Int
+    , framerate : Int
+    , extensionType : String
+    , duration : Int
+    }
 
 type alias Mediafile =
   { fileName: String
