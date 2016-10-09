@@ -21,7 +21,7 @@ randomJoke =
             Http.get decodeJson url
 
         cmd =
-            Task.perform Fail Joke task
+            Task.perform FetchFail FetchSuccess task
     in
         cmd
 
@@ -40,21 +40,21 @@ init = ( initModel, randomJoke )
 
 -- update
 type Msg
-    = Joke Komposition
-    | Fail Http.Error
-    | NewJoke
+    = FetchSuccess JsonKomposition
+    | FetchFail Http.Error
+    | FetchKomposition
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Joke response ->
+        FetchSuccess response ->
             (  "Komposition: " ++ (toString response.komposition) {-- ++ response.reference ++" " ++ (toString response.fileSizeChecksum)--}, Cmd.none )
 
-        Fail error ->
+        FetchFail error ->
             ( (toString error), Cmd.none )
 
-        NewJoke ->
+        FetchKomposition ->
             ( "fetching reference ...", randomJoke )
 
 
@@ -62,7 +62,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick NewJoke ] [ text "Fetch a Komposition" ]
+        [ button [ onClick FetchKomposition ] [ text "Fetch a Komposition" ]
         , br [] []
         , text model
         ]

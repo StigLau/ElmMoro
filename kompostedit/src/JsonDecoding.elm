@@ -6,46 +6,46 @@ import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (decode, required, optional)
 
 
-type alias Komposition = { komposition : JsonKomposition }
+type alias JsonKomposition = { komposition : Komposition }
 
-type alias JsonMediafile =
+type alias Mediafile =
     { fileName : String
     , startingOffset : Int
     , checksum : String
     , bpm : Int
     }
 
-type alias JsonKomposition =
-    { mediaFile : JsonMediafile
+type alias Komposition =
+    { mediaFile : Mediafile
     }
 
-decodeJson : Json.Decode.Decoder Komposition
+decodeJson : Json.Decode.Decoder JsonKomposition
 decodeJson =
-    decode Komposition
+    decode JsonKomposition
         |> required "komposition" (decodeJsonKomposition)
 
-decodeJsonKomposition : Json.Decode.Decoder JsonKomposition
+decodeJsonKomposition : Json.Decode.Decoder Komposition
 decodeJsonKomposition =
-    decode JsonKomposition
+    decode Komposition
         |> required "mediaFile" (decodeJsonMediafile)
 
-decodeJsonMediafile : Json.Decode.Decoder JsonMediafile
+decodeJsonMediafile : Json.Decode.Decoder Mediafile
 decodeJsonMediafile =
-    decode JsonMediafile
+    decode Mediafile
         |> required "fileName" (Json.Decode.string)
         |> required "startingOffset" (Json.Decode.int)
         |> required "checksum" (Json.Decode.string)
         |> required "bpm" (Json.Decode.int)
 
 
-encodeKomposition : Komposition -> Json.Encode.Value
+encodeKomposition : JsonKomposition -> Json.Encode.Value
 encodeKomposition record = Json.Encode.object [ ("komposition",  encodeJsonKomposition <| record.komposition) ]
 
-encodeJsonKomposition : JsonKomposition -> Json.Encode.Value
+encodeJsonKomposition : Komposition -> Json.Encode.Value
 encodeJsonKomposition record = Json.Encode.object
         [ ("mediaFile",  encodeJsonMediafile <| record.mediaFile) ]
 
-encodeJsonMediafile : JsonMediafile -> Json.Encode.Value
+encodeJsonMediafile : Mediafile -> Json.Encode.Value
 encodeJsonMediafile record = Json.Encode.object
         [ ("fileName",  Json.Encode.string <| record.fileName)
         , ("startingOffset",  Json.Encode.int <| record.startingOffset)
