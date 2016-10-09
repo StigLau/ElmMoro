@@ -23,12 +23,17 @@
       "toBeat": 128,
       "masterBpm": 160
     },
-    "segments": {
-      "segment": {
+    "segments": [
+      {
         "id": "Betty boop",
         "start": 1,
         "end": 12
+      },
+      {
+        "id": "Snoppy snoop",
+        "start": 12,
+        "end": 24
       }
-    }
+    ]
   }
 }
