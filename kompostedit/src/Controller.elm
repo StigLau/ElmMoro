@@ -1,7 +1,7 @@
 module Controller exposing (..)
 
 import Messages exposing (..)
-import Model exposing (..)
+import Model exposing (Model, Komposition, Config, Mediafile, Segment)
 import String
 import Debug
 

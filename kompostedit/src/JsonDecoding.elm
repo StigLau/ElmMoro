@@ -6,16 +6,19 @@ import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (decode, required, optional)
 import Model exposing (..)
 
-type alias JsonKomposition = { komposition : Komposition }
+type alias JsonKomposition = { komposition : Model }
 
 decodeJson : Json.Decode.Decoder JsonKomposition
 decodeJson =
     decode JsonKomposition
         |> required "komposition"       (decodeJsonKomposition)
 
-decodeJsonKomposition : Json.Decode.Decoder Komposition
+decodeJsonKomposition : Json.Decode.Decoder Model
 decodeJsonKomposition =
-    decode Komposition
+    decode Model
+        |> required "name"              (Json.Decode.string)
+        |> required "start"             (Json.Decode.string)
+        |> required "end"               (Json.Decode.string)
         |> required "config"            (decodeJsonConfig)
         |> required "mediaFile"         (decodeJsonMediafile)
         |> required "segments"          (Json.Decode.list decodeJsonSegment)
@@ -49,7 +52,7 @@ decodeJsonSegment =
 encodeKomposition : JsonKomposition -> Json.Encode.Value
 encodeKomposition record = Json.Encode.object [ ("komposition",  encodeJsonKomposition <| record.komposition) ]
 
-encodeJsonKomposition : Komposition -> Json.Encode.Value
+encodeJsonKomposition : Model -> Json.Encode.Value
 encodeJsonKomposition record = Json.Encode.object
         [ ("mediaFile",     encodeJsonMediafile <| record.mediaFile)
         , ("config",        encodeJsonConfig    <| record.config)

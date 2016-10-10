@@ -1,4 +1,4 @@
-module Main exposing (..)
+module MoroDecoding2 exposing (..)
 
 import Html exposing (..)
 import Html.Events exposing (..)
