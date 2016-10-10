@@ -2,6 +2,9 @@
   "_id": "f628a16ab655b3c7a267127a0e9c4c63",
   "_rev": "1-a368fb3de7218e30f2289658e61cfc2b",
   "komposition": {
+    "name":"Komposition Test Data",
+    "start":"0",
+    "end":"1",
     "reference": "99958baec79f84f8218dc3fbc3ce9904",
     "fileSizeChecksum": 43782507,
     "categories": ["First", "Second"],
