@@ -1,9 +1,12 @@
 module Controller exposing (..)
 
 import Messages exposing (..)
-import Model exposing (Model, Komposition, Config, Mediafile, Segment)
+import Model exposing (Model, Config, Mediafile, Segment)
 import String
 import Debug
+import Http
+import JsonDecoding exposing (decodeJson, JsonKomposition)
+import Task
 
 
 update : Msg -> Model -> Model
@@ -23,6 +26,18 @@ update msg model =
 
         DeleteSegment segment ->
               deleteSegment model segment
+
+        FetchSuccess response ->
+                      response.komposition
+
+        FetchFail _ -> model
+        FetchKomposition -> model
+
+--                    ( (toString error), Cmd.none )
+
+--        FetchKomposition ->
+--                    ( "fetching reference ...", randomJoke )
+
 
 
 
@@ -115,3 +130,15 @@ deleteSegment model segment =
         { model | segments = updatedSegments }
 
 
+randomJoke : Cmd Msg
+randomJoke =
+    let
+        url = "https://raw.githubusercontent.com/StigLau/ElmMoro/master/kompostedit/test/resources/example.json"
+        task =
+            -- Http.getString url
+            Http.get decodeJson url
+
+        cmd =
+            Task.perform FetchFail FetchSuccess task
+    in
+        cmd

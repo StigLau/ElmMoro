@@ -1,6 +1,8 @@
 module Messages exposing (..)
 
 import Model exposing (..)
+import Http
+import JsonDecoding exposing  (..)
 
 type Msg
     = SetSegmentName String
@@ -9,4 +11,6 @@ type Msg
     | DeleteSegment Segment
     | Create
     | Save
---    | Cancel
+    | FetchSuccess JsonKomposition
+    | FetchFail Http.Error
+    | FetchKomposition
