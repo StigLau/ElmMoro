@@ -19,38 +19,8 @@ import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (decode, required, optional)
 import JsonDecoding exposing (..)
 import Process exposing (sleep)
-
-
-type alias Model =
-  { name: String
-  , start: String
-  , end: String
-  , config: Config
-  , mediaFile: Mediafile
-  , segments: List Segment
-  }
-
-type alias Config =
-    { width : Int
-    , height : Int
-    , framerate : Int
-    , extensionType : String
-    , duration : Int
-    }
-
-type alias Mediafile =
-  { fileName: String
-  , startingOffset: Int
-  , checksum: String
-  --, extension: String
-  }
-
-type alias Segment =
-  { id: String
-  , start: Int
-  , end: Int
-  }
-
+import Functions exposing (..)
+import Models.KompostModels exposing (..)
 
 init : (Model, Cmd Msg)
 init = (initModel, getKompost)
@@ -105,74 +75,6 @@ save model =
         (True, False) -> add model
         (True, True)  -> updateChanges model
         _ -> model
-
-add : Model -> Model
-add model =
-    let
-        segment =
-            Segment model.name (validNr model.start) (validNr model.end)
-
-        newSegments =
-            segment :: model.segments
-    in
-        { model
-            | segments = newSegments
-            , name = ""
-            , start = ""
-            , end = ""
-        }
-
-updateChanges : Model -> Model
-updateChanges model =
-    let
-        newSegments =
-            List.map
-                (\segment ->
-                    if segment.id == model.name then
-                        { segment | start = (validNr model.start), end = (validNr model.end) }
-                    else
-                        segment
-                )
-                model.segments
-    in
-        { model
-            | segments = newSegments
-            , name = ""
-            , start = ""
-            , end = ""
-        }
-
-
-isInputfieldsValid: Model -> Bool
-isInputfieldsValid model =
-  not(validateSegmentFields model)
-      && isValidNr model.start
-      && isValidNr model.end
-      && (validNr model.end) > (validNr model.start)
-
-isValidNr : String -> Bool
-isValidNr value =
-  case String.toInt value of
-    Ok int ->
-      int >= 0
-    Err _ ->
-      False
-
-validNr : String -> Int
-validNr value =
-  case String.toInt value of
-    Ok int ->
-      int
-    Err _ ->
-      -1
-
-validateSegmentFields: Model -> Bool
-validateSegmentFields model = (String.isEmpty model.name)
-
-
-isEditingExistingSegment: Model-> Bool
-isEditingExistingSegment model =
-  List.length( List.filter (\s -> s.id == model.name) model.segments ) == 1
 
 
 view : Model -> Html Msg
