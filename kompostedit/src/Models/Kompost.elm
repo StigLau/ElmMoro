@@ -10,7 +10,9 @@ import Time exposing (Time, second, millisecond)
 import Task
 import Html exposing (..)
 import Html.Events exposing (..)
+import Html.Attributes exposing (..)
 import Http
+import String
 import Json.Encode
 import Json.Decode
 import Json.Decode exposing (..)
@@ -65,6 +67,11 @@ type Msg
     = FetchSuccess JsonKomposition
     | FetchFail Http.Error
     | FetchKomposition
+    | SetSegmentName String
+    | SetSegmentStart String
+    | SetSegmentEnd String
+    | Create
+    | Save
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -78,11 +85,128 @@ update msg model =
         FetchKomposition ->
             ( model, getKompost )
 
+        SetSegmentName name -> ({ model | name  = name  }, Cmd.none)
+        SetSegmentStart start -> ({ model | start = start }, Cmd.none)
+        SetSegmentEnd end -> ({ model | end = end }, Cmd.none)
+
+
+        Create -> (model, Cmd.none)
+
+        Save ->
+                    if (String.isEmpty model.name) then
+                        (model, Cmd.none)
+                    else
+                        (save model, Cmd.none)
+
+save : Model -> Model
+save model =
+      case (isInputfieldsValid model, (isEditingExistingSegment model))
+      of
+        (True, False) -> add model
+        (True, True)  -> updateChanges model
+        _ -> model
+
+add : Model -> Model
+add model =
+    let
+        segment =
+            Segment model.name (validNr model.start) (validNr model.end)
+
+        newSegments =
+            segment :: model.segments
+    in
+        { model
+            | segments = newSegments
+            , name = ""
+            , start = ""
+            , end = ""
+        }
+
+updateChanges : Model -> Model
+updateChanges model =
+    let
+        newSegments =
+            List.map
+                (\segment ->
+                    if segment.id == model.name then
+                        { segment | start = (validNr model.start), end = (validNr model.end) }
+                    else
+                        segment
+                )
+                model.segments
+    in
+        { model
+            | segments = newSegments
+            , name = ""
+            , start = ""
+            , end = ""
+        }
+
+
+isInputfieldsValid: Model -> Bool
+isInputfieldsValid model =
+  not(validateSegmentFields model)
+      && isValidNr model.start
+      && isValidNr model.end
+      && (validNr model.end) > (validNr model.start)
+
+isValidNr : String -> Bool
+isValidNr value =
+  case String.toInt value of
+    Ok int ->
+      int >= 0
+    Err _ ->
+      False
+
+validNr : String -> Int
+validNr value =
+  case String.toInt value of
+    Ok int ->
+      int
+    Err _ ->
+      -1
+
+validateSegmentFields: Model -> Bool
+validateSegmentFields model = (String.isEmpty model.name)
+
+
+isEditingExistingSegment: Model-> Bool
+isEditingExistingSegment model =
+  List.length( List.filter (\s -> s.id == model.name) model.segments ) == 1
+
 
 view : Model -> Html Msg
-view model = text (toString model)
+view model =
+ div [ class "scoreboard" ]
+        [ h1 [] [ text "Kompost dvl editor" ]
+--        , [ button [ onClick FetchKomposition ] [ text "Fetch a Komposition" ] ]
+        , segmentForm model
+        , text "Komposition: ", text (toString model)
+        ]
 
-
+segmentForm : Model -> Html Msg
+segmentForm model =
+    Html.form [ ]
+        [ input
+            [ type' "text"
+            , placeholder "Segment Name"
+            , onInput SetSegmentName
+            , Html.Attributes.value model.name
+            ] []
+        , input
+            [ type' "number"
+            , placeholder "Start"
+            , onInput SetSegmentStart
+            , Html.Attributes.value model.start
+            ] []
+        , input
+            [ type' "number"
+            , placeholder "End"
+            , onInput SetSegmentEnd
+            , Html.Attributes.value model.end
+            ] []
+        , button [ type' "button", onClick Save ] [ text "Save" ]
+        ]
 
 -- subscription
 subscriptions : Model -> Sub Msg
