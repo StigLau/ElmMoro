@@ -33,8 +33,13 @@ type Msg
     | GetSucceeded (List String)
 
 initModel : (Model, Cmd Msg)
-initModel = (Model "" "" "" [], storeKompost)
+initModel = (Model "" "" "" [], (storeKompost (storeKompostRequest "http://localhost:9099/store/kompost" "Send this" ) ))
 
+storeKompost : Task.Task Http.Error (List String) -> Cmd Msg
+storeKompost request = Task.perform GetFailed GetSucceeded request
+
+storeKompostRequest : String -> String -> Task.Task Http.Error (List String)
+storeKompostRequest requestString destination = Http.post (list string) destination (Http.string requestString)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -48,16 +53,8 @@ update msg model =
         GetSucceeded strings ->
             ({model | hats = strings }, Cmd.none)
 
-
 view : Model -> Html Msg
 view model = div [ ] [ text (String.join "," model.hats ) ]
-
-storeKompost : Cmd Msg
-storeKompost = Task.perform GetFailed GetSucceeded storeKompostRequest
-
-storeKompostRequest : Task.Task Http.Error (List String)
-storeKompostRequest = Http.post (list string) "http://localhost:9099/store/kompost" (Http.string kompostur)
-
 
 subscriptions : Model -> Sub Msg
 subscriptions model = Sub.none
@@ -70,5 +67,3 @@ main =
         , update = update
         , subscriptions = subscriptions
         }
-
-kompostur = """Here is something simple to send"""
