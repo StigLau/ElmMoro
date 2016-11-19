@@ -29,14 +29,14 @@ type alias Model =
 
 type Msg
     = Update
-    | GetFailed Http.Error
-    | GetSucceeded (List String)
+    | RemoteFail Http.Error
+    | StoreSuccess (List String)
 
 initModel : (Model, Cmd Msg)
 initModel = (Model "" "" "" [], (storeKompost (storeKompostRequest "http://localhost:9099/store/kompost" "Send this" ) ))
 
 storeKompost : Task.Task Http.Error (List String) -> Cmd Msg
-storeKompost request = Task.perform GetFailed GetSucceeded request
+storeKompost request = Task.perform RemoteFail StoreSuccess request
 
 storeKompostRequest : String -> String -> Task.Task Http.Error (List String)
 storeKompostRequest requestString destination = Http.post (list string) destination (Http.string requestString)
@@ -47,10 +47,10 @@ update msg model =
         Update ->
             (model, Cmd.none)
 
-        GetFailed _ ->
+        RemoteFail _ ->
             (model, Cmd.none)
 
-        GetSucceeded strings ->
+        StoreSuccess strings ->
             ({model | hats = strings }, Cmd.none)
 
 view : Model -> Html Msg

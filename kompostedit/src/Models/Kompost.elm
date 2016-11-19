@@ -26,7 +26,7 @@ init : (Model, Cmd Msg)
 init = (initModel, getKompost)
 
 initModel : Model
-initModel = Model "" "" "" testConfig testMediaFile [testSegment1, testSegment2]
+initModel = Model "" "" "" testConfig testMediaFile [testSegment1, testSegment2] ["Nothing to report from yonder"]
 
 testConfig = Config 1280 1080 24 "mp4" 1234
 testMediaFile = Mediafile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" 0 "A Checksum"
@@ -35,7 +35,8 @@ testSegment2 = Segment "Besseggen" 21250000  27625000
 
 type Msg
     = FetchSuccess JsonKomposition
-    | FetchFail Http.Error
+    | StoreSuccess (List String)
+    | RemoteFail Http.Error
     | FetchKomposition
     | SetSegmentName String
     | SetSegmentStart String
@@ -49,8 +50,11 @@ update msg model =
         FetchSuccess response ->
             (  model, Cmd.none )
 
-        FetchFail error ->
+        RemoteFail error ->
             ( model, Cmd.none )
+
+        StoreSuccess responseMessages ->
+            ({model | status = responseMessages }, Cmd.none)
 
         FetchKomposition ->
             ( model, getKompost )
@@ -116,7 +120,13 @@ subscriptions model = Sub.none
 
 
 getKompost : Cmd Msg
-getKompost = Task.perform FetchFail FetchSuccess <| Http.get decodeJson "https://raw.githubusercontent.com/StigLau/ElmMoro/master/kompostedit/test/resources/example.json"
+getKompost = Task.perform RemoteFail FetchSuccess <| Http.get decodeJson "https://raw.githubusercontent.com/StigLau/ElmMoro/master/kompostedit/test/resources/example.json"
+
+storeKompost : Task.Task Http.Error (List String) -> Cmd Msg
+storeKompost request = Task.perform RemoteFail StoreSuccess request
+
+storeKompostRequest : String -> String -> Task.Task Http.Error (List String)
+storeKompostRequest requestString destination = Http.post (Json.Decode.list string) destination (Http.string requestString)
 
 
 main : Program Never
