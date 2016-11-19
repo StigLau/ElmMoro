@@ -7,6 +7,7 @@ type alias Model =
   , config: Config
   , mediaFile: Mediafile
   , segments: List Segment
+  , status: List String
   }
 
 type alias Config =

@@ -122,12 +122,6 @@ subscriptions model = Sub.none
 getKompost : Cmd Msg
 getKompost = Task.perform RemoteFail FetchSuccess <| Http.get decodeJson "https://raw.githubusercontent.com/StigLau/ElmMoro/master/kompostedit/test/resources/example.json"
 
-storeKompost : Task.Task Http.Error (List String) -> Cmd Msg
-storeKompost request = Task.perform RemoteFail StoreSuccess request
-
-storeKompostRequest : String -> String -> Task.Task Http.Error (List String)
-storeKompostRequest requestString destination = Http.post (Json.Decode.list string) destination (Http.string requestString)
-
 
 main : Program Never
 main = program { init = init, update = update, view = view, subscriptions = subscriptions}
