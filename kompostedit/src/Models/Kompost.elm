@@ -55,6 +55,7 @@ type Msg
     | SetSegmentEnd String
     | Create
     | Save
+    | ShowArtist  (Result Http.Error Artist)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -85,6 +86,19 @@ update msg model =
                 ( model, Cmd.none )
             else
                 ( save model, Cmd.none )
+
+        ShowArtist res ->
+             case res of
+                 Result.Ok artist ->
+                     ( { model
+                         | name = artist.name
+                         --, start = artist.id
+                       }, Cmd.none )
+
+                 Result.Err err ->
+                     let _ = Debug.log "Error retrieving artist" err
+                     in
+                         (model, Cmd.none)
 
 save : Model -> Model
 save model =
@@ -150,10 +164,8 @@ subscriptions model =
 
 
 getKompost : Cmd Msg
-getKompost =
+getKompost = getArtist 1 ShowArtist
     -- Task.perform FetchFail FetchSuccess <| Http.get "https://raw.githubusercontent.com/StigLau/ElmMoro/master/kompostedit/test/resources/example.json" decodeJson
-    Cmd.none
-
 
 
 main : Program Never Model Msg
