@@ -2,7 +2,7 @@ module Models.Simple exposing (..)
 
 import List exposing (length)
 import Html exposing (..)
-import Html.Attributes exposing (class, classList)
+import Html.Attributes exposing (class, classList, type_)
 import Json.Decode exposing (..)
 import Time exposing (Time, second, millisecond)
 import Task
@@ -28,7 +28,9 @@ type Msg
     = Update
     | GetFailed Http.Error
     | GetSucceeded (List String)
-    | ShowArtist (Result Http.Error Artist)
+    | ShowArtist  (Result Http.Error Artist)
+    | SaveArtist
+    | HandleSaved (Result Http.Error Artist)
 
 type alias Artist =
     { id : Int
@@ -74,10 +76,34 @@ update msg model =
                     in
                         (model, Cmd.none)
 
+        SaveArtist ->
+                    case model.start of
+                        start ->
+                            ( model, updateArtist (Artist start model.name) HandleSaved )
+
+
+        HandleSaved res ->
+            case res of
+                Result.Ok artist ->
+                    ( { model
+                        | start = artist.id
+                        , name = artist.name
+                      }
+                    , Cmd.none --no Navigation: Routes.navigate Routes.ArtistListingPage
+                    )
+
+                Result.Err err ->
+                    let _ = Debug.log "Error saving artist" err
+                    in
+                        (model, Cmd.none)
+
 
 view : Model -> Html Msg
 view model =
-    div [] [ text (model.name ++ String.join "," model.hats) ]
+    Html.form [] [
+     div [] [ text (model.name ++ String.join "," model.hats)] ,
+      div [ ] [ button [ type_ "button", onClick SaveArtist ] [ text "Save" ] ]
+    ]
 
 
 subscriptions : Model -> Sub Msg
