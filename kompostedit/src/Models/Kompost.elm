@@ -16,7 +16,7 @@ import Process exposing (sleep)
 import Functions exposing (..)
 import Models.KompostModels exposing (..)
 
-import Models.ServerApi exposing (getKompo, Komposition)
+import Models.KompostApi exposing (getKompo, Komposition)
 
 
 

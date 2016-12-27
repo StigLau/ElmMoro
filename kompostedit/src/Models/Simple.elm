@@ -14,12 +14,13 @@ import Json.Decode
 import Json.Decode exposing (..)
 import JsonDecoding exposing (..)
 import Process exposing (sleep)
-import Models.ServerApi exposing (..)
+import Models.KompostApi exposing (..)
+import Models.ServerApi exposing (updateArtist)
 
 type alias Model =
     { name : String
     , start : Int
-    , end : String
+    , end : Int
     , hats : List String
     }
 
@@ -28,7 +29,7 @@ type Msg
     = Update
     | GetFailed Http.Error
     | GetSucceeded (List String)
-    | ShowArtist  (Result Http.Error Artist)
+    | FetchKompost  (Result Http.Error Komposition)
     | SaveArtist
     | HandleSaved (Result Http.Error Artist)
 
@@ -40,7 +41,7 @@ type alias Artist =
 
 initModel : ( Model, Cmd Msg )
 -- initModel = ( Model "" "" "" [], (storeKompost (storeKompostRequest "http://localhost:9099/store/kompost" "Send this")) )
-initModel = (Model "" -2 "" [], getArtist 1 ShowArtist)
+initModel = (Model "" -2 0 [], getKompo 1 FetchKompost)
 
 -- storeKompost : Task.Task Http.Error (List String) -> Cmd Msg
 -- storeKompost request = Task.perform GetFailed GetSucceeded request
@@ -63,18 +64,19 @@ update msg model =
         GetSucceeded strings ->
             ( { model | hats = strings }, Cmd.none )
 
-        ShowArtist res ->
-            case res of
-                Result.Ok artist ->
-                    ( { model
-                        | name = artist.name
-                        , start = artist.id
-                      } , Cmd.none )
+        FetchKompost res ->
+                     case res of
+                         Result.Ok komposition ->
+                             ( { model
+                                 | name = komposition.name
+                                 , start = komposition.start
+                                 , end = komposition.end
+                               }, Cmd.none )
 
-                Result.Err err ->
-                    let _ = Debug.log "Error retrieving artist" err
-                    in
-                        (model, Cmd.none)
+                         Result.Err err ->
+                             let _ = Debug.log "Error retrieving artist" err
+                             in
+                                 (model, Cmd.none)
 
         SaveArtist ->
                     case model.start of
