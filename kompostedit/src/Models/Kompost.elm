@@ -16,13 +16,12 @@ import Process exposing (sleep)
 import Functions exposing (..)
 import Models.KompostModels exposing (..)
 
-import Models.ServerApi
+import Models.ServerApi exposing (getKompo, Komposition)
 
 
 
 init : ( Model, Cmd Msg )
-init =
-    ( initModel, getKompost )
+init = ( initModel, getKompo 1 FetchKompost )
 
 
 initModel : Model
@@ -50,7 +49,7 @@ type Msg
     | SetSegmentEnd String
     | Create
     | Save
-    | FetchKompost  (Result Http.Error Models.ServerApi.Komposition)
+    | FetchKompost  (Result Http.Error Komposition)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -62,7 +61,7 @@ update msg model =
             ( model, Cmd.none )
 
         FetchKomposition ->
-            ( model, getKompost )
+            ( model, getKompo 1 FetchKompost )
 
         SetSegmentName name ->
             ( { model | name = name }, Cmd.none )
@@ -149,18 +148,9 @@ segmentForm model =
         ]
 
 
-
 -- subscription
-
-
 subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
-
-
-getKompost : Cmd Msg
-getKompost = Models.ServerApi.getKompo 1 FetchKompost
-
+subscriptions model = Sub.none
 
 main : Program Never Model Msg
 main = program { init = init, update = update, view = view, subscriptions = subscriptions}
