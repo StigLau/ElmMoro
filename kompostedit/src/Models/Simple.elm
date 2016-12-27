@@ -101,7 +101,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     Html.form [] [
-     div [] [ text (model.name ++ String.join "," model.hats)] ,
+     div [] [ text (model.name ++ " " ++ (toString model.start) ++ " " ++ (toString model) ++ String.join "," model.hats)] ,
       div [ ] [ button [ type_ "button", onClick SaveArtist ] [ text "Save" ] ]
     ]
 

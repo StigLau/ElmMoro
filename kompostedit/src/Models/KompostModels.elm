@@ -2,8 +2,8 @@ module Models.KompostModels exposing (..)
 
 type alias Model =
   { name: String
-  , start: String
-  , end: String
+  , start: Int
+  , end: Int
   , config: Config
   , mediaFile: Mediafile
   , segments: List Segment

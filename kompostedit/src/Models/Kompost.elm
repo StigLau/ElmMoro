@@ -25,7 +25,7 @@ init = ( initModel, getKompo 1 FetchKompost )
 
 
 initModel : Model
-initModel = Model "" "" "" testConfig testMediaFile [ testSegment1, testSegment2 ]
+initModel = Model "" 0 16 testConfig testMediaFile [ testSegment1, testSegment2 ]
 
 
 testConfig = Config 1280 1080 24 "mp4" 1234
@@ -67,10 +67,10 @@ update msg model =
             ( { model | name = name }, Cmd.none )
 
         SetSegmentStart start ->
-            ( { model | start = start }, Cmd.none )
+            ( { model | start = (validNr start) }, Cmd.none )
 
         SetSegmentEnd end ->
-            ( { model | end = end }, Cmd.none )
+            ( { model | end = (validNr end) }, Cmd.none )
 
         Create ->
             ( model, Cmd.none )
@@ -86,7 +86,8 @@ update msg model =
                  Result.Ok komposition ->
                      ( { model
                          | name = komposition.name
-                         --, start = artist.id
+                         , start = komposition.start
+                         , end = komposition.end
                        }, Cmd.none )
 
                  Result.Err err ->
@@ -134,14 +135,14 @@ segmentForm model =
             [ type_ "number"
             , placeholder "Start"
             , onInput SetSegmentStart
-            , Html.Attributes.value model.start
+            , Html.Attributes.value (toString model.start)
             ]
             []
         , input
             [ type_ "number"
             , placeholder "End"
             , onInput SetSegmentEnd
-            , Html.Attributes.value model.end
+            , Html.Attributes.value (toString model.end)
             ]
             []
         , button [ type_ "button", onClick Save ] [ text "Save" ]
