@@ -16,7 +16,7 @@ import Process exposing (sleep)
 import Functions exposing (..)
 import Models.KompostModels exposing (..)
 
-import Models.ServerApi exposing (..)
+import Models.ServerApi
 
 
 
@@ -26,24 +26,19 @@ init =
 
 
 initModel : Model
-initModel =
-    Model "" "" "" testConfig testMediaFile [ testSegment1, testSegment2 ]
+initModel = Model "" "" "" testConfig testMediaFile [ testSegment1, testSegment2 ]
 
 
-testConfig =
-    Config 1280 1080 24 "mp4" 1234
+testConfig = Config 1280 1080 24 "mp4" 1234
 
 
-testMediaFile =
-    Mediafile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" 0 "A Checksum"
+testMediaFile = Mediafile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" 0 "A Checksum"
 
 
-testSegment1 =
-    Segment "Purple Mountains Clouds" 7541667 19750000
+testSegment1 = Segment "Purple Mountains Clouds" 7541667 19750000
 
 
-testSegment2 =
-    Segment "Besseggen" 21250000 27625000
+testSegment2 = Segment "Besseggen" 21250000 27625000
 
 
 type Msg
@@ -55,7 +50,7 @@ type Msg
     | SetSegmentEnd String
     | Create
     | Save
-    | ShowArtist  (Result Http.Error Artist)
+    | FetchKompost  (Result Http.Error Models.ServerApi.Komposition)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -87,11 +82,11 @@ update msg model =
             else
                 ( save model, Cmd.none )
 
-        ShowArtist res ->
+        FetchKompost res ->
              case res of
-                 Result.Ok artist ->
+                 Result.Ok komposition ->
                      ( { model
-                         | name = artist.name
+                         | name = komposition.name
                          --, start = artist.id
                        }, Cmd.none )
 
@@ -164,8 +159,7 @@ subscriptions model =
 
 
 getKompost : Cmd Msg
-getKompost = getArtist 1 ShowArtist
-    -- Task.perform FetchFail FetchSuccess <| Http.get "https://raw.githubusercontent.com/StigLau/ElmMoro/master/kompostedit/test/resources/example.json" decodeJson
+getKompost = Models.ServerApi.getKompo 1 FetchKompost
 
 
 main : Program Never Model Msg

@@ -36,16 +36,31 @@ type alias Track =
     , duration : Int
     }
 
+type alias Komposition =
+  { name: String
+  , start: Int
+  , end: Int
+  --, config: Config
+  --, mediaFile: Mediafile
+  --, segments: List Segment
+  }
+
 
 baseUrl : String
-baseUrl =
-    "http://localhost:8081"
+baseUrl = "http://localhost:8081"
+
+kompoUrl : String
+kompoUrl = "http://localhost:8080/KompoBack"
 
 
 
 getArtist : Int -> (Result Http.Error Artist -> msg) -> Cmd msg
 getArtist id msg =
     Http.get (baseUrl ++ "/artists/" ++ toString id) artistDecoder
+        |> Http.send msg
+
+getKompo : Int -> (Result Http.Error Komposition -> msg) -> Cmd msg
+getKompo id msg = Http.get (kompoUrl ++ "/no/lau/kompo?" ++ toString id) kompositionDecoder
         |> Http.send msg
 
 
@@ -109,6 +124,13 @@ artistDecoder =
     JsonD.map2 Artist
         (JsonD.field "artistId" JsonD.int)
         (JsonD.field "artistName" JsonD.string)
+
+kompositionDecoder : JsonD.Decoder Komposition
+kompositionDecoder =
+    JsonD.map3 Komposition
+        (JsonD.field "name" JsonD.string)
+        (JsonD.field "start" JsonD.int)
+        (JsonD.field "end" JsonD.int)
 
 
 encodeArtist : ArtistRequest a -> String
