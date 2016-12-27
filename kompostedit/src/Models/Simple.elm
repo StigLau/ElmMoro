@@ -21,14 +21,13 @@ type alias Model =
     { name : String
     , start : Int
     , end : Int
-    , hats : List String
+    , segments : List Segment
     }
 
 
 type Msg
     = Update
     | GetFailed Http.Error
-    | GetSucceeded (List String)
     | FetchKompost  (Result Http.Error Komposition)
     | SaveArtist
     | HandleSaved (Result Http.Error Artist)
@@ -44,7 +43,6 @@ initModel : ( Model, Cmd Msg )
 initModel = (Model "" -2 0 [], getKompo 1 FetchKompost)
 
 -- storeKompost : Task.Task Http.Error (List String) -> Cmd Msg
--- storeKompost request = Task.perform GetFailed GetSucceeded request
 
 {--
 storeKompostRequest : String -> String -> Task.Task Http.Error (List String)
@@ -61,9 +59,6 @@ update msg model =
         GetFailed _ ->
             ( model, Cmd.none )
 
-        GetSucceeded strings ->
-            ( { model | hats = strings }, Cmd.none )
-
         FetchKompost res ->
                      case res of
                          Result.Ok komposition ->
@@ -71,6 +66,7 @@ update msg model =
                                  | name = komposition.name
                                  , start = komposition.start
                                  , end = komposition.end
+                                 , segments = komposition.segments
                                }, Cmd.none )
 
                          Result.Err err ->
@@ -103,7 +99,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     Html.form [] [
-     div [] [ text (model.name ++ " " ++ (toString model.start) ++ " " ++ (toString model) ++ String.join "," model.hats)] ,
+     div [] [ text (model.name ++ " " ++ (toString model.start) ++ " " ++ (toString model) )] , --++ String.join "," model.segments
       div [ ] [ button [ type_ "button", onClick SaveArtist ] [ text "Save" ] ]
     ]
 
