@@ -7,7 +7,7 @@ add : Model -> Model
 add model =
     let
         segment =
-            Segment model.name (validNr model.start) (validNr model.end)
+            Segment model.name model.start model.end
 
         newSegments =
             segment :: model.segments
@@ -15,8 +15,8 @@ add model =
         { model
             | segments = newSegments
             , name = ""
-            , start = ""
-            , end = ""
+            , start = 0
+            , end = 0
         }
 
 updateChanges : Model -> Model
@@ -26,7 +26,7 @@ updateChanges model =
             List.map
                 (\segment ->
                     if segment.id == model.name then
-                        { segment | start = (validNr model.start), end = (validNr model.end) }
+                        { segment | start = model.start, end = model.end }
                     else
                         segment
                 )
@@ -35,25 +35,15 @@ updateChanges model =
         { model
             | segments = newSegments
             , name = ""
-            , start = ""
-            , end = ""
+            , start = 0
+            , end = 0
         }
 
 
 isInputfieldsValid: Model -> Bool
 isInputfieldsValid model =
   not(validateSegmentFields model)
-      && isValidNr model.start
-      && isValidNr model.end
-      && (validNr model.end) > (validNr model.start)
-
-isValidNr : String -> Bool
-isValidNr value =
-  case String.toInt value of
-    Ok int ->
-      int >= 0
-    Err _ ->
-      False
+        && model.end > model.start
 
 validNr : String -> Int
 validNr value =

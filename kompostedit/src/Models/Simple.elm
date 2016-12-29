@@ -1,48 +1,109 @@
 module Models.Simple exposing (..)
 
-import Html.App as App
-import Html.App exposing (program, map)
 import List exposing (length)
 import Html exposing (..)
-import Html.Attributes exposing (class, classList)
+import Html.Attributes exposing (class, classList, type_)
+import Json.Decode exposing (..)
 import Time exposing (Time, second, millisecond)
+import Task
 import Html exposing (..)
 import Html.Events exposing (..)
+import Http
+import Json.Encode
+import Json.Decode
+import Json.Decode exposing (..)
+import JsonDecoding exposing (..)
 import Process exposing (sleep)
-import String
-import Models.KompostRemoting exposing (..)
+import Models.KompostApi exposing (..)
 
 type alias Model =
-  { name: String
-  , start: String
-  , end: String
-  , hats : List String
-  }
+    { name : String
+    , start : Int
+    , end : Int
+    , segments : List Segment
+    }
 
-initModel : (Model, Cmd Msg)
-initModel = (Model "" "" "" [], executeKompostStorage)
 
-update : Msg -> Model -> (Model, Cmd Msg)
+type Msg
+    = Update
+    | GetFailed Http.Error
+    | FetchKompost  (Result Http.Error Komposition)
+    | StoreKomposition
+    | HandleSaved (Result Http.Error Komposition)
+
+initModel : ( Model, Cmd Msg )
+-- initModel = ( Model "" "" "" [], (storeKompost (storeKompostRequest "http://localhost:9099/store/kompost" "Send this")) )
+initModel = (Model "" -2 0 [], getKompo 1 FetchKompost)
+
+-- storeKompost : Task.Task Http.Error (List String) -> Cmd Msg
+
+{--
+storeKompostRequest : String -> String -> Task.Task Http.Error (List String)
+storeKompostRequest requestString destination =
+    Http.post (list string) destination (Http.stringBody requestString)
+--}
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Update ->
-            (model, Cmd.none)
+            ( model, Cmd.none )
 
-        RemoteFail _ ->
-            (model, Cmd.none)
+        GetFailed _ ->
+            ( model, Cmd.none )
 
-        StoreSuccess strings ->
-            ({model | hats = strings }, Cmd.none)
+        FetchKompost res ->
+                     case res of
+                         Result.Ok komposition ->
+                             ( { model
+                                 | name = komposition.name
+                                 , start = komposition.start
+                                 , end = komposition.end
+                                 , segments = komposition.segments
+                               }, Cmd.none )
+
+                         Result.Err err ->
+                             let _ = Debug.log "Error retrieving komposition" err
+                             in
+                                 (model, Cmd.none)
+
+        StoreKomposition ->
+                    case model.start of
+                        start ->
+                            ( model, updateKompo (Komposition model.name start model.end model.segments) FetchKompost )
+
+
+        HandleSaved res ->
+            case res of
+                Result.Ok komposition ->
+                    ( { model
+                        | start = komposition.start
+                        , name = komposition.name
+                      }
+                    , Cmd.none --no Navigation: Routes.navigate Routes.ArtistListingPage
+                    )
+
+                Result.Err err ->
+                    let _ = Debug.log "Error saving komposition" err
+                    in
+                        (model, Cmd.none)
+
 
 view : Model -> Html Msg
-view model = div [ ] [ text (String.join "," model.hats ) ]
+view model =
+    Html.form [] [
+     div [] [ text (model.name ++ " " ++ (toString model.start) ++ " " ++ (toString model) )] , --++ String.join "," model.segments
+      div [ ] [ button [ type_ "button", onClick StoreKomposition ] [ text "Store Komposition" ] ]
+    ]
+
 
 subscriptions : Model -> Sub Msg
-subscriptions model = Sub.none
+subscriptions model =
+    Sub.none
 
-main : Program Never
+main : Program Never Model Msg
 main =
-    App.program
+    program
         { init = initModel
         , view = view
         , update = update
