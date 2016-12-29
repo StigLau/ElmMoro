@@ -1,18 +1,9 @@
 module Models.Kompost exposing (..)
 
-import List exposing (length)
-import Html exposing (..)
-import Html.Attributes exposing (class, classList)
-import Json.Decode exposing (..)
-import Time exposing (Time, second, millisecond)
-import Task
 import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (..)
 import Http
-import String
-import JsonDecoding exposing (..)
-import Process exposing (sleep)
 import Functions exposing (..)
 import Models.KompostModels exposing (..)
 
@@ -41,9 +32,7 @@ testSegment2 = Segment "Besseggen" 21250000 27625000
 
 
 type Msg
-    = FetchSuccess JsonKomposition
-    | FetchFail Http.Error
-    | FetchKomposition
+    = FetchKomposition
     | SetSegmentName String
     | SetSegmentStart String
     | SetSegmentEnd String
@@ -54,12 +43,6 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        FetchSuccess response ->
-            ( model, Cmd.none )
-
-        FetchFail error ->
-            ( model, Cmd.none )
-
         FetchKomposition ->
             ( model, getKompo 1 FetchKompost )
 
