@@ -13,7 +13,6 @@ type alias Model =
     , segments : List Segment
     }
 
-
 type Msg
     = Update
     | GetFailed Http.Error
@@ -21,17 +20,8 @@ type Msg
     | StoreKomposition
     | HandleSaved (Result Http.Error Komposition)
 
-initModel : ( Model, Cmd Msg )
--- initModel = ( Model "" "" "" [], (storeKompost (storeKompostRequest "http://localhost:9099/store/kompost" "Send this")) )
-initModel = (Model "" -2 0 [], getKompo 1 FetchKompost)
-
--- storeKompost : Task.Task Http.Error (List String) -> Cmd Msg
-
-{--
-storeKompostRequest : String -> String -> Task.Task Http.Error (List String)
-storeKompostRequest requestString destination =
-    Http.post (list string) destination (Http.stringBody requestString)
---}
+init : ( Model, Cmd Msg )
+init = (Model "Backend not functional" -2 -2 [], getKompo 1 FetchKompost)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -94,7 +84,7 @@ subscriptions model =
 main : Program Never Model Msg
 main =
     program
-        { init = initModel
+        { init = init
         , view = view
         , update = update
         , subscriptions = subscriptions

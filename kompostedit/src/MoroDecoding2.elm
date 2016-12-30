@@ -10,20 +10,9 @@ import Json.Decode
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (decode, required, optional)
 import JsonDecoding exposing (..)
+import Models.Kompost as Kompost
 
 --https://noredink.github.io/json-to-elm/
-randomJoke : Cmd Msg
-randomJoke =
-    let
-        url = "https://raw.githubusercontent.com/StigLau/ElmMoro/master/kompostedit/test/resources/example.json"
-        task =
-            -- Http.getString url
-            Http.get decodeJson url
-
-        cmd =
-            Task.perform FetchFail FetchSuccess task
-    in
-        cmd
 
 
 -- model
@@ -35,8 +24,8 @@ initModel : Model
 initModel = "Fetching Komposition..."
 
 
-init : ( Model, Cmd Msg )
-init = ( initModel, randomJoke )
+init : ( Model, Cmd Kompost.Msg )
+init = ( initModel, Kompost.getKompost )
 
 -- update
 type Msg
@@ -45,7 +34,7 @@ type Msg
     | FetchKomposition
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> ( Model, Cmd Kompost.Msg )
 update msg model =
     case msg of
         FetchSuccess response ->
@@ -55,8 +44,7 @@ update msg model =
             ( (toString error), Cmd.none )
 
         FetchKomposition ->
-            ( "fetching reference ...", randomJoke )
-
+            ( "jalla", Kompost.getKompost )
 
 -- view
 view : Model -> Html Msg
@@ -69,7 +57,7 @@ view model =
 
 
 -- subscription
-subscriptions : Model -> Sub Msg
+subscriptions : Model -> Sub Kompost.Msg
 subscriptions model = Sub.none
 
 main : Program Never
