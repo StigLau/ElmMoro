@@ -1,19 +1,9 @@
 module Models.Simple exposing (..)
 
-import List exposing (length)
 import Html exposing (..)
 import Html.Attributes exposing (class, classList, type_)
-import Json.Decode exposing (..)
-import Time exposing (Time, second, millisecond)
-import Task
-import Html exposing (..)
 import Html.Events exposing (..)
 import Http
-import Json.Encode
-import Json.Decode
-import Json.Decode exposing (..)
-import JsonDecoding exposing (..)
-import Process exposing (sleep)
 import Models.KompostApi exposing (..)
 
 type alias Model =

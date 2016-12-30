@@ -12,11 +12,11 @@ import Models.KompostApi exposing (getKompo, Komposition)
 
 
 init : ( Model, Cmd Msg )
-init = ( initModel, getKompo 1 FetchKompost )
+init = ( initModel, (getKompo 1 FetchKompost) )
 
 
 initModel : Model
-initModel = Model "" 0 16 testConfig testMediaFile [ testSegment1, testSegment2 ]
+initModel = Model "Something" 0 16 testConfig testMediaFile [ testSegment1, testSegment2 ]
 
 
 testConfig = Config 1280 1080 24 "mp4" 1234
