@@ -1,7 +1,7 @@
 module Models.MultiViewTest exposing (..)
 
 import Html exposing (..)
-import Models.Simple as Segment exposing (..)
+import Models.Segment as Segment exposing (..)
 
 type alias Model = { segment : Segment.Model }
 
