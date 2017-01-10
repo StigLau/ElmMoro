@@ -33,6 +33,7 @@ view model =
         [ h1 [] [ text "Kompost dvl editor" ]
         , text "What I gots: "
         , text (toString model)
+        , Html.map Segmenti (Segment.view model.segment)
         ]
 
 
