@@ -16,7 +16,7 @@ init = ( initModel, (getKompo 1 FetchKompost) )
 
 
 initModel : Model
-initModel = Model "Something" 0 16 testConfig testMediaFile [ testSegment1, testSegment2 ]
+initModel = Model "Fine clouds" 0 123456 testConfig testMediaFile [ testSegment1, testSegment2 ]
 
 
 testConfig = Config 1280 1080 24 "mp4" 1234
@@ -36,6 +36,7 @@ type Msg
     | SetSegmentName String
     | SetSegmentStart String
     | SetSegmentEnd String
+    | SetMediaFileLocation String
     | Create
     | Save
     | FetchKompost  (Result Http.Error Komposition)
@@ -54,6 +55,9 @@ update msg model =
 
         SetSegmentEnd end ->
             ( { model | end = (validNr end) }, Cmd.none )
+
+        SetMediaFileLocation fileLocation ->
+            ( { model | mediaFile = (updateMed model.mediaFile fileLocation)}, Cmd.none )
 
         Create ->
             ( model, Cmd.none )
@@ -78,6 +82,11 @@ update msg model =
                      in
                          (model, Cmd.none)
 
+updateMed: Mediafile -> String -> Mediafile
+updateMed mediaFile fileLocation = { mediaFile | fileName = fileLocation}
+
+
+
 save : Model -> Model
 save model =
     case
@@ -99,7 +108,7 @@ view model =
         [ h1 [] [ text "Kompost dvl editor" ]
           --        , [ button [ onClick FetchKomposition ] [ text "Fetch a Komposition" ] ]
         , segmentForm model
-        , text "Komposition: "
+        , div [] [ text "Komposition: " ]
         , text (toString model)
         ]
 
@@ -107,7 +116,9 @@ view model =
 segmentForm : Model -> Html Msg
 segmentForm model =
     Html.form []
-        [ input
+        [
+        div [] [ text "Name | Start | End" ]
+        , input
             [ type_ "text"
             , placeholder "Segment Name"
             , onInput SetSegmentName
@@ -128,11 +139,17 @@ segmentForm model =
             , Html.Attributes.value (toString model.end)
             ]
             []
+        , div [] [ text "File Location" ]
+        , input
+            [ type_ "text"
+            , placeholder "FileName"
+            , onInput SetMediaFileLocation
+            , Html.Attributes.value model.mediaFile.fileName
+            ]
+            []
         , button [ type_ "button", onClick Save ] [ text "Save" ]
         ]
 
-
--- subscription
 subscriptions : Model -> Sub Msg
 subscriptions model = Sub.none
 
