@@ -7,7 +7,7 @@ import Http
 import Functions exposing (..)
 import Models.KompostModels exposing (..)
 
-import Models.KompostApi exposing (getKompo, Komposition)
+import Models.KompostApi exposing (getKompo, updateKompo, Komposition)
 
 
 
@@ -33,6 +33,7 @@ testSegment2 = Segment "Besseggen" 21250000 27625000
 
 type Msg
     = FetchKomposition
+    | UpdateKomposition
     | SetSegmentName String
     | SetSegmentStart String
     | SetSegmentEnd String
@@ -46,6 +47,9 @@ update msg model =
     case msg of
         FetchKomposition ->
             ( model, getKompo 1 FetchKompost )
+
+        UpdateKomposition ->
+            ( model, updateKompo (Komposition model.name model.start model.end model.segments) FetchKompost )
 
         SetSegmentName name ->
             ( { model | name = name }, Cmd.none )
@@ -110,6 +114,8 @@ view model =
         , segmentForm model
         , div [] [ text "Komposition: " ]
         , text (toString model)
+        , div [] [ ]
+        , button [ type_ "button", onClick UpdateKomposition ] [ text "Update Komposition" ]
         ]
 
 
