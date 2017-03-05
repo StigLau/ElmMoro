@@ -33,7 +33,7 @@ testSegment2 = Segment "Besseggen" 21250000 27625000
 
 type Msg
     = FetchKomposition
-    | UpdateKomposition
+    | StoreKomposition
     | SetSegmentName String
     | SetSegmentStart String
     | SetSegmentEnd String
@@ -48,7 +48,7 @@ update msg model =
         FetchKomposition ->
             ( model, getKompo 1 FetchKompost )
 
-        UpdateKomposition ->
+        StoreKomposition ->
             ( model, updateKompo (Komposition model.name model.start model.end model.segments) FetchKompost )
 
         SetSegmentName name ->
@@ -115,7 +115,7 @@ view model =
         , div [] [ text "Komposition: " ]
         , text (toString model)
         , div [] [ ]
-        , button [ type_ "button", onClick UpdateKomposition ] [ text "Update Komposition" ]
+        , button [ type_ "button", onClick StoreKomposition ] [ text "Store Komposition" ]
         ]
 
 

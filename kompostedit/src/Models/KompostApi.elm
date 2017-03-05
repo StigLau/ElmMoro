@@ -40,7 +40,7 @@ kompoUrl : String
 kompoUrl = "http://localhost:8080/kompoback"
 
 getKompo : Int -> (Result Http.Error Komposition -> msg) -> Cmd msg
-getKompo id msg = Http.get (kompoUrl ++ "/no/lau/kompo?" ++ toString id) kompositionDecoder
+getKompo id msg = Http.get (kompoUrl ++ "/no/lau/kompo?identity=" ++ toString id) kompositionDecoder
         |> Http.send msg
 
 updateKompo: Komposition -> (Result Http.Error Komposition -> msg) -> Cmd msg
@@ -84,7 +84,7 @@ encodeKomposition : KompositionRequest kompo -> String
 encodeKomposition kompo =
     JsonE.encode 0 <|
         JsonE.object
-            [ ( "komportistName", JsonE.string kompo.name )
+            [ ( "name", JsonE.string kompo.name )
             , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
             ]
 
