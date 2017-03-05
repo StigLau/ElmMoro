@@ -49,7 +49,7 @@ update msg model =
             ( model, getKompo 1 FetchKompost )
 
         StoreKomposition ->
-            ( model, updateKompo (Komposition model.name model.start model.end model.segments) FetchKompost )
+            ( model, updateKompo (Komposition model.name model.segments) FetchKompost )
 
         SetSegmentName name ->
             ( { model | name = name }, Cmd.none )
@@ -77,8 +77,7 @@ update msg model =
                  Result.Ok komposition ->
                      ( { model
                          | name = komposition.name
-                         , start = komposition.start
-                         , end = komposition.end
+                         , segments = komposition.segments
                        }, Cmd.none )
 
                  Result.Err err ->

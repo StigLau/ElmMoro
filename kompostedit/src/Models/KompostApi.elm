@@ -7,8 +7,6 @@ import Http
 
 type alias Komposition =
   { name: String
-  , start: Int
-  , end: Int
   --, config: Config
   --, mediaFile: Mediafile
   , segments: List Segment
@@ -30,8 +28,6 @@ type alias Mediafile =
 type alias KompositionRequest a =
     { a
         | name : String
-        , start : Int
-        , end : Int
         , segments : List Segment
     }
 
@@ -59,10 +55,8 @@ updateKompo komposition msg =
 
 kompositionDecoder : JsonD.Decoder Komposition
 kompositionDecoder =
-            JsonD.map4 Komposition
+            JsonD.map2 Komposition
                            (JsonD.field "name" JsonD.string)
-                           (JsonD.field "start" JsonD.int)
-                           (JsonD.field "end" JsonD.int)
                            (JsonD.field "segments" <| JsonD.list segmentDecoder)
                 -- _ = Debug.log "testing out stuff" komp
 
