@@ -35,8 +35,8 @@ type alias KompositionRequest a =
 kompoUrl : String
 kompoUrl = "http://localhost:8080/kompoback"
 
-getKompo : Int -> (Result Http.Error Komposition -> msg) -> Cmd msg
-getKompo id msg = Http.get (kompoUrl ++ "/no/lau/kompo?identity=" ++ toString id) kompositionDecoder
+getKompo : String -> (Result Http.Error Komposition -> msg) -> Cmd msg
+getKompo id msg = Http.get (kompoUrl ++ "/no/lau/kompo?identity=" ++ id) kompositionDecoder
         |> Http.send msg
 
 updateKompo: Komposition -> (Result Http.Error Komposition -> msg) -> Cmd msg

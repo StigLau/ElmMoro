@@ -12,7 +12,7 @@ import Models.KompostApi exposing (getKompo, updateKompo, Komposition)
 
 
 init : ( Model, Cmd Msg )
-init = ( initModel, (getKompo 1 FetchKompost) )
+init = ( initModel, (getKompo "Init" FetchKompostResponseHandler) )
 
 
 initModel : Model
@@ -32,24 +32,28 @@ testSegment2 = Segment "Besseggen" 21250000 27625000
 
 
 type Msg
-    = FetchKomposition
+    -- Remoting Operations
+    = NewOrUpdate
     | StoreKomposition
-    | SetSegmentName String
+    | FetchKomposition
+    | FetchKompostResponseHandler (Result Http.Error Komposition)
+    -- Alter Segment
+    |  SetSegmentName String
     | SetSegmentStart String
     | SetSegmentEnd String
+    -- Alter Media File
     | SetMediaFileLocation String
-    | Create
-    | Save
-    | FetchKompost  (Result Http.Error Komposition)
+    | SetMediaFileChecksum String
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         FetchKomposition ->
-            ( model, getKompo 1 FetchKompost )
+            ( model, getKompo "Fetch identity" FetchKompostResponseHandler )
 
         StoreKomposition ->
-            ( model, updateKompo (Komposition model.name model.segments) FetchKompost )
+            ( model, updateKompo (Komposition model.name model.segments) FetchKompostResponseHandler )
 
         SetSegmentName name ->
             ( { model | name = name }, Cmd.none )
@@ -61,18 +65,18 @@ update msg model =
             ( { model | end = (validNr end) }, Cmd.none )
 
         SetMediaFileLocation fileLocation ->
-            ( { model | mediaFile = (updateMed model.mediaFile fileLocation)}, Cmd.none )
+            ( { model | mediaFile = (updateFileLocation model.mediaFile fileLocation)}, Cmd.none )
 
-        Create ->
-            ( model, Cmd.none )
+        SetMediaFileChecksum checksum ->
+            ( { model | mediaFile = (updateMediaChecksum model.mediaFile checksum)}, Cmd.none )
 
-        Save ->
+        NewOrUpdate ->
             if (String.isEmpty model.name) then
                 ( model, Cmd.none )
             else
-                ( save model, Cmd.none )
+                ( newOrUpdate model, Cmd.none )
 
-        FetchKompost res ->
+        FetchKompostResponseHandler res ->
              case res of
                  Result.Ok komposition ->
                      ( { model
@@ -85,13 +89,16 @@ update msg model =
                      in
                          (model, Cmd.none)
 
-updateMed: Mediafile -> String -> Mediafile
-updateMed mediaFile fileLocation = { mediaFile | fileName = fileLocation}
+updateFileLocation: Mediafile -> String -> Mediafile
+updateFileLocation mediaFile fileLocation = { mediaFile | fileName = fileLocation}
+
+updateMediaChecksum: Mediafile -> String -> Mediafile
+updateMediaChecksum mediaFile checksum = { mediaFile | checksum = checksum}
 
 
 
-save : Model -> Model
-save model =
+newOrUpdate : Model -> Model
+newOrUpdate model =
     case
         ( isInputfieldsValid model, (isEditingExistingSegment model) )
     of
@@ -111,6 +118,7 @@ view model =
         [ h1 [] [ text "Kompost dvl editor" ]
           --        , [ button [ onClick FetchKomposition ] [ text "Fetch a Komposition" ] ]
         , segmentForm model
+        , mediafileForm model
         , div [] [ text "Komposition: " ]
         , text (toString model)
         , div [] [ ]
@@ -144,7 +152,16 @@ segmentForm model =
             , Html.Attributes.value (toString model.end)
             ]
             []
-        , div [] [ text "File Location" ]
+        , button [ type_ "button", onClick NewOrUpdate ] [ text "NewOrUpdate" ]
+        ]
+
+mediafileForm : Model -> Html Msg
+mediafileForm model =
+    Html.form []
+        [
+        div [] [ text "mediaFile" ]
+
+        , div [] [ text "File Location | checksum" ]
         , input
             [ type_ "text"
             , placeholder "FileName"
@@ -152,7 +169,13 @@ segmentForm model =
             , Html.Attributes.value model.mediaFile.fileName
             ]
             []
-        , button [ type_ "button", onClick Save ] [ text "Save" ]
+        , input
+            [ type_ "text"
+            , placeholder "Checksum"
+            , onInput SetMediaFileChecksum
+            , Html.Attributes.value model.mediaFile.checksum
+            ]
+            []
         ]
 
 subscriptions : Model -> Sub Msg
