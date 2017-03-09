@@ -8,7 +8,7 @@ import Http
 type alias Komposition =
   { name: String
   --, config: Config
-  --, mediaFile: Mediafile
+  , mediaFile: Mediafile
   , segments: List Segment
   }
 
@@ -28,6 +28,7 @@ type alias Mediafile =
 type alias KompositionRequest a =
     { a
         | name : String
+        , mediaFile : Mediafile
         , segments : List Segment
     }
 
@@ -55,8 +56,9 @@ updateKompo komposition msg =
 
 kompositionDecoder : JsonD.Decoder Komposition
 kompositionDecoder =
-            JsonD.map2 Komposition
+            JsonD.map3 Komposition
                            (JsonD.field "name" JsonD.string)
+                           (JsonD.field "mediaFile" mediaFileDecoder)
                            (JsonD.field "segments" <| JsonD.list segmentDecoder)
                 -- _ = Debug.log "testing out stuff" komp
 
@@ -79,8 +81,17 @@ encodeKomposition kompo =
     JsonE.encode 0 <|
         JsonE.object
             [ ( "name", JsonE.string kompo.name )
+            , ( "mediaFile", encodeMediaFile kompo.mediaFile )
             , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
             ]
+
+encodeMediaFile : Mediafile -> JsonE.Value
+encodeMediaFile mediaFile =
+    JsonE.object
+        [ ( "fileName",    JsonE.string mediaFile.fileName )
+        , ( "startingOffset",    JsonE.int mediaFile.startingOffset )
+        , ( "checksum",      JsonE.string mediaFile.checksum )
+        ]
 
 encodeSegment : Segment-> JsonE.Value
 encodeSegment segment =

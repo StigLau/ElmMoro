@@ -53,7 +53,7 @@ update msg model =
             ( model, getKompo "Fetch identity" FetchKompostResponseHandler )
 
         StoreKomposition ->
-            ( model, updateKompo (Komposition model.name model.segments) FetchKompostResponseHandler )
+            ( model, updateKompo (Komposition model.name model.mediaFile model.segments) FetchKompostResponseHandler )
 
         SetSegmentName name ->
             ( { model | name = name }, Cmd.none )
@@ -85,7 +85,7 @@ update msg model =
                        }, Cmd.none )
 
                  Result.Err err ->
-                     let _ = Debug.log "Error retrieving artist" err
+                     let _ = Debug.log "Error retrieving komposition" err
                      in
                          (model, Cmd.none)
 
