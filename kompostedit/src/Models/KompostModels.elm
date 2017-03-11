@@ -2,6 +2,7 @@ module Models.KompostModels exposing (..)
 
 type alias Model =
     { name: String
+    , revision: String
     , start: Int
     , end: Int
     , config: Config
@@ -11,6 +12,7 @@ type alias Model =
 
 type alias Komposition =
     { name: String
+    , revision: String
     --, config: Config
     , mediaFile: Mediafile
     , segments: List Segment
@@ -34,11 +36,4 @@ type alias Segment =
     { id: String
     , start: Int
     , end: Int
-    }
-
-type alias KompositionRequest a =
-    { a
-        | name : String
-        , mediaFile : Mediafile
-        , segments : List Segment
     }

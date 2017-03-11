@@ -6,17 +6,14 @@ import Html.Attributes exposing (..)
 import Http
 import Functions exposing (..)
 import Models.KompostModels exposing (Model, Komposition, Config, Mediafile, Segment)
-
 import Models.KompostApi exposing (getKompo, updateKompo)
-
-
 
 init : ( Model, Cmd Msg )
 init = ( initModel, (getKompo "4317d37968f8b991c5cd28a86e71d9ca" FetchKompostResponseHandler) )
 
 
 initModel : Model
-initModel = Model "Fine clouds" 0 123456 testConfig testMediaFile [ testSegment1, testSegment2 ]
+initModel = Model "Fine clouds" "No relevant revision" 0 123456 testConfig testMediaFile [ testSegment1, testSegment2 ]
 
 
 testConfig = Config 1280 1080 24 "mp4" 1234
@@ -53,7 +50,7 @@ update msg model =
             ( model, getKompo "Fetch identity" FetchKompostResponseHandler )
 
         StoreKomposition ->
-            ( model, updateKompo (Komposition model.name model.mediaFile model.segments) FetchKompostResponseHandler )
+            ( model, updateKompo (Komposition model.name model.revision model.mediaFile model.segments) FetchKompostResponseHandler )
 
         SetSegmentName name ->
             ( { model | name = name }, Cmd.none )
@@ -82,6 +79,7 @@ update msg model =
                      ( { model
                          | name = komposition.name
                          , segments = komposition.segments
+                         , revision = komposition.revision
                        }, Cmd.none )
 
                  Result.Err err ->

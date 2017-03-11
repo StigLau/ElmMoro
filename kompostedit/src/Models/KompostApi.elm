@@ -3,7 +3,7 @@ module Models.KompostApi exposing (..)
 import Json.Decode as JsonD
 import Json.Encode as JsonE
 import Http
-import Models.KompostModels exposing (Komposition, Segment, Mediafile, KompositionRequest)
+import Models.KompostModels exposing (Komposition, Segment, Mediafile)
 
 kompoUrl : String
 kompoUrl = "http://heap.kompo.st/"
@@ -14,9 +14,9 @@ getKompo id msg = Http.get (kompoUrl ++ id) kompositionDecoder |> Http.send msg
 updateKompo: Komposition -> (Result Http.Error Komposition -> msg) -> Cmd msg
 updateKompo komposition msg =
     Http.request
-        { method = "POST"
+        { method = "PUT"
         , headers = []
-        , url = kompoUrl ++ "/no/lau/kompo" --?" ++ toString komposition.name
+        , url = kompoUrl ++ komposition.name --?" ++ toString komposition.name
         , body = Http.stringBody "application/json" <| encodeKomposition komposition
         , expect = Http.expectJson kompositionDecoder
         , timeout = Nothing
@@ -27,8 +27,9 @@ updateKompo komposition msg =
 
 kompositionDecoder : JsonD.Decoder Komposition
 kompositionDecoder =
-            JsonD.map3 Komposition
-                           (JsonD.field "reference" JsonD.string)
+            JsonD.map4 Komposition
+                           (JsonD.field "_id" JsonD.string)
+                           (JsonD.field "_rev" JsonD.string)
                            (JsonD.field "mediaFile" mediaFileDecoder)
                            (JsonD.field "segments" <| JsonD.list segmentDecoder)
                 -- _ = Debug.log "testing out stuff" komp
@@ -47,11 +48,12 @@ mediaFileDecoder =
         (JsonD.field "startingOffset" JsonD.float)
         (JsonD.field "checksum" JsonD.string)
 
-encodeKomposition : KompositionRequest kompo -> String
+encodeKomposition : Komposition -> String
 encodeKomposition kompo =
     JsonE.encode 0 <|
         JsonE.object
-            [ ( "name", JsonE.string kompo.name )
+            [ ( "_id", JsonE.string kompo.name )
+            , ( "_rev", JsonE.string kompo.revision )
             , ( "mediaFile", encodeMediaFile kompo.mediaFile )
             , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
             ]
