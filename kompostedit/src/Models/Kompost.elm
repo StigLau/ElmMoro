@@ -12,7 +12,7 @@ import Models.KompostApi exposing (getKompo, updateKompo, Komposition)
 
 
 init : ( Model, Cmd Msg )
-init = ( initModel, (getKompo "Init" FetchKompostResponseHandler) )
+init = ( initModel, (getKompo "4317d37968f8b991c5cd28a86e71d9ca" FetchKompostResponseHandler) )
 
 
 initModel : Model

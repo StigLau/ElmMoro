@@ -20,7 +20,7 @@ type alias Config =
 
 type alias Mediafile =
   { fileName: String
-  , startingOffset: Int
+  , startingOffset: Float
   , checksum: String
   --, extension: String
   }

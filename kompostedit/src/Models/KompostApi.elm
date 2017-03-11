@@ -20,7 +20,7 @@ type alias Segment =
 
 type alias Mediafile =
   { fileName: String
-  , startingOffset: Int
+  , startingOffset: Float
   , checksum: String
   --, extension: String
   }
@@ -34,10 +34,10 @@ type alias KompositionRequest a =
 
 
 kompoUrl : String
-kompoUrl = "http://localhost:8080/kompoback"
+kompoUrl = "http://heap.kompo.st/"
 
 getKompo : String -> (Result Http.Error Komposition -> msg) -> Cmd msg
-getKompo id msg = Http.get (kompoUrl ++ "/no/lau/kompo?identity=" ++ id) kompositionDecoder
+getKompo id msg = Http.get (kompoUrl ++ id) kompositionDecoder
         |> Http.send msg
 
 updateKompo: Komposition -> (Result Http.Error Komposition -> msg) -> Cmd msg
@@ -57,7 +57,7 @@ updateKompo komposition msg =
 kompositionDecoder : JsonD.Decoder Komposition
 kompositionDecoder =
             JsonD.map3 Komposition
-                           (JsonD.field "name" JsonD.string)
+                           (JsonD.field "reference" JsonD.string)
                            (JsonD.field "mediaFile" mediaFileDecoder)
                            (JsonD.field "segments" <| JsonD.list segmentDecoder)
                 -- _ = Debug.log "testing out stuff" komp
@@ -73,7 +73,7 @@ mediaFileDecoder : JsonD.Decoder Mediafile
 mediaFileDecoder =
     JsonD.map3 Mediafile
         (JsonD.field "fileName" JsonD.string)
-        (JsonD.field "startingOffset" JsonD.int)
+        (JsonD.field "startingOffset" JsonD.float)
         (JsonD.field "checksum" JsonD.string)
 
 encodeKomposition : KompositionRequest kompo -> String
@@ -89,7 +89,7 @@ encodeMediaFile : Mediafile -> JsonE.Value
 encodeMediaFile mediaFile =
     JsonE.object
         [ ( "fileName",    JsonE.string mediaFile.fileName )
-        , ( "startingOffset",    JsonE.int mediaFile.startingOffset )
+        , ( "startingOffset",    JsonE.float mediaFile.startingOffset )
         , ( "checksum",      JsonE.string mediaFile.checksum )
         ]
 
