@@ -7,24 +7,31 @@ import Json.Decode as JsonD
 
 
 type alias Model = {
-    total_rows: Int,
-    offset: Int,
-    rows: List Row
+    dvlRef: DvlRef
+    }
+
+type alias DvlRef =
+  { total_rows: Int
+  , offset: Int
+  , rows: List Row
+  }
+
+type alias Row =
+    { id: String
+    , key: String
     }
 
 type Msg =
-    FetchKompostResponseHandler (Result Http.Error DvlRef)
+    FetchDvlIdsResponseHandler (Result Http.Error DvlRef)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        FetchKompostResponseHandler res ->
+        FetchDvlIdsResponseHandler res ->
             case res of
                 Result.Ok dvlRef ->(
                     { model
-                    | total_rows = dvlRef.total_rows
-                    , offset = dvlRef.offset
-                    , rows = dvlRef.rows
+                    | dvlRef = dvlRef
                     }, Cmd.none )
 
                 Result.Err err ->
@@ -46,9 +53,9 @@ view model =
 
 
 init : ( Model, Cmd Msg )
-init = ( initModel, (listDvlIds FetchKompostResponseHandler) )
+init = ( initModel, (listDvlIds FetchDvlIdsResponseHandler) )
 
-initModel = Model -1 -2 [ Row "No contact with" "server side" ]
+initModel = Model (DvlRef -1 -2 [ Row "No contact with" "server side" ])
 
 subscriptions : Model -> Sub Msg
 subscriptions model = Sub.none
@@ -71,14 +78,3 @@ rowDecoder : JsonD.Decoder Row
 rowDecoder = JsonD.map2 Row
                            (JsonD.field "id" JsonD.string)
                            (JsonD.field "key" JsonD.string)
-
-type alias DvlRef =
-  { total_rows: Int
-  , offset: Int
-  , rows: List Row
-  }
-
-type alias Row =
-    { id: String
-    , key: String
-    }
