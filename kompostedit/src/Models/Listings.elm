@@ -2,21 +2,31 @@ module Models.Listings exposing (..)
 
 import Html exposing (..)
 import Html.Events exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (class)
 import Http
+import Models.KompostApi exposing (getKompo, Komposition)
 
 
 type alias Model = {
     something: String
     }
 
-type Msg = DoSometing
+type Msg =
+    FetchKompostResponseHandler (Result Http.Error Komposition)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        DoSometing ->
-            ( model, Cmd.none )
+        FetchKompostResponseHandler res ->
+            case res of
+                Result.Ok komposition ->
+                     ( model, Cmd.none )
+
+                Result.Err err ->
+                     let _ = Debug.log "Error retrieving komposition" err
+                     in
+                         (model, Cmd.none)
+
 
 
 view : Model -> Html Msg
@@ -31,7 +41,7 @@ view model =
 
 
 init : ( Model, Cmd Msg )
-init = ( Model "Somethingss", Cmd.none )
+init = ( Model "Somethingss", (getKompo "Init" FetchKompostResponseHandler) )
 
 
 subscriptions : Model -> Sub Msg
