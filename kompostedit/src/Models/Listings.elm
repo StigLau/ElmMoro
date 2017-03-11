@@ -46,9 +46,9 @@ view model =
 
 
 init : ( Model, Cmd Msg )
-init = ( Model -1 -2 [ testrow ], (listDvlIds FetchKompostResponseHandler) )
+init = ( initModel, (listDvlIds FetchKompostResponseHandler) )
 
-testrow = Row "one" "two"
+initModel = Model -1 -2 [ Row "No contact with" "server side" ]
 
 subscriptions : Model -> Sub Msg
 subscriptions model = Sub.none
@@ -58,8 +58,7 @@ main = program { init = init, update = update, view = view, subscriptions = subs
 
 
 listDvlIds : (Result Http.Error DvlRef -> msg) -> Cmd msg
-listDvlIds msg = Http.get ("http://heap.kompo.st/_all_docs") dvlRefDecoder
-        |> Http.send msg
+listDvlIds msg = Http.get ("http://heap.kompo.st/_all_docs") dvlRefDecoder |> Http.send msg
 
 dvlRefDecoder : JsonD.Decoder DvlRef
 dvlRefDecoder = JsonD.map3 DvlRef
@@ -77,9 +76,6 @@ type alias DvlRef =
   { total_rows: Int
   , offset: Int
   , rows: List Row
-  --, config: Config
-  --, mediaFile: Mediafile
-  --, segments: List Segment
   }
 
 type alias Row =
