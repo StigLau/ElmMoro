@@ -3,42 +3,13 @@ module Models.KompostApi exposing (..)
 import Json.Decode as JsonD
 import Json.Encode as JsonE
 import Http
-
-
-type alias Komposition =
-  { name: String
-  --, config: Config
-  , mediaFile: Mediafile
-  , segments: List Segment
-  }
-
-type alias Segment =
-  { id: String
-  , start: Int
-  , end: Int
-  }
-
-type alias Mediafile =
-  { fileName: String
-  , startingOffset: Float
-  , checksum: String
-  --, extension: String
-  }
-
-type alias KompositionRequest a =
-    { a
-        | name : String
-        , mediaFile : Mediafile
-        , segments : List Segment
-    }
-
+import Models.KompostModels exposing (Komposition, Segment, Mediafile, KompositionRequest)
 
 kompoUrl : String
 kompoUrl = "http://heap.kompo.st/"
 
 getKompo : String -> (Result Http.Error Komposition -> msg) -> Cmd msg
-getKompo id msg = Http.get (kompoUrl ++ id) kompositionDecoder
-        |> Http.send msg
+getKompo id msg = Http.get (kompoUrl ++ id) kompositionDecoder |> Http.send msg
 
 updateKompo: Komposition -> (Result Http.Error Komposition -> msg) -> Cmd msg
 updateKompo komposition msg =
@@ -100,4 +71,3 @@ encodeSegment segment =
         , ( "start",    JsonE.int segment.start )
         , ( "end",      JsonE.int segment.end )
         ]
-

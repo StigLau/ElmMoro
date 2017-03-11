@@ -5,9 +5,9 @@ import Html.Events exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import Functions exposing (..)
-import Models.KompostModels exposing (..)
+import Models.KompostModels exposing (Model, Komposition, Config, Mediafile, Segment)
 
-import Models.KompostApi exposing (getKompo, updateKompo, Komposition)
+import Models.KompostApi exposing (getKompo, updateKompo)
 
 
 
