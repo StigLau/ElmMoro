@@ -1,7 +1,7 @@
 module Models.Listings exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, href)
 import Http
 import Json.Decode as JsonD
 
@@ -44,13 +44,27 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ class "listings" ]
-        [ h1 [] [ text "Listing stuff" ]
-        , div [] [ text "What I get: " ]
-        , text (toString model)
-        , div [] [ ]
+        [ h1 [] [ text ("Dvls in " ++ kompoUrl) ]
+        , table [ class "table table-striped" ]
+            [ thead []
+                [ tr []
+                    [ th [] [ text "Id" ]
+                    , th [] []
+                    , th [] []
+                    ]
+                ]
+            , tbody [] (List.map dvlRefRow model.dvlRef.rows)
+            ]
         ]
 
+dvlRefRow : Row -> Html Msg
+dvlRefRow row =
+    tr []
+          [ td []  [ a [ href ("./Kompost.elm?identity=" ++ row.id) ] [ text row.id ] ]
+        ]
 
+kompoUrl : String
+kompoUrl = "http://heap.kompo.st/"
 
 init : ( Model, Cmd Msg )
 init = ( initModel, (listDvlIds FetchDvlIdsResponseHandler) )
@@ -72,7 +86,6 @@ dvlRefDecoder = JsonD.map3 DvlRef
                            (JsonD.field "total_rows" JsonD.int)
                            (JsonD.field "offset" JsonD.int)
                            (JsonD.field "rows" <| JsonD.list rowDecoder)
-                -- _ = Debug.log "testing out stuff" komp
 
 rowDecoder : JsonD.Decoder Row
 rowDecoder = JsonD.map2 Row

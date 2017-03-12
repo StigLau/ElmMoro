@@ -13,7 +13,7 @@ init = ( initModel, (getKompo "4317d37968f8b991c5cd28a86e71d9ca" FetchKompostRes
 
 
 initModel : Model
-initModel = Model "Fine clouds" "No relevant revision" 0 123456 testConfig testMediaFile [ testSegment1, testSegment2 ]
+initModel = Model "Fine clouds" "" 0 123456 testConfig testMediaFile [ testSegment1, testSegment2 ]
 
 
 testConfig = Config 1280 1080 24 "mp4" 1234
