@@ -1,7 +1,8 @@
 module Models.KompostModels exposing (..)
 
 type alias Model =
-    { name: String
+    { dvlRef: String
+    , name: String
     , revision: String
     , start: Int
     , end: Int

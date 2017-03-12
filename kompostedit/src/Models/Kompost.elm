@@ -9,11 +9,11 @@ import Models.KompostModels exposing (Model, Komposition, Config, Mediafile, Seg
 import Models.KompostApi exposing (getKompo, updateKompo)
 
 init : ( Model, Cmd Msg )
-init = ( initModel, (getKompo "4317d37968f8b991c5cd28a86e71d9ca" FetchKompostResponseHandler) )
+init = ( initModel, (getKompo initModel.dvlRef FetchKompostResponseHandler) )
 
 
 initModel : Model
-initModel = Model "Fine clouds" "" 0 123456 testConfig testMediaFile [ testSegment1, testSegment2 ]
+initModel = Model "4317d37968f8b991c5cd28a86e71d9ca" "Fine clouds" "" 0 123456 testConfig testMediaFile [ testSegment1, testSegment2 ]
 
 
 testConfig = Config 1280 1080 24 "mp4" 1234
@@ -31,11 +31,13 @@ testSegment2 = Segment "Besseggen" 21250000 27625000
 type Msg
     -- Remoting Operations
     = NewOrUpdate
+    | FetchDvlRef
     | StoreKomposition
     | FetchKomposition
     | FetchKompostResponseHandler (Result Http.Error Komposition)
     -- Alter Segment
-    |  SetSegmentName String
+    | SetDvlRef String
+    | SetSegmentName String
     | SetSegmentStart String
     | SetSegmentEnd String
     -- Alter Media File
@@ -50,7 +52,13 @@ update msg model =
             ( model, getKompo "Fetch identity" FetchKompostResponseHandler )
 
         StoreKomposition ->
-            ( model, updateKompo (Komposition model.name model.revision model.mediaFile model.segments) FetchKompostResponseHandler )
+            ( model, updateKompo (Komposition model.dvlRef model.revision model.mediaFile model.segments) FetchKompostResponseHandler )
+
+        SetDvlRef dvlRef ->
+            ( { model | dvlRef = dvlRef }, Cmd.none )
+
+        FetchDvlRef ->
+            (model, getKompo model.dvlRef FetchKompostResponseHandler)
 
         SetSegmentName name ->
             ( { model | name = name }, Cmd.none )
@@ -114,6 +122,16 @@ view : Model -> Html Msg
 view model =
     div [ class "scoreboard" ]
         [ h1 [] [ text "Kompost dvl editor" ]
+        , input
+                    [ type_ "text"
+                    , placeholder "Dvl Reference"
+                    , onInput SetDvlRef
+                    , Html.Attributes.value model.dvlRef
+                    ]
+                    []
+                    ,  button [ type_ "button", onClick FetchDvlRef ] [ text "Get Dvl" ]
+                    , text ( " Revision: " ++ model.revision )
+        ,  h1 [] [ text "" ]
           --        , [ button [ onClick FetchKomposition ] [ text "Fetch a Komposition" ] ]
         , segmentForm model
         , mediafileForm model
