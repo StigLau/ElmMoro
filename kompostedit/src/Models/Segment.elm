@@ -6,10 +6,11 @@ import Html.Events exposing (..)
 import Http
 import Models.KompostApi exposing (..)
 import Functions exposing (validNr)
+import Models.KompostModels exposing (Komposition)
 
 type alias Model =
     { name : String
-    , start : Int
+    , revision : String
     , end : Int
     }
 
@@ -24,10 +25,10 @@ type Msg
     | SetSegmentEnd String
 
 initModel: Model
-initModel = Model "Backend not functional" -2 -2
+initModel = Model "Backend not functional" "none" -2
 
 init : ( Model, Cmd Msg )
-init = (initModel, Cmd.none)
+init = (initModel, (getKompo "4317d37968f8b991c5cd28a86e71d9ca" FetchKompost))
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -39,11 +40,10 @@ update msg model =
 
         FetchKompost res ->
                      case res of
-                         Result.Ok komposition ->
+                         Result.Ok komp ->
                              ( { model
-                                 | name = komposition.name
-                                 , start = komposition.start
-                                 , end = komposition.end
+                                 | name = komp.name
+                                 , revision = komp.revision
                                }, Cmd.none )
 
                          Result.Err err ->
@@ -53,11 +53,11 @@ update msg model =
 
         HandleSaved res ->
             case res of
-                Result.Ok komposition ->
-                    ( { model
-                        | start = komposition.start
-                        , name = komposition.name
-                      }
+                Result.Ok komp ->
+                    (  model
+
+
+
                     , Cmd.none --no Navigation: Routes.navigate Routes.ArtistListingPage
                     )
 
@@ -69,8 +69,8 @@ update msg model =
         SetSegmentName name ->
             ( { model | name = name }, Cmd.none )
 
-        SetSegmentStart start ->
-            ( { model | start = (validNr start) }, Cmd.none )
+        SetSegmentStart revision ->
+            ( { model | revision = revision }, Cmd.none )
 
         SetSegmentEnd end ->
             ( { model | end = (validNr end) }, Cmd.none )
@@ -98,7 +98,7 @@ segmentForm model =
             [ type_ "number"
             , placeholder "Start"
             , onInput SetSegmentStart
-            , Html.Attributes.value (toString model.start)
+            , Html.Attributes.value (toString model.revision)
             ]
             []
         , input
