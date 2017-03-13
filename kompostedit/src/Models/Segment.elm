@@ -87,7 +87,8 @@ view model =
 segmentForm : Model -> Html Msg
 segmentForm model =
     Html.form []
-        [ input
+        [ h1 [] [ text "Segment editor" ]
+        , input
             [ type_ "text"
             , placeholder "Segment Name"
             , onInput SetSegmentName
