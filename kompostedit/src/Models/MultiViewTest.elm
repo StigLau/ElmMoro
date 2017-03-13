@@ -1,18 +1,21 @@
 module Models.MultiViewTest exposing (..)
 
 import Html exposing (..)
-import Models.Segment as Segment exposing (..)
-import Models.KompostModels as KompostModels exposing (..)
-import Models.Kompost as Kompost exposing(..)
+import Models.Segment as Segment
+import Models.KompostModels as KompostModels
+import Models.Kompost as Kompost
+import Models.Listings as Listing
 
 type alias Model = {
     segment : Segment.Model
     , kompo : KompostModels.Model
+    , listing : Listing.Model
     }
 
 type Msg
     = Segmenti Segment.Msg
     | KompostMsg Kompost.Msg
+    | ListingMsg Listing.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -30,13 +33,20 @@ update msg model =
             in
                 (model, Cmd.map KompostMsg cmd)
 
+        ListingMsg msg ->
+            let
+                (listingModel, cmd) = Listing.update msg model.listing
+            in
+                (model, Cmd.map ListingMsg cmd)
+
 init : ( Model, Cmd Msg )
 init =
     let
         ( segment, segmentCmd ) = Segment.init
-        ( kompomod, kompoCmd ) = Kompost.init
+        ( kompo, kompoCmd ) = Kompost.init
+        ( listing, listingsCmd ) = Listing.init
     in
-        ( Model segment kompomod, Cmd.batch [ Cmd.map Segmenti segmentCmd ] )
+        ( Model segment kompo listing, Cmd.batch [ Cmd.map Segmenti segmentCmd ] )
 
 
 view : Model -> Html Msg
@@ -47,6 +57,7 @@ view model =
         , text (toString model)
         , Html.map Segmenti (Segment.view model.segment)
         , Html.map KompostMsg (Kompost.view model.kompo)
+        , Html.map ListingMsg (Listing.view model.listing)
         ]
 
 
