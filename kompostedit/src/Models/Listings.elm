@@ -6,11 +6,7 @@ import Http
 import Json.Decode as JsonD
 
 
-type alias Model = {
-    dvlRef: DvlRef
-    }
-
-type alias DvlRef =
+type alias Model =
   { total_rows: Int
   , offset: Int
   , rows: List Row
@@ -22,17 +18,14 @@ type alias Row =
     }
 
 type Msg =
-    FetchDvlIdsResponseHandler (Result Http.Error DvlRef)
+    FetchDvlIdsResponseHandler (Result Http.Error Model)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         FetchDvlIdsResponseHandler res ->
             case res of
-                Result.Ok dvlRef ->(
-                    { model
-                    | dvlRef = dvlRef
-                    }, Cmd.none )
+                Result.Ok model ->( model , Cmd.none )
 
                 Result.Err err ->
                      let _ = Debug.log "Error retrieving komposition" err
@@ -53,7 +46,7 @@ view model =
                     , th [] []
                     ]
                 ]
-            , tbody [] (List.map dvlRefRow model.dvlRef.rows)
+            , tbody [] (List.map dvlRefRow model.rows)
             ]
         ]
 
@@ -69,7 +62,7 @@ kompoUrl = "http://heap.kompo.st/"
 init : ( Model, Cmd Msg )
 init = ( initModel, (listDvlIds FetchDvlIdsResponseHandler) )
 
-initModel = Model (DvlRef -1 -2 [ Row "No contact with" "server side" ])
+initModel = Model -1 -2 [ Row "No contact with" "server side" ]
 
 subscriptions : Model -> Sub Msg
 subscriptions model = Sub.none
@@ -78,11 +71,11 @@ main : Program Never Model Msg
 main = program { init = init, update = update, view = view, subscriptions = subscriptions}
 
 
-listDvlIds : (Result Http.Error DvlRef -> msg) -> Cmd msg
+listDvlIds : (Result Http.Error Model -> msg) -> Cmd msg
 listDvlIds msg = Http.get ("http://heap.kompo.st/_all_docs") dvlRefDecoder |> Http.send msg
 
-dvlRefDecoder : JsonD.Decoder DvlRef
-dvlRefDecoder = JsonD.map3 DvlRef
+dvlRefDecoder : JsonD.Decoder Model
+dvlRefDecoder = JsonD.map3 Model
                            (JsonD.field "total_rows" JsonD.int)
                            (JsonD.field "offset" JsonD.int)
                            (JsonD.field "rows" <| JsonD.list rowDecoder)
