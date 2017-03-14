@@ -1,7 +1,8 @@
 module Models.Listings exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, href)
+import Html.Attributes exposing (class, href, type_)
+import Html.Events exposing (onClick)
 import Http
 import Json.Decode as JsonD
 
@@ -19,6 +20,7 @@ type alias Row =
 
 type Msg =
     FetchDvlIdsResponseHandler (Result Http.Error Model)
+    | ChooseId String
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -31,6 +33,10 @@ update msg model =
                      let _ = Debug.log "Error retrieving komposition" err
                      in
                          (model, Cmd.none)
+
+        ChooseId identity ->
+            let _ = Debug.log "Chosen " identity
+            in (model, Cmd.none)
 
 
 
@@ -53,7 +59,7 @@ view model =
 dvlRefRow : Row -> Html Msg
 dvlRefRow row =
     tr []
-          [ td []  [ a [ href ("./Kompost.elm?identity=" ++ row.id) ] [ text row.id ] ]
+          [ td []  [ button [ type_ "button", onClick (ChooseId row.id)] [ text row.id ] ]
         ]
 
 kompoUrl : String

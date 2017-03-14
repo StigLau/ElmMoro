@@ -10,6 +10,7 @@ type alias Model = {
     segment : Segment.Model
     , kompo : KompostModels.Model
     , listing : Listing.Model
+    , currentSegment : String
     }
 
 type Msg
@@ -46,7 +47,8 @@ init =
         ( kompo, kompoCmd ) = Kompost.init
         ( listing, listingCmd ) = Listing.init
     in
-        ( Model segment kompo listing, Cmd.batch [
+        ( Model segment kompo listing ""
+        , Cmd.batch [
             Cmd.map SegmentMsg segmentCmd,
             Cmd.map KompostMsg kompoCmd,
             Cmd.map ListingMsg listingCmd ] )
@@ -56,10 +58,10 @@ view model =
     div [ ]
         [ h1 [] [ text "Multiview" ]
         , text "Multiview Model: "
-        , text (toString model)
+        , Html.map ListingMsg (Listing.view model.listing)
         , Html.map SegmentMsg (Segment.view model.segment)
         , Html.map KompostMsg (Kompost.view model.kompo)
-        , Html.map ListingMsg (Listing.view model.listing)
+        , text (toString model)
         ]
 
 
