@@ -13,7 +13,7 @@ type alias Model = {
     }
 
 type Msg
-    = Segmenti Segment.Msg
+    = SegmentMsg Segment.Msg
     | KompostMsg Kompost.Msg
     | ListingMsg Listing.Msg
 
@@ -21,33 +21,35 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Segmenti msg ->
+        SegmentMsg msg ->
             let
                 ( segment, cmd ) = Segment.update msg model.segment
             in
-                ( { model | segment = segment }, Cmd.map Segmenti cmd )
+                ( { model | segment = segment }, Cmd.map SegmentMsg cmd )
 
         KompostMsg msg ->
             let
                 (kompModel, cmd) = Kompost.update msg model.kompo
             in
-                (model, Cmd.map KompostMsg cmd)
+                ({model | kompo = kompModel}, Cmd.map KompostMsg cmd)
 
         ListingMsg msg ->
             let
                 (listingModel, cmd) = Listing.update msg model.listing
             in
-                (model, Cmd.map ListingMsg cmd)
+                ({model | listing = listingModel }, Cmd.map ListingMsg cmd)
 
 init : ( Model, Cmd Msg )
 init =
     let
         ( segment, segmentCmd ) = Segment.init
         ( kompo, kompoCmd ) = Kompost.init
-        ( listing, listingsCmd ) = Listing.init
+        ( listing, listingCmd ) = Listing.init
     in
-        ( Model segment kompo listing, Cmd.batch [ Cmd.map Segmenti segmentCmd ] )
-
+        ( Model segment kompo listing, Cmd.batch [
+            Cmd.map SegmentMsg segmentCmd,
+            Cmd.map KompostMsg kompoCmd,
+            Cmd.map ListingMsg listingCmd ] )
 
 view : Model -> Html Msg
 view model =
@@ -55,7 +57,7 @@ view model =
         [ h1 [] [ text "Multiview" ]
         , text "Multiview Model: "
         , text (toString model)
-        , Html.map Segmenti (Segment.view model.segment)
+        , Html.map SegmentMsg (Segment.view model.segment)
         , Html.map KompostMsg (Kompost.view model.kompo)
         , Html.map ListingMsg (Listing.view model.listing)
         ]

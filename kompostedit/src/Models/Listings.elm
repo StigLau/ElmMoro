@@ -72,7 +72,7 @@ main = program { init = init, update = update, view = view, subscriptions = subs
 
 
 listDvlIds : (Result Http.Error Model -> msg) -> Cmd msg
-listDvlIds msg = Http.get ("http://heap.kompo.st/_all_docs") dvlRefDecoder |> Http.send msg
+listDvlIds msg = Http.get (kompoUrl ++ "_all_docs") dvlRefDecoder |> Http.send msg
 
 dvlRefDecoder : JsonD.Decoder Model
 dvlRefDecoder = JsonD.map3 Model
