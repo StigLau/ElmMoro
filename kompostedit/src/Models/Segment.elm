@@ -96,10 +96,10 @@ segmentForm model =
             ]
             []
         , input
-            [ type_ "number"
+            [ type_ "text"
             , placeholder "Start"
             , onInput SetSegmentStart
-            , Html.Attributes.value (toString model.revision)
+            , Html.Attributes.value model.revision
             ]
             []
         , input
