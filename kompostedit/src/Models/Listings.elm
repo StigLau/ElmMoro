@@ -22,23 +22,26 @@ type Msg =
     FetchDvlIdsResponseHandler (Result Http.Error Model)
     | ChooseId String
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+type OutMsg
+    = NeedMoney String
+
+update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
 update msg model =
     case msg of
         FetchDvlIdsResponseHandler res ->
             case res of
-                Result.Ok model ->( model , Cmd.none )
+                Result.Ok model ->( model , Cmd.none, Nothing )
 
                 Result.Err err ->
                      let _ = Debug.log "Error retrieving komposition" err
                      in
-                         (model, Cmd.none)
+                         (model, Cmd.none, Nothing)
 
         ChooseId identity ->
-            let _ = Debug.log "Chosen " identity
-            in (model, Cmd.none)
-
-
+            let
+                _ = Debug.log "Chosen " identity
+            in
+                ( model, Cmd.none, Just (NeedMoney "Hello") )
 
 view : Model -> Html Msg
 view model =
@@ -59,7 +62,7 @@ view model =
 dvlRefRow : Row -> Html Msg
 dvlRefRow row =
     tr []
-          [ td []  [ button [ type_ "button", onClick (ChooseId row.id)] [ text row.id ] ]
+          [ td []  [ button [ type_ "button", onClick (ChooseId row.id)] [ text row.id ] ] --EvictBraggis(ChooseId row.id)
         ]
 
 kompoUrl : String
@@ -74,8 +77,12 @@ subscriptions : Model -> Sub Msg
 subscriptions model = Sub.none
 
 main : Program Never Model Msg
-main = program { init = init, update = update, view = view, subscriptions = subscriptions}
+main = program { init = init, update = myUpdate, view = view, subscriptions = subscriptions}
 
+myUpdate:  Msg -> Model -> ( Model, Cmd Msg )
+myUpdate msg model =
+        let (modelz, cmd, status) = update msg model
+        in (modelz, cmd)
 
 listDvlIds : (Result Http.Error Model -> msg) -> Cmd msg
 listDvlIds msg = Http.get (kompoUrl ++ "_all_docs") dvlRefDecoder |> Http.send msg

@@ -36,9 +36,19 @@ update msg model =
 
         ListingMsg msg ->
             let
-                (listingModel, cmd) = Listing.update msg model.listing
+                (listingModel, cmd, outmsg) = Listing.update msg model.listing
             in
                 ({model | listing = listingModel }, Cmd.map ListingMsg cmd)
+
+updateFromChild : Maybe Listing.OutMsg -> String -> Listing.Model -> Model -> ( Listing.Model, Model )
+updateFromChild msg name child model =
+    case msg of
+        Nothing ->
+            ( child, model )
+
+        Just (Listing.NeedMoney amount) ->
+            let _ = Debug.log "Gots me a msg " amount
+            in (child, model)
 
 init : ( Model, Cmd Msg )
 init =
@@ -49,9 +59,10 @@ init =
     in
         ( Model segment kompo listing ""
         , Cmd.batch [
-            Cmd.map SegmentMsg segmentCmd,
-            Cmd.map KompostMsg kompoCmd,
-            Cmd.map ListingMsg listingCmd ] )
+            Cmd.map SegmentMsg segmentCmd
+            , Cmd.map KompostMsg kompoCmd
+            , Cmd.map ListingMsg listingCmd
+            ] )
 
 view : Model -> Html Msg
 view model =
