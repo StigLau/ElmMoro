@@ -62,7 +62,8 @@ view model =
 dvlRefRow : Row -> Html Msg
 dvlRefRow row =
     tr []
-          [ td []  [ button [ type_ "button", onClick (ChooseId row.id)] [ text row.id ] ] --EvictBraggis(ChooseId row.id)
+          --[ td []  [ button [ type_ "button", onClick (ChooseId row.id)] [ text row.id ] ] --EvictBraggis(ChooseId row.id)
+          [ td []  [ text row.id ] --EvictBraggis(ChooseId row.id)
         ]
 
 kompoUrl : String
