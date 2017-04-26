@@ -8,6 +8,11 @@ import Json.Decode as JsonD
 
 
 type alias Model =
+  { dataRepresentation: DataRepresentation
+  , selectedId: String
+  }
+
+type alias DataRepresentation =
   { total_rows: Int
   , offset: Int
   , rows: List Row
@@ -19,7 +24,7 @@ type alias Row =
     }
 
 type Msg =
-    FetchDvlIdsResponseHandler (Result Http.Error Model)
+    FetchDvlIdsResponseHandler (Result Http.Error DataRepresentation)
     | ChooseId String
 
 type OutMsg
@@ -30,18 +35,19 @@ update msg model =
     case msg of
         FetchDvlIdsResponseHandler res ->
             case res of
-                Result.Ok model ->( model , Cmd.none, Nothing )
+                Result.Ok dataRepresentation ->(
+                    { model | dataRepresentation = dataRepresentation } , Cmd.none, Nothing )
 
                 Result.Err err ->
                      let _ = Debug.log "Error retrieving komposition" err
                      in
                          (model, Cmd.none, Nothing)
 
-        ChooseId identity ->
+        ChooseId selection ->
             let
-                _ = Debug.log "Chosen " identity
+                _ = Debug.log "Chosen " selection
             in
-                ( model, Cmd.none, Just (NeedMoney "Hello") )
+                ( { model | selectedId = selection} , Cmd.none, Just (NeedMoney selection) )
 
 view : Model -> Html Msg
 view model =
@@ -55,24 +61,21 @@ view model =
                     , th [] []
                     ]
                 ]
-            , tbody [] (List.map dvlRefRow model.rows)
+            , tbody [] (List.map dvlRefRow model.dataRepresentation.rows)
             ]
+        , text ("Current selection: " ++ model.selectedId)
         ]
 
 dvlRefRow : Row -> Html Msg
 dvlRefRow row =
     tr []
-          --[ td []  [ button [ type_ "button", onClick (ChooseId row.id)] [ text row.id ] ] --EvictBraggis(ChooseId row.id)
-          [ td []  [ text row.id ] --EvictBraggis(ChooseId row.id)
+          [ td []  [ button [ type_ "button", onClick (ChooseId row.id)] [ text row.id ] ] --EvictBraggis(ChooseId row.id)
         ]
-
-kompoUrl : String
-kompoUrl = "http://heap.kompo.st/"
 
 init : ( Model, Cmd Msg )
 init = ( initModel, (listDvlIds FetchDvlIdsResponseHandler) )
 
-initModel = Model -1 -2 [ Row "No contact with" "server side" ]
+initModel = Model (DataRepresentation -1 -2 [ Row "No contact with" "server side" ]) "Unselected ID"
 
 subscriptions : Model -> Sub Msg
 subscriptions model = Sub.none
@@ -85,11 +88,16 @@ myUpdate msg model =
         let (modelz, cmd, status) = update msg model
         in (modelz, cmd)
 
-listDvlIds : (Result Http.Error Model -> msg) -> Cmd msg
+listDvlIds : (Result Http.Error DataRepresentation -> msg) -> Cmd msg
 listDvlIds msg = Http.get (kompoUrl ++ "_all_docs") dvlRefDecoder |> Http.send msg
 
-dvlRefDecoder : JsonD.Decoder Model
-dvlRefDecoder = JsonD.map3 Model
+
+-- JSON Storage
+kompoUrl : String
+kompoUrl = "http://heap.kompo.st/"
+
+dvlRefDecoder : JsonD.Decoder DataRepresentation
+dvlRefDecoder = JsonD.map3 DataRepresentation
                            (JsonD.field "total_rows" JsonD.int)
                            (JsonD.field "offset" JsonD.int)
                            (JsonD.field "rows" <| JsonD.list rowDecoder)
