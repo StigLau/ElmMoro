@@ -52,7 +52,7 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ class "listings" ]
-        [ h1 [] [ text ("Dvls in " ++ kompoUrl) ]
+        [ h1 [] [ text ("Dvls in " ++ storeUrl) ]
         , table [ class "table table-striped" ]
             [ thead []
                 [ tr []
@@ -89,15 +89,15 @@ myUpdate msg model =
         in (modelz, cmd)
 
 listDvlIds : (Result Http.Error DataRepresentation -> msg) -> Cmd msg
-listDvlIds msg = Http.get (kompoUrl ++ "_all_docs") dvlRefDecoder |> Http.send msg
+listDvlIds msg = Http.get (storeUrl ++ "_all_docs") jsonBaseDecoder |> Http.send msg
 
 
 -- JSON Storage
-kompoUrl : String
-kompoUrl = "http://heap.kompo.st/"
+storeUrl : String
+storeUrl = "http://heap.kompo.st/"
 
-dvlRefDecoder : JsonD.Decoder DataRepresentation
-dvlRefDecoder = JsonD.map3 DataRepresentation
+jsonBaseDecoder : JsonD.Decoder DataRepresentation
+jsonBaseDecoder = JsonD.map3 DataRepresentation
                            (JsonD.field "total_rows" JsonD.int)
                            (JsonD.field "offset" JsonD.int)
                            (JsonD.field "rows" <| JsonD.list rowDecoder)
