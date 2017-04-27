@@ -11,6 +11,7 @@ type alias Model = {
     , kompo : KompostModels.Model
     , listing : Listing.Model
     , currentKomposition : Maybe String
+    , currentSegment : Maybe String
     }
 
 type Msg
@@ -37,6 +38,7 @@ update msg model =
         ListingMsg msg ->
             let
                 (listingModel, cmd, childMsg) = Listing.update msg model.listing
+                --_ = Debug.log "WTF? " (Kompost.update (Kompost.NewOrUpdate))
             in
                 ({model | listing = listingModel, currentKomposition = Listing.extractFromOutmessage childMsg }, Cmd.map ListingMsg cmd)
 
@@ -47,7 +49,7 @@ init =
         ( kompo, kompoCmd ) = Kompost.init
         ( listing, listingCmd ) = Listing.init
     in
-        ( Model segment kompo listing Nothing
+        ( Model segment kompo listing Nothing Nothing
         , Cmd.batch [
             Cmd.map SegmentMsg segmentCmd
             , Cmd.map KompostMsg kompoCmd
@@ -60,8 +62,16 @@ view model =
         [ h1 [] [ text "Multiview" ]
         , text ("Komposition selection by Main: " ++ toString model.currentKomposition)
         , Html.map ListingMsg (Listing.view model.listing)
-        , Html.map SegmentMsg (Segment.view model.segment)
-        , Html.map KompostMsg (Kompost.view model.kompo)
+        , case model.currentKomposition of
+            Just _ ->
+                Html.map KompostMsg (Kompost.view model.kompo)
+            Nothing ->
+                h2 [] [text "No komposition to show" ]
+        , case model.currentSegment of
+            Just _ ->
+                Html.map SegmentMsg (Segment.view model.segment)
+            Nothing ->
+                h2 [] [text "No Segment to show" ]
         , h2 [] [text "Main model" ]
         , text (toString model)
         ]

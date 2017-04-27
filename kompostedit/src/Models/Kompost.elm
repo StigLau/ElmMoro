@@ -1,4 +1,4 @@
-module Models.Kompost exposing (..)
+module Models.Kompost exposing (Msg, init, update, view)
 
 import Html exposing (..)
 import Html.Events exposing (..)
