@@ -10,7 +10,7 @@ type alias Model = {
     segment : Segment.Model
     , kompo : KompostModels.Model
     , listing : Listing.Model
-    , currentSegment : String
+    , currentKomposition : Maybe String
     }
 
 type Msg
@@ -36,19 +36,9 @@ update msg model =
 
         ListingMsg msg ->
             let
-                (listingModel, cmd, outmsg) = Listing.update msg model.listing
+                (listingModel, cmd, childMsg) = Listing.update msg model.listing
             in
-                ({model | listing = listingModel }, Cmd.map ListingMsg cmd)
-
-updateFromChild : Maybe Listing.OutMsg -> String -> Listing.Model -> Model -> ( Listing.Model, Model )
-updateFromChild msg name child model =
-    case msg of
-        Nothing ->
-            ( child, model )
-
-        Just (Listing.NeedMoney amount) ->
-            let _ = Debug.log "Gots me a msg " amount
-            in (child, model)
+                ({model | listing = listingModel, currentKomposition = Listing.extractFromOutmessage childMsg }, Cmd.map ListingMsg cmd)
 
 init : ( Model, Cmd Msg )
 init =
@@ -57,7 +47,7 @@ init =
         ( kompo, kompoCmd ) = Kompost.init
         ( listing, listingCmd ) = Listing.init
     in
-        ( Model segment kompo listing ""
+        ( Model segment kompo listing Nothing
         , Cmd.batch [
             Cmd.map SegmentMsg segmentCmd
             , Cmd.map KompostMsg kompoCmd
@@ -68,10 +58,11 @@ view : Model -> Html Msg
 view model =
     div [ ]
         [ h1 [] [ text "Multiview" ]
-        , text "Multiview Model: "
+        , text ("Komposition selection by Main: " ++ toString model.currentKomposition)
         , Html.map ListingMsg (Listing.view model.listing)
         , Html.map SegmentMsg (Segment.view model.segment)
         , Html.map KompostMsg (Kompost.view model.kompo)
+        , h2 [] [text "Main model" ]
         , text (toString model)
         ]
 

@@ -88,11 +88,17 @@ myUpdate msg model =
         let (modelz, cmd, status) = update msg model
         in (modelz, cmd)
 
+extractFromOutmessage: Maybe OutMsg -> Maybe String
+extractFromOutmessage childMsg =
+    case childMsg of
+        Just (NeedMoney payload) -> Just payload
+        _ -> Nothing
+
+-- JSON Storage
+
 listDvlIds : (Result Http.Error DataRepresentation -> msg) -> Cmd msg
 listDvlIds msg = Http.get (storeUrl ++ "_all_docs") jsonBaseDecoder |> Http.send msg
 
-
--- JSON Storage
 storeUrl : String
 storeUrl = "http://heap.kompo.st/"
 
