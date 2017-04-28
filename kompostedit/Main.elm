@@ -38,7 +38,8 @@ update msg model =
         ListingMsg msg ->
             let
                 (listingModel, cmd, childMsg) = Listing.update msg model.listing
-                kompoModel = Kompost.updateChecksum listingModel.selectedId Nothing model.kompo
+                --(kompoModel, cumd) = Kompost.updateKompost listingModel.selectedId model.kompo
+                (kompoModel, cumd) = Kompost.updateChecksum listingModel.selectedId model.kompo
             in
                 ({model | listing = listingModel, currentKomposition = Listing.extractFromOutmessage childMsg, kompo=kompoModel}, Cmd.map ListingMsg cmd)
 

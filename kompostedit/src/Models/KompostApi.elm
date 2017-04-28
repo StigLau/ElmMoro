@@ -9,7 +9,10 @@ kompoUrl : String
 kompoUrl = "http://heap.kompo.st/"
 
 getKompo : String -> (Result Http.Error Komposition -> msg) -> Cmd msg
-getKompo id msg = Http.get (kompoUrl ++ id) kompositionDecoder |> Http.send msg
+getKompo id msg =
+    let _ = Debug.log "Fetching komposition " id
+    in
+        Http.get (kompoUrl ++ id) kompositionDecoder |> Http.send msg
 
 updateKompo: Komposition -> (Result Http.Error Komposition -> msg) -> Cmd msg
 updateKompo komposition msg =

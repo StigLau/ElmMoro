@@ -34,7 +34,7 @@ type Msg
     = NewOrUpdate
     | FetchDvlRef
     | StoreKomposition
-    | FetchKomposition
+    | FetchKomposition String
     | FetchKompostResponseHandler (Result Http.Error Komposition)
     -- Alter Segment
     | SetDvlRef String
@@ -49,8 +49,8 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        FetchKomposition ->
-            ( model, getKompo "Fetch identity" FetchKompostResponseHandler )
+        FetchKomposition kompositionId ->
+            ( model, getKompo kompositionId FetchKompostResponseHandler )
 
         StoreKomposition ->
             ( model, updateKompo (Komposition model.dvlRef model.revision model.mediaFile model.segments) FetchKompostResponseHandler )
@@ -102,9 +102,11 @@ updateFileLocation mediaFile fileLocation = { mediaFile | fileName = fileLocatio
 updateMediaChecksum: Mediafile -> String -> Mediafile
 updateMediaChecksum mediaFile checksum = { mediaFile | checksum = checksum}
 
-updateChecksum:String -> a -> Model -> Model
-updateChecksum checksum = \_ model -> update (SetMediaFileChecksum checksum) model |> Tuple.first
+updateChecksum:String -> Model -> (Model, Cmd Msg)
+updateChecksum checksum model = update (SetMediaFileChecksum checksum) model
 
+updateKompost:String -> Model -> (Model, Cmd Msg)
+updateKompost kompostId model = (model, getKompo kompostId FetchKompostResponseHandler)
 
 newOrUpdate : Model -> Model
 newOrUpdate model =
