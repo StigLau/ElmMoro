@@ -1,4 +1,5 @@
-module Models.Kompost exposing (Msg, init, update, view)
+module Models.Kompost exposing (..)
+--module Models.Kompost exposing (Msg, init, update, view)
 
 import Html exposing (..)
 import Html.Events exposing (..)
@@ -101,6 +102,8 @@ updateFileLocation mediaFile fileLocation = { mediaFile | fileName = fileLocatio
 updateMediaChecksum: Mediafile -> String -> Mediafile
 updateMediaChecksum mediaFile checksum = { mediaFile | checksum = checksum}
 
+updateChecksum:String -> a -> Model -> Model
+updateChecksum checksum = \_ model -> update (SetMediaFileChecksum checksum) model |> Tuple.first
 
 
 newOrUpdate : Model -> Model

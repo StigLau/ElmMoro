@@ -38,9 +38,9 @@ update msg model =
         ListingMsg msg ->
             let
                 (listingModel, cmd, childMsg) = Listing.update msg model.listing
-                --_ = Debug.log "WTF? " (Kompost.update (Kompost.NewOrUpdate))
+                kompoModel = Kompost.updateChecksum listingModel.selectedId Nothing model.kompo
             in
-                ({model | listing = listingModel, currentKomposition = Listing.extractFromOutmessage childMsg }, Cmd.map ListingMsg cmd)
+                ({model | listing = listingModel, currentKomposition = Listing.extractFromOutmessage childMsg, kompo=kompoModel}, Cmd.map ListingMsg cmd)
 
 init : ( Model, Cmd Msg )
 init =
