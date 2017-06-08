@@ -9,7 +9,7 @@ module View exposing (products, cart, listings, kompost)
 
 -}
 
-import MsgModel exposing (Msg(SetSegmentEnd, SetSegmentName, SetSegmentStart), Product, Config, Row, Msg, Segment)
+import MsgModel exposing (Product, Config, Row, Msg)
 import AppRouting exposing (Page(Home))
 import Bootstrap.Button exposing (onClick)
 import Bootstrap.CDN
@@ -402,33 +402,6 @@ kompost config =
 
 
 
-segmentForm : Segment -> Html Msg
-segmentForm model =
-    Html.form []
-        [ h1 [] [ text "Segment editor" ]
-        , input
-            [ type_ "text"
-            , placeholder "Segment Name"
-            , onInput SetSegmentName
-            , Html.Attributes.value model.name
-            ]
-            []
-        , input
-            [ type_ "text"
-            , placeholder "Start"
-            , onInput SetSegmentStart
-            , Html.Attributes.value (toString model.start)
-            ]
-            []
-        , input
-            [ type_ "number"
-            , placeholder "End"
-            , onInput SetSegmentEnd
-            , Html.Attributes.value (toString model.end)
-            ]
-            []
-        --, button [ type_ "button", onClick Save ] [ text "Save" ]
-        ]
 
 chooseDvlButton: Config msg -> Row -> Html msg
 chooseDvlButton config row =  Bootstrap.Button.button

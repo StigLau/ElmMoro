@@ -8,6 +8,7 @@ import MsgModel exposing (Msg(..), Model, Product, Segment)
 import AppRouting exposing (navigateTo, Page(Home, Cart, Listings, Kompost, NotFound))
 import AppRemoting exposing (getProducts, getCart, addToCart, removeFromCart, getKomposition)
 import Models.Listings exposing (..)
+import Models.Segment exposing(..)
 
 
 ---- UPDATE ----
@@ -96,42 +97,6 @@ update msg model =
             in
                 newModel ! []
 
-asStartIn : Segment -> String -> Segment
-asStartIn = flip setStart
-
-setStart : String -> Segment -> Segment
-setStart newStart segment = { segment | start = ( validNr newStart ) }
-
-asEndIn : Segment -> String -> Segment
-asEndIn = flip setEnd
-
-setEnd : String -> Segment -> Segment
-setEnd newEnd segment = { segment | end = ( validNr newEnd ) }
-
-
-asNameIn : Segment -> String -> Segment
-asNameIn = flip setName
-
-setName : String -> Segment -> Segment
-setName newName segment = { segment | name = newName }
-
-
-
-
-setCurrentSegment : Segment -> Model -> Model
-setCurrentSegment newSegment model = { model | segment = newSegment }
-
-asCurrentSegmentIn : Model -> Segment -> Model
-asCurrentSegmentIn = flip setCurrentSegment
-
-
-validNr : String -> Int
-validNr value =
-  case String.toInt value of
-    Ok int ->
-      int
-    Err _ ->
-      -1
 
 ---- VIEW ----
 
