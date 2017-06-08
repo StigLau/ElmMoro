@@ -6,22 +6,14 @@ import Html.Events exposing (onInput)
 import MsgModel exposing (Segment, Config, Msg(..), Model)
 
 
-asStartIn : Segment -> String -> Segment
+--asStartIn : Segment -> String -> Segment
 asStartIn = flip setStart
-
-asEndIn : Segment -> String -> Segment
 asEndIn = flip setEnd
-
-asNameIn : Segment -> String -> Segment
 asNameIn = flip setName
 
-setStart : String -> Segment -> Segment
+--setStart : String -> Segment -> Segment
 setStart newStart segment = { segment | start = ( validNr newStart ) }
-
-setEnd : String -> Segment -> Segment
 setEnd newEnd segment = { segment | end = ( validNr newEnd ) }
-
-setName : String -> Segment -> Segment
 setName newName segment = { segment | name = newName }
 
 setCurrentSegment : Segment -> Model -> Model

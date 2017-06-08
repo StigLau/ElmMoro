@@ -1,4 +1,4 @@
-module View exposing (products, cart, listings, kompost)
+module View exposing (products, cart)
 
 {-| GUI Entrails
 
@@ -19,84 +19,12 @@ import Html exposing (..)
 import Html.Attributes exposing (class, href, src, style, type_, placeholder)
 import RemoteData exposing (RemoteData(..), WebData, isLoading)
 import Html.Events exposing (onInput)
+import UI exposing (theme)
 
 
 url : String
 url =
     "https://hipstore.now.sh/"
-
-
-theme : Bool -> Html msg
-theme showLoadingIndicator =
-    let
-        paceConfig =
-            Html.node "script" [] [ text """
-window.paceOptions = {
-    ajax: {
-        trackMethods: ["GET", "POST", "PUT", "DELETE", "REMOVE"]
-    },
-    restartOnRequestAfter: true
-};
-
-        """ ]
-
-        paceTheme =
-            Html.node "style" [] [ text """
-.pace {
-  -webkit-pointer-events: none;
-  pointer-events: none;
-
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-
-  -webkit-transform: translate3d(0, -50px, 0);
-  -ms-transform: translate3d(0, -50px, 0);
-  transform: translate3d(0, -50px, 0);
-
-  -webkit-transition: -webkit-transform .5s ease-out;
-  -ms-transition: -webkit-transform .5s ease-out;
-  transition: transform .5s ease-out;
-}
-
-.pace.pace-active {
-  -webkit-transform: translate3d(0, 0, 0);
-  -ms-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
-}
-
-.pace .pace-progress {
-  display: block;
-  position: fixed;
-  z-index: 2000;
-  top: 0;
-  right: 100%;
-  width: 100%;
-  height: 10px;
-  background: #8776dd;
-
-  pointer-events: none;
-}        """ ]
-
-        loading =
-            if showLoadingIndicator then
-                [ paceConfig
-                , Html.node "script" [ Html.Attributes.src "https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js" ] []
-                , paceTheme
-                ]
-            else
-                [ text "" ]
-    in
-        span [] <|
-            [ Bootstrap.CDN.stylesheet
-            , .css CDN.fontAwesome
-            ]
-                ++ loading
 
 
 product : Config msg -> Product -> Html msg
@@ -330,82 +258,3 @@ cart config =
                 ]
             ]
         ]
-
-
-listings : Config msg -> Html msg
-listings config =
-    div [ class "listings" ]
-        [ h1 [] [ text ("Dvls in ") ]
-        , table [ class "table table-striped" ]
-            [ thead []
-                [ tr []
-                    [ th [] [ text "Id" ]
-                    , case RemoteData.toMaybe config.listings of
-                                      Just listings ->
-                                              tbody [] (List.map (chooseDvlButton config) listings.rows)
-                                      Nothing ->
-                                          text "loading."
-                    ]
-                ]
-            ]
-        ]
-
---Fetched from cart
-kompost : Config msg -> Html msg
-kompost config =
-  div
-        [ style
-            [ ( "display", "grid" )
-            , ( "grid-template-rows", "min-content min-content 1fr min-content" )
-            , ( "height", "100vh" )
-            , ( "color", "#616161" )
-            ]
-        ]
-        [ theme config.loadingIndicator
-        , div
-            [ style
-                [ ( "display", "flex" )
-                , ( "align-items", "center" )
-                , ( "justify-content", "center" )
-                , ( "height", "75px" )
-                , ( "padding", "0 2rem" )
-                ]
-            ]
-            [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ]
-            , Bootstrap.Button.button
-                [ Bootstrap.Button.secondary
-                , Bootstrap.Button.onClick config.onClickViewListings
-                ]
-                [ text "List Komposti"
-                ]
-            ]
-        , div
-                [ style
-                  [ ( "display", "flex" )
-                  , ( "align-items", "center" )
-                  , ( "justify-content", "flex-end" )
-                  , ( "height", "75px" )
-                  , ( "padding", "0 2rem" )
-                  ]
-                ]
-                [ span []
-                  [ text "Total: "
-                  , case RemoteData.toMaybe config.kompost of
-                      Just kompost ->
-                              text <| (toString kompost) ++ "\x1F32E"
-
-                      Nothing ->
-                          text "loading or something."
-                  ]
-                ]
-                ]
-
-
-
-
-chooseDvlButton: Config msg -> Row -> Html msg
-chooseDvlButton config row =  Bootstrap.Button.button
-                               [ Bootstrap.Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
-                               , Bootstrap.Button.secondary
-                               , onClick <| (config.onClickChooseDvl row.id) ]
-                               [ text row.id ]

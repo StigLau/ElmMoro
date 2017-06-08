@@ -1,17 +1,16 @@
 module App exposing (main, init, update, view)
 
-import View exposing (products, cart, kompost)
+import View exposing (products, cart)
 import Html exposing (Html, div, text)
 import RemoteData exposing (isLoading)
 import Navigation exposing (Location)
 import MsgModel exposing (Msg(..), Model, Product, Segment)
 import AppRouting exposing (navigateTo, Page(Home, Cart, Listings, Kompost, NotFound))
-import AppRemoting exposing (getProducts, getCart, addToCart, removeFromCart, getKomposition)
+import AppRemoting exposing (getProducts, getCart, addToCart, removeFromCart)
 import Models.Listings exposing (..)
 import Models.Segment exposing(..)
-
-
----- UPDATE ----
+import Models.Kompost exposing(..)
+import Models.Listings exposing(..)
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
@@ -129,10 +128,10 @@ view model =
                 View.cart <| uiConfig model
 
             Listings ->
-                View.listings <| uiConfig model
+                Models.Listings.listings <| uiConfig model
 
             Kompost ->
-                View.kompost <| uiConfig model
+                Models.Kompost.kompost <| uiConfig model
 
             NotFound ->
                 div [] [ text "Sorry, nothing here :(" ]

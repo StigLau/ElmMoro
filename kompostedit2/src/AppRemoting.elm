@@ -5,7 +5,6 @@ import Json.Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (decode, required)
 import RemoteData exposing (WebData, isLoading)
 import MsgModel exposing (..)
-import Models.KompostApi exposing (kompositionDecoder)
 
 
 --- Decoders ---
@@ -74,18 +73,3 @@ removeFromCart id =
         }
         |> RemoteData.sendRequest
         |> Cmd.map CartChanged
-
-
-getKomposition : String -> Cmd Msg
-getKomposition id =
-    Http.request
-        { method = "get"
-        , headers = []
-        , url = ("http://heap.kompo.st/" ++ id)
-        , body = emptyBody
-        , expect = expectJson kompositionDecoder
-        , timeout = Nothing
-        , withCredentials = True
-        }
-        |> RemoteData.sendRequest
-        |> Cmd.map KompositionUpdated
