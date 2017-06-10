@@ -55,7 +55,7 @@ listings config =
 
 chooseDvlButton: Config msg -> Row -> Html msg
 chooseDvlButton config row =  Bootstrap.Button.button
-                               [ Bootstrap.Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
-                               , Bootstrap.Button.secondary
-                               , onClick <| (config.onClickChooseDvl row.id) ]
-                               [ text row.id ]
+   [ Bootstrap.Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
+   , Bootstrap.Button.secondary
+   , onClick <| (config.onClickChooseDvl row.id) ]
+   [ text row.id ]
