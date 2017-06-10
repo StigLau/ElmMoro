@@ -1,8 +1,7 @@
 module Models.Kompost exposing (..)
 
 import Html exposing (..)
-import Html.Events exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (style)
 import Bootstrap.Button exposing (onClick)
 import RemoteData exposing (RemoteData(..))
 import UI exposing (theme)
@@ -76,5 +75,12 @@ kompost config =
                           text "loading or something."
                   ]
                 ]
-            ]
+        , (editSegmentButton config "Edit Segment")
+        ]
 
+editSegmentButton: Config msg -> String -> Html msg
+editSegmentButton config segmentId =  Bootstrap.Button.button
+   [ Bootstrap.Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
+   , Bootstrap.Button.secondary
+   , onClick <| (config.onClickEditSegment segmentId) ]
+   [ text segmentId ]

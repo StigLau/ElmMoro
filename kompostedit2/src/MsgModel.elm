@@ -31,6 +31,7 @@ type Msg
     | LocationChanged Location
     | NavigateTo Page
     | ChooseDvl String
+    | EditSegment String
     | KompositionUpdated (WebData ( Komposition))
     | SetSegmentName String
     | SetSegmentStart String
@@ -57,6 +58,7 @@ type alias Config msg =
     , onClickViewListings : msg
     , onClickViewProducts : msg
     , onClickChooseDvl : String ->  msg
+    , onClickEditSegment : String ->  msg
     , products : WebData (List Product)
     , cart : WebData (List Product)
     , listings : WebData ( DataRepresentation)

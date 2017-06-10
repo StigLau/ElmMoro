@@ -1,4 +1,4 @@
-module Models.Segment exposing (..)
+module Models.SegmentUI exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src, style, type_, placeholder)
@@ -30,7 +30,7 @@ validNr value =
     Err _ ->
       -1
 
-segmentForm : Segment -> Html Msg
+segmentForm : MsgModel.Config msg -> Html Msg
 segmentForm model =
     Html.form []
         [ h1 [] [ text "Segment editor" ]
@@ -38,21 +38,21 @@ segmentForm model =
             [ type_ "text"
             , placeholder "Segment Name"
             , onInput SetSegmentName
-            , Html.Attributes.value model.name
+            , Html.Attributes.value model.segment.name
             ]
             []
         , input
             [ type_ "text"
             , placeholder "Start"
             , onInput SetSegmentStart
-            , Html.Attributes.value (toString model.start)
+            , Html.Attributes.value (toString model.segment.start)
             ]
             []
         , input
             [ type_ "number"
             , placeholder "End"
             , onInput SetSegmentEnd
-            , Html.Attributes.value (toString model.end)
+            , Html.Attributes.value (toString model.segment.end)
             ]
             []
         --, button [ type_ "button", onClick Save ] [ text "Save" ]

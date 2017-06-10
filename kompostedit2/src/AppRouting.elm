@@ -12,6 +12,7 @@ type Page
     | Cart
     | Listings
     | Kompost
+    | Segment
     | NotFound
 
 
@@ -20,6 +21,7 @@ routeParsers =
     , cart = Cart := Route.static "Main.elm#cart"
     , listings = Listings := Route.static "Main.elm#listings"
     , kompost = Kompost := Route.static "Main.elm#kompost"
+    , segment = Segment := Route.static "Main.elm#segment"
     }
 
 
@@ -30,6 +32,7 @@ router =
         , routeParsers.cart
         , routeParsers.listings
         , routeParsers.kompost
+        , routeParsers.segment
         ]
 
 
@@ -54,6 +57,9 @@ navigateTo page =
 
         Kompost ->
             Route.reverse routeParsers.kompost []
+
+        Segment ->
+            Route.reverse routeParsers.segment []
 
         NotFound ->
             "/"

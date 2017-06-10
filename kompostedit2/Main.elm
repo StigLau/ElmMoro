@@ -2,15 +2,16 @@ module App exposing (main, init, update, view)
 
 import View exposing (products, cart)
 import Html exposing (Html, div, text)
-import RemoteData exposing (isLoading)
+import RemoteData exposing (succeed, isLoading, RemoteData(..))
 import Navigation exposing (Location)
 import MsgModel exposing (Msg(..), Model, Product, Segment)
 import AppRouting exposing (navigateTo, Page(Home, Cart, Listings, Kompost, NotFound))
 import AppRemoting exposing (getProducts, getCart, addToCart, removeFromCart)
 import Models.Listings exposing (..)
-import Models.Segment exposing(..)
+import Models.SegmentUI exposing(..)
 import Models.Kompost exposing(..)
 import Models.Listings exposing(..)
+import Models.KompostModels exposing (Komposition)
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
@@ -18,9 +19,9 @@ init location =
     ( { products = RemoteData.Loading
       , cart = RemoteData.Loading
       , listings = RemoteData.Loading
-      , kompost = RemoteData.Loading
+      , kompost = RemoteData.Loading --succeed testKomposition
       , dvlId = Nothing
-      , activePage = AppRouting.Listings
+      , activePage = AppRouting.Listings --AppRouting.Kompost
       , isLoading = True
       , segment = Segment "SegmentId" 1 2
       }
@@ -72,6 +73,13 @@ update msg model =
             in
                 { model | dvlId = Just id, activePage = Kompost } ! [ getKomposition id ]
 
+        EditSegment id ->
+            let
+                seg2 = model.segment
+                segment = { seg2 | name = id}
+            in
+                { model | segment = segment } ! [ navigateTo AppRouting.Segment ]
+
         KompositionUpdated komposition ->
             { model | kompost = komposition } ! [ navigateTo Kompost ]
 
@@ -108,6 +116,7 @@ uiConfig model =
     , onClickViewListings = NavigateTo Listings
     , onClickViewProducts = NavigateTo Home
     , onClickChooseDvl = ChooseDvl
+    , onClickEditSegment = EditSegment
     , products = model.products
     , cart = model.cart
     , listings = model.listings
@@ -121,22 +130,24 @@ view : Model -> Html MsgModel.Msg
 view model =
     div []
         [ case model.activePage of
-            Home ->
+            AppRouting.Home ->
                 View.products <| uiConfig model
 
-            Cart ->
+            AppRouting.Cart ->
                 View.cart <| uiConfig model
 
-            Listings ->
+            AppRouting.Listings ->
                 Models.Listings.listings <| uiConfig model
 
-            Kompost ->
+            AppRouting.Kompost ->
                 Models.Kompost.kompost <| uiConfig model
+
+            AppRouting.Segment ->
+                Models.SegmentUI.segmentForm <| uiConfig model
 
             NotFound ->
                 div [] [ text "Sorry, nothing here :(" ]
         ]
-
 
 
 ---- PROGRAM ----
@@ -150,3 +161,14 @@ main =
         , update = update
         , subscriptions = \_ -> Sub.none
         }
+
+{-- Offline testdata --}
+testListings = MsgModel.DataRepresentation 1 0 [testRow]
+testRow = MsgModel.Row "id123" "key123"
+
+testKomposition = Models.KompostModels.Komposition "Name" "Revision01" testMediaFile [testSegment1, testSegment2]
+initModel = Model "dvlRef" "name" "revision" 0 1234  testConfig testMediaFile [testSegment1, testSegment2]
+testConfig = MsgModel.Config 1280 1080 24 "mp4" 1234
+testMediaFile = Models.KompostModels.Mediafile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" 0 "A Checksum"
+testSegment1 = Segment "Purple Mountains Clouds" 7541667 19750000
+testSegment2 = Segment "Besseggen" 21250000  27625000
