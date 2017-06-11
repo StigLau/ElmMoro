@@ -36,6 +36,7 @@ type Msg
     | SetSegmentName String
     | SetSegmentStart String
     | SetSegmentEnd String
+    | UpdateSegment
 
 
 {-| A Product isn't too complex. It's got an id, a name, an image, and it costs a few tacos. Yum, 🌮s.

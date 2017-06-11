@@ -19,9 +19,9 @@ init location =
     ( { products = RemoteData.Loading
       , cart = RemoteData.Loading
       , listings = RemoteData.Loading
-      , kompost = RemoteData.Loading --succeed testKomposition
+      , kompost = succeed testKomposition
       , dvlId = Nothing
-      , activePage = AppRouting.Listings --AppRouting.Kompost
+      , activePage = AppRouting.Kompost
       , isLoading = True
       , segment = Segment "SegmentId" 1 2
       }
@@ -104,6 +104,33 @@ update msg model =
             in
                 newModel ! []
 
+        UpdateSegment ->
+            --Verify that segment with ID ... exists
+            -- if not, create new segment
+            -- if exists, update existing segment
+
+
+            case (containsSegment model.segment.name model.kompost) of
+                True -> model ! [navigateTo Kompost]
+                False -> addSegment  model.segment model ! [navigateTo Kompost]
+
+containsSegment: String ->  RemoteData.WebData Komposition -> Bool
+containsSegment id webKomposition =
+    case RemoteData.toMaybe webKomposition of
+        Just komposition ->  not (List.isEmpty (List.filter  (\ seg -> seg.id == id ) komposition.segments))
+        --Just komposition ->  List.isEmpty (List.filter (containsId id) komposition.segments)
+        _ -> False --Is it a problem if we've not loaded data from server?
+
+
+
+
+addSegment: Segment -> Model ->  Model
+addSegment segment model =
+    let
+        newSegment = (Models.KompostModels.Segment segment.name segment.start segment.end)
+        newKomp = {testKomposition | segments = testKomposition.segments++ [newSegment]}
+    in
+         {model | kompost = succeed newKomp }
 
 ---- VIEW ----
 
@@ -173,3 +200,7 @@ testMediaFile = Models.KompostModels.Mediafile "https://www.youtube.com/watch?v=
 testSegment1 = Segment "Purple Mountains Clouds" 7541667 19750000
 testSegment2 = Segment "Besseggen" 21250000  27625000
 --}
+testKomposition = Models.KompostModels.Komposition "Name" "Revision01" testMediaFile []
+testSegment1 = Segment "Purple Mountains Clouds" 7541667 19750000
+testSegment2 = Segment "Besseggen" 21250000  27625000
+testMediaFile = Models.KompostModels.Mediafile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" 0 "A Checksum"

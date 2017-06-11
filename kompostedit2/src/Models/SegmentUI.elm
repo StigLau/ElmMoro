@@ -2,7 +2,7 @@ module Models.SegmentUI exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src, style, type_, placeholder)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onClick)
 import MsgModel exposing (Segment, Config, Msg(..), Model)
 
 
@@ -55,5 +55,5 @@ segmentForm model =
             , Html.Attributes.value (toString model.segment.end)
             ]
             []
-        --, button [ type_ "button", onClick Save ] [ text "Save" ]
+        , button [ type_ "button", onClick UpdateSegment ] [ text "UpdateSegment" ]
         ]
