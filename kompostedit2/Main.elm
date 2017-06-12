@@ -105,21 +105,30 @@ update msg model =
                 newModel ! []
 
         UpdateSegment ->
-            --Verify that segment with ID ... exists
-            -- if not, create new segment
-            -- if exists, update existing segment
-
-
             case (containsSegment model.segment.name model.kompost) of
-                True -> model ! [navigateTo Kompost]
-                False -> addSegment  model.segment model ! [navigateTo Kompost]
+                [] -> Debug.log "Seggie []: " addSegment  model.segment model ! [navigateTo Kompost]
+                [x] ->
+                    let
+                        listOfStuff = everythingButTheSegment model.segment.name model.kompost
+                        _ = Debug.log "Single [x]: " listOfStuff
+                        model2 = addSegment (MsgModel.Segment model.segment.name model.segment.start model.segment.end) model
+                    in
+                        model2 ! [navigateTo Kompost]
+                head :: tail -> Debug.log "Seggie heads tails: " model ! [navigateTo Kompost]
 
-containsSegment: String ->  RemoteData.WebData Komposition -> Bool
+containsSegment: String ->  RemoteData.WebData Komposition -> List Models.KompostModels.Segment
 containsSegment id webKomposition =
     case RemoteData.toMaybe webKomposition of
-        Just komposition ->  not (List.isEmpty (List.filter  (\ seg -> seg.id == id ) komposition.segments))
-        --Just komposition ->  List.isEmpty (List.filter (containsId id) komposition.segments)
-        _ -> False --Is it a problem if we've not loaded data from server?
+        Just komposition ->  List.filter  (\ seg -> seg.id == id ) komposition.segments
+        _ -> [] --Is it a problem if we've not loaded data from server?
+
+
+
+everythingButTheSegment: String ->  RemoteData.WebData Komposition -> List Models.KompostModels.Segment
+everythingButTheSegment id webKomposition =
+    case RemoteData.toMaybe webKomposition of
+        Just komposition ->  List.filter  (\ seg -> not (seg.id == id )) komposition.segments
+        _ -> [] --Is it a problem if we've not loaded data from server?
 
 
 

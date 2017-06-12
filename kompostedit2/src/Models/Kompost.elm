@@ -75,12 +75,12 @@ kompost config =
                           text "loading or something."
                   ]
                 ]
-        , (editSegmentButton config "Edit Segment")
+        , (editSegmentButton config)
         ]
 
-editSegmentButton: Config msg -> String -> Html msg
-editSegmentButton config segmentId =  Bootstrap.Button.button
+editSegmentButton: Config msg -> Html msg
+editSegmentButton config =  Bootstrap.Button.button
    [ Bootstrap.Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
    , Bootstrap.Button.secondary
-   , onClick <| (config.onClickEditSegment segmentId) ]
-   [ text segmentId ]
+   , onClick <| (config.onClickEditSegment config.segment.name) ]
+   [ text config.segment.name ]
