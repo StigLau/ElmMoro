@@ -19,9 +19,9 @@ init location =
     ( { products = RemoteData.Loading
       , cart = RemoteData.Loading
       , listings = RemoteData.Loading
-      , kompost = succeed testKomposition
+      , kompost = RemoteData.Loading --succeed testKomposition
       , dvlId = Nothing
-      , activePage = AppRouting.Kompost
+      , activePage = AppRouting.Listings --AppRouting.Kompost
       , isLoading = True
       , segment = Segment "SegmentId" 1 2
       }
@@ -106,40 +106,9 @@ update msg model =
 
         UpdateSegment ->
             case (containsSegment model.segment.id model.kompost) of
-                [] -> Debug.log "Seggie []: " addSegment  model.segment model ! [navigateTo Kompost]
-                [x] ->
-                    let
-                        listOfStuff = everythingButTheSegment model.segment.id model.kompost
-                        _ = Debug.log "Single [x]: " listOfStuff
-                        model2 = addSegment (Segment model.segment.id model.segment.start model.segment.end) model
-                    in
-                        model2 ! [navigateTo Kompost]
+                [] -> Debug.log "Seggie []: " addSegmentToModel model.segment model ! [navigateTo Kompost]
+                [x] -> addSegmentToModel (Segment model.segment.id model.segment.start model.segment.end) model ! [navigateTo Kompost]
                 head :: tail -> Debug.log "Seggie heads tails: " model ! [navigateTo Kompost]
-
-containsSegment: String ->  RemoteData.WebData Komposition -> List Models.KompostModels.Segment
-containsSegment id webKomposition =
-    case RemoteData.toMaybe webKomposition of
-        Just komposition ->  List.filter  (\ seg -> seg.id == id ) komposition.segments
-        _ -> [] --Is it a problem if we've not loaded data from server?
-
-
-
-everythingButTheSegment: String ->  RemoteData.WebData Komposition -> List Models.KompostModels.Segment
-everythingButTheSegment id webKomposition =
-    case RemoteData.toMaybe webKomposition of
-        Just komposition ->  List.filter  (\ seg -> not (seg.id == id )) komposition.segments
-        _ -> [] --Is it a problem if we've not loaded data from server?
-
-
-
-
-addSegment: Segment -> Model ->  Model
-addSegment segment model =
-    let
-        newSegment = (Models.KompostModels.Segment segment.id segment.start segment.end)
-        newKomp = {testKomposition | segments = testKomposition.segments++ [newSegment]}
-    in
-         {model | kompost = succeed newKomp }
 
 ---- VIEW ----
 
@@ -209,7 +178,3 @@ testMediaFile = Models.KompostModels.Mediafile "https://www.youtube.com/watch?v=
 testSegment1 = Segment "Purple Mountains Clouds" 7541667 19750000
 testSegment2 = Segment "Besseggen" 21250000  27625000
 --}
-testKomposition = Models.KompostModels.Komposition "Name" "Revision01" testMediaFile []
-testSegment1 = Segment "Purple Mountains Clouds" 7541667 19750000
-testSegment2 = Segment "Besseggen" 21250000  27625000
-testMediaFile = Models.KompostModels.Mediafile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" 0 "A Checksum"

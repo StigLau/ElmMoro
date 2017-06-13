@@ -1,10 +1,11 @@
-module Models.SegmentUI exposing (..)
+module Models.SegmentUI exposing (asStartIn, asIdIn, asCurrentSegmentIn, asEndIn, containsSegment, addSegmentToModel, segmentForm)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src, style, type_, placeholder)
 import Html.Events exposing (onInput, onClick)
 import MsgModel exposing (Config, Msg(..), Model)
-import Models.KompostModels exposing (Segment)
+import Models.KompostModels exposing (Komposition, Segment)
+import RemoteData exposing (succeed)
 
 
 --asStartIn : Segment -> String -> Segment
@@ -22,6 +23,23 @@ setCurrentSegment newSegment model = { model | segment = newSegment }
 
 asCurrentSegmentIn : Model -> Segment -> Model
 asCurrentSegmentIn = flip setCurrentSegment
+
+containsSegment: String ->  RemoteData.WebData Komposition -> List Models.KompostModels.Segment
+containsSegment id webKomposition =
+    case RemoteData.toMaybe webKomposition of
+        Just komposition ->  List.filter  (\ seg -> seg.id == id ) komposition.segments
+        _ -> []
+
+addSegmentToModel: Segment -> Model -> Model
+addSegmentToModel segment model =
+    case RemoteData.toMaybe model.kompost of
+        Just komp -> { model | kompost = succeed (addSegmentToKomposition segment komp) }
+        _ -> model
+
+addSegmentToKomposition: Segment -> Komposition ->  Komposition
+addSegmentToKomposition segment komposition =
+        {komposition | segments = (Segment segment.id segment.start segment.end) :: komposition.segments}
+
 
 validNr : String -> Int
 validNr value =
