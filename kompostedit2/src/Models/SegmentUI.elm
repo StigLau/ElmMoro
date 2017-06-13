@@ -3,18 +3,19 @@ module Models.SegmentUI exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src, style, type_, placeholder)
 import Html.Events exposing (onInput, onClick)
-import MsgModel exposing (Segment, Config, Msg(..), Model)
+import MsgModel exposing (Config, Msg(..), Model)
+import Models.KompostModels exposing (Segment)
 
 
 --asStartIn : Segment -> String -> Segment
 asStartIn = flip setStart
 asEndIn = flip setEnd
-asNameIn = flip setName
+asIdIn = flip setId
 
 --setStart : String -> Segment -> Segment
 setStart newStart segment = { segment | start = ( validNr newStart ) }
 setEnd newEnd segment = { segment | end = ( validNr newEnd ) }
-setName newName segment = { segment | name = newName }
+setId newId segment = { segment | id = newId }
 
 setCurrentSegment : Segment -> Model -> Model
 setCurrentSegment newSegment model = { model | segment = newSegment }
@@ -36,9 +37,9 @@ segmentForm model =
         [ h1 [] [ text "Segment editor" ]
         , input
             [ type_ "text"
-            , placeholder "Segment Name"
-            , onInput SetSegmentName
-            , Html.Attributes.value model.segment.name
+            , placeholder "Segment Id"
+            , onInput SetSegmentId
+            , Html.Attributes.value model.segment.id
             ]
             []
         , input

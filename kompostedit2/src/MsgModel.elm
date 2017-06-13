@@ -1,9 +1,9 @@
-module MsgModel exposing (Msg(..), Model, Config, Product, DataRepresentation, Row, Segment)
+module MsgModel exposing (Msg(..), Model, Config, Product, DataRepresentation, Row)
 
 import RemoteData exposing (WebData)
 import AppRouting exposing (Page)
 import Navigation exposing (Location)
-import Models.KompostModels exposing (Komposition)
+import Models.KompostModels exposing (Komposition, Segment)
 
 
 ---- MODEL ----
@@ -33,7 +33,7 @@ type Msg
     | ChooseDvl String
     | EditSegment String
     | KompositionUpdated (WebData ( Komposition))
-    | SetSegmentName String
+    | SetSegmentId String
     | SetSegmentStart String
     | SetSegmentEnd String
     | UpdateSegment
@@ -78,10 +78,4 @@ type alias DataRepresentation =
 type alias Row =
     { id: String
     , key: String
-    }
-
-type alias Segment =
-    { name : String
-    , start : Int
-    , end : Int
     }

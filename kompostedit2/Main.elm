@@ -4,14 +4,14 @@ import View exposing (products, cart)
 import Html exposing (Html, div, text)
 import RemoteData exposing (succeed, isLoading, RemoteData(..))
 import Navigation exposing (Location)
-import MsgModel exposing (Msg(..), Model, Product, Segment)
+import MsgModel exposing (Msg(..), Model, Product)
 import AppRouting exposing (navigateTo, Page(Home, Cart, Listings, Kompost, NotFound))
 import AppRemoting exposing (getProducts, getCart, addToCart, removeFromCart)
 import Models.Listings exposing (..)
 import Models.SegmentUI exposing(..)
 import Models.Kompost exposing(..)
 import Models.Listings exposing(..)
-import Models.KompostModels exposing (Komposition)
+import Models.KompostModels exposing (Komposition, Segment)
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
@@ -76,16 +76,16 @@ update msg model =
         EditSegment id ->
             let
                 seg2 = model.segment
-                segment = { seg2 | name = id}
+                segment = { seg2 | id = id}
             in
                 { model | segment = segment } ! [ navigateTo AppRouting.Segment ]
 
         KompositionUpdated komposition ->
             { model | kompost = komposition } ! [ navigateTo Kompost ]
 
-        SetSegmentName name ->
-            let newModel = name
-              |> asNameIn model.segment
+        SetSegmentId id ->
+            let newModel = id
+              |> asIdIn model.segment
               |> asCurrentSegmentIn model
             in
                 newModel ! []
@@ -105,13 +105,13 @@ update msg model =
                 newModel ! []
 
         UpdateSegment ->
-            case (containsSegment model.segment.name model.kompost) of
+            case (containsSegment model.segment.id model.kompost) of
                 [] -> Debug.log "Seggie []: " addSegment  model.segment model ! [navigateTo Kompost]
                 [x] ->
                     let
-                        listOfStuff = everythingButTheSegment model.segment.name model.kompost
+                        listOfStuff = everythingButTheSegment model.segment.id model.kompost
                         _ = Debug.log "Single [x]: " listOfStuff
-                        model2 = addSegment (MsgModel.Segment model.segment.name model.segment.start model.segment.end) model
+                        model2 = addSegment (Segment model.segment.id model.segment.start model.segment.end) model
                     in
                         model2 ! [navigateTo Kompost]
                 head :: tail -> Debug.log "Seggie heads tails: " model ! [navigateTo Kompost]
@@ -136,7 +136,7 @@ everythingButTheSegment id webKomposition =
 addSegment: Segment -> Model ->  Model
 addSegment segment model =
     let
-        newSegment = (Models.KompostModels.Segment segment.name segment.start segment.end)
+        newSegment = (Models.KompostModels.Segment segment.id segment.start segment.end)
         newKomp = {testKomposition | segments = testKomposition.segments++ [newSegment]}
     in
          {model | kompost = succeed newKomp }

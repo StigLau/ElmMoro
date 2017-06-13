@@ -82,5 +82,5 @@ editSegmentButton: Config msg -> Html msg
 editSegmentButton config =  Bootstrap.Button.button
    [ Bootstrap.Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
    , Bootstrap.Button.secondary
-   , onClick <| (config.onClickEditSegment config.segment.name) ]
-   [ text config.segment.name ]
+   , onClick <| (config.onClickEditSegment config.segment.id) ]
+   [ text config.segment.id ]
