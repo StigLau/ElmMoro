@@ -4,7 +4,7 @@ import Html exposing (Html, div, text)
 import RemoteData exposing (succeed, isLoading, RemoteData(..))
 import Navigation exposing (Location)
 import MsgModel exposing (Msg(..), Model)
-import AppRouting exposing (navigateTo, Page(Home, Listings, Kompost, NotFound))
+import AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
 import Models.Listings exposing (..)
 import Models.SegmentUI exposing(..)
 import Models.Kompost exposing(..)
@@ -107,9 +107,6 @@ view : Model -> Html MsgModel.Msg
 view model =
     div []
         [ case model.activePage of
-            AppRouting.Home ->
-                Models.Listings.listings <| uiConfig model
-
             AppRouting.Listings ->
                 Models.Listings.listings <| uiConfig model
 

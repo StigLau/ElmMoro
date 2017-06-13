@@ -8,16 +8,14 @@ import Route exposing ((:=), match)
 
 
 type Page
-    = Home
-    | Listings
+    = Listings
     | Kompost
     | Segment
     | NotFound
 
 
 routeParsers =
-    { home = Home := Route.static "Main.elm#home"
-    , listings = Listings := Route.static "Main.elm#listings"
+    { listings = Listings := Route.static "Main.elm#listings"
     , kompost = Kompost := Route.static "Main.elm#kompost"
     , segment = Segment := Route.static "Main.elm#segment"
     }
@@ -26,8 +24,7 @@ routeParsers =
 router : Route.Router Page
 router =
     Route.router
-        [ routeParsers.home
-        , routeParsers.listings
+        [ routeParsers.listings
         , routeParsers.kompost
         , routeParsers.segment
         ]
@@ -43,9 +40,6 @@ routeFromLocation location =
 navigateTo : Page -> Cmd msg
 navigateTo page =
     (case page of
-        Home ->
-            Route.reverse routeParsers.home []
-
         Listings ->
             Route.reverse routeParsers.listings []
 
