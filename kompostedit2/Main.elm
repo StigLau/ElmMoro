@@ -1,12 +1,10 @@
 module App exposing (main, init, update, view)
 
-import View exposing (products, cart)
 import Html exposing (Html, div, text)
 import RemoteData exposing (succeed, isLoading, RemoteData(..))
 import Navigation exposing (Location)
-import MsgModel exposing (Msg(..), Model, Product)
-import AppRouting exposing (navigateTo, Page(Home, Cart, Listings, Kompost, NotFound))
-import AppRemoting exposing (getProducts, getCart, addToCart, removeFromCart)
+import MsgModel exposing (Msg(..), Model)
+import AppRouting exposing (navigateTo, Page(Home, Listings, Kompost, NotFound))
 import Models.Listings exposing (..)
 import Models.SegmentUI exposing(..)
 import Models.Kompost exposing(..)
@@ -16,16 +14,14 @@ import Models.KompostModels exposing (Komposition, Segment)
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
-    ( { products = RemoteData.Loading
-      , cart = RemoteData.Loading
-      , listings = RemoteData.Loading
+    ( { listings = RemoteData.Loading
       , kompost = RemoteData.Loading --succeed testKomposition
       , dvlId = Nothing
       , activePage = AppRouting.Listings --AppRouting.Kompost
       , isLoading = True
       , segment = Segment "SegmentId" 1 2
       }
-    , Cmd.batch [ getProducts, getCart, getListings ]
+    , Cmd.batch [ getListings ]
     )
 
 
@@ -35,12 +31,6 @@ update msg model =
         NoOp ->
             model ! []
 
-        ProductsChanged newWebData ->
-            { model
-                | products = newWebData
-                , isLoading = False
-            }
-                ! []
 
         ListingsUpdated newWebData ->
             { model
@@ -49,18 +39,6 @@ update msg model =
             }
                 ! []
 
-        CartChanged newWebData ->
-            { model
-                | cart = newWebData
-                , isLoading = False
-            }
-                ! []
-
-        AddToCart id ->
-            { model | isLoading = True } ! [ addToCart id ]
-
-        RemoveFromCart id ->
-            { model | isLoading = True } ! [ removeFromCart id ]
 
         LocationChanged loc ->
             { model | activePage = AppRouting.routeFromLocation loc } ! []
@@ -115,15 +93,9 @@ update msg model =
 
 uiConfig : Model -> MsgModel.Config Msg
 uiConfig model =
-    { onAddToCart = AddToCart
-    , onRemoveFromCart = RemoveFromCart
-    , onClickViewCart = NavigateTo Cart
-    , onClickViewListings = NavigateTo Listings
-    , onClickViewProducts = NavigateTo Home
+    { onClickViewListings = NavigateTo Listings
     , onClickChooseDvl = ChooseDvl
     , onClickEditSegment = EditSegment
-    , products = model.products
-    , cart = model.cart
     , listings = model.listings
     , kompost = model.kompost
     , loadingIndicator = True
@@ -136,10 +108,7 @@ view model =
     div []
         [ case model.activePage of
             AppRouting.Home ->
-                View.products <| uiConfig model
-
-            AppRouting.Cart ->
-                View.cart <| uiConfig model
+                Models.Listings.listings <| uiConfig model
 
             AppRouting.Listings ->
                 Models.Listings.listings <| uiConfig model

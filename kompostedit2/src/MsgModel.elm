@@ -1,4 +1,4 @@
-module MsgModel exposing (Msg(..), Model, Config, Product, DataRepresentation, Row)
+module MsgModel exposing (Msg(..), Model, Config, DataRepresentation, Row)
 
 import RemoteData exposing (WebData)
 import AppRouting exposing (Page)
@@ -10,9 +10,7 @@ import Models.KompostModels exposing (Komposition, Segment)
 
 
 type alias Model =
-    { products : WebData (List Product)
-    , cart : WebData (List Product)
-    , listings : WebData ( DataRepresentation)
+    { listings : WebData ( DataRepresentation)
     , kompost : WebData (Komposition)
     , dvlId: Maybe String
     , activePage : Page
@@ -23,11 +21,7 @@ type alias Model =
 
 type Msg
     = NoOp
-    | ProductsChanged (WebData (List Product))
-    | CartChanged (WebData (List Product))
     | ListingsUpdated (WebData ( DataRepresentation))
-    | AddToCart String
-    | RemoveFromCart String
     | LocationChanged Location
     | NavigateTo Page
     | ChooseDvl String
@@ -39,29 +33,15 @@ type Msg
     | UpdateSegment
 
 
-{-| A Product isn't too complex. It's got an id, a name, an image, and it costs a few tacos. Yum, 🌮s.
--}
-type alias Product =
-    { id : String
-    , displayName : String
-    , tacos : Float
-    , image : String
-    }
 
 
 {-| The config contains functions and messages that the UI can use to send messages to the update function,
 as well as some other necessary information for rendering the rest of the UI.
 -}
 type alias Config msg =
-    { onAddToCart : String -> msg
-    , onRemoveFromCart : String -> msg
-    , onClickViewCart : msg
-    , onClickViewListings : msg
-    , onClickViewProducts : msg
+    { onClickViewListings : msg
     , onClickChooseDvl : String ->  msg
     , onClickEditSegment : String ->  msg
-    , products : WebData (List Product)
-    , cart : WebData (List Product)
     , listings : WebData ( DataRepresentation)
     , kompost : WebData (Komposition)
     , loadingIndicator : Bool
