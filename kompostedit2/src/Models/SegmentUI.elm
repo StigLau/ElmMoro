@@ -49,7 +49,7 @@ validNr value =
     Err _ ->
       -1
 
-segmentForm : MsgModel.Config msg -> Html Msg
+segmentForm : Config msg -> Html Msg
 segmentForm model =
     Html.form []
         [ h1 [] [ text "Segment editor" ]

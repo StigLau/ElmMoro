@@ -49,6 +49,7 @@ listings config =
                                       Nothing ->
                                           text "loading."
                     ]
+                    , gotoTestPage config
                 ]
             ]
         ]
@@ -59,3 +60,10 @@ chooseDvlButton config row =  Bootstrap.Button.button
    , Bootstrap.Button.secondary
    , onClick <| (config.onClickChooseDvl row.id) ]
    [ text row.id ]
+
+gotoTestPage: Config msg -> Html msg
+gotoTestPage config =  Bootstrap.Button.button
+   [ Bootstrap.Button.attrs [ style [ ( "margin-bottom", "auto" ) ] ]
+   , Bootstrap.Button.secondary
+   , onClick <| (config.onClickGotoTestpage) ]
+   [ text "Goto Testpage" ]

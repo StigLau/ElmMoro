@@ -26,6 +26,7 @@ type Msg
     | NavigateTo Page
     | ChooseDvl String
     | EditSegment String
+    | ShowTestpage
     | KompositionUpdated (WebData ( Komposition))
     | SetSegmentId String
     | SetSegmentStart String
@@ -42,6 +43,7 @@ type alias Config msg =
     { onClickViewListings : msg
     , onClickChooseDvl : String ->  msg
     , onClickEditSegment : String ->  msg
+    , onClickGotoTestpage : msg
     , listings : WebData ( DataRepresentation)
     , kompost : WebData (Komposition)
     , loadingIndicator : Bool

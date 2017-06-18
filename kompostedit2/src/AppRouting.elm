@@ -11,6 +11,7 @@ type Page
     = Listings
     | Kompost
     | Segment
+    | MakeShitApp
     | NotFound
 
 
@@ -18,6 +19,7 @@ routeParsers =
     { listings = Listings := Route.static "Main.elm#listings"
     , kompost = Kompost := Route.static "Main.elm#kompost"
     , segment = Segment := Route.static "Main.elm#segment"
+    , makeshitapp = MakeShitApp := Route.static "Main.elm#makeshitapp"
     }
 
 
@@ -27,6 +29,7 @@ router =
         [ routeParsers.listings
         , routeParsers.kompost
         , routeParsers.segment
+        , routeParsers.makeshitapp
         ]
 
 
@@ -48,6 +51,9 @@ navigateTo page =
 
         Segment ->
             Route.reverse routeParsers.segment []
+
+        MakeShitApp ->
+            Route.reverse routeParsers.makeshitapp []
 
         NotFound ->
             "/"

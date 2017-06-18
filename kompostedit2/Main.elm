@@ -3,13 +3,17 @@ module App exposing (main, init, update, view)
 import Html exposing (Html, div, text)
 import RemoteData exposing (succeed, isLoading, RemoteData(..))
 import Navigation exposing (Location)
-import MsgModel exposing (Msg(..), Model)
+import MsgModel exposing (Msg(..), Model, Config)
 import AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
 import Models.Listings exposing (..)
 import Models.SegmentUI exposing(..)
 import Models.Kompost exposing(..)
 import Models.Listings exposing(..)
 import Models.KompostModels exposing (Komposition, Segment)
+import Models.MakeShitApp exposing (..)
+import Bootstrap.Grid as Grid
+import Bootstrap.Grid.Col as Col
+import Bootstrap.CDN as CDN
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
@@ -61,6 +65,9 @@ update msg model =
         KompositionUpdated komposition ->
             { model | kompost = komposition } ! [ navigateTo Kompost ]
 
+        ShowTestpage ->
+            model ! [navigateTo AppRouting.MakeShitApp]
+
         SetSegmentId id ->
             let newModel = id
               |> asIdIn model.segment
@@ -91,11 +98,12 @@ update msg model =
 ---- VIEW ----
 
 
-uiConfig : Model -> MsgModel.Config Msg
+uiConfig : Model -> Config Msg
 uiConfig model =
     { onClickViewListings = NavigateTo Listings
     , onClickChooseDvl = ChooseDvl
     , onClickEditSegment = EditSegment
+    , onClickGotoTestpage = ShowTestpage
     , listings = model.listings
     , kompost = model.kompost
     , loadingIndicator = True
@@ -108,17 +116,29 @@ view model =
     div []
         [ case model.activePage of
             AppRouting.Listings ->
-                Models.Listings.listings <| uiConfig model
+                pageWrapper Models.Listings.listings <| uiConfig model
 
             AppRouting.Kompost ->
-                Models.Kompost.kompost <| uiConfig model
+                pageWrapper Models.Kompost.kompost <| uiConfig model
 
             AppRouting.Segment ->
-                Models.SegmentUI.segmentForm <| uiConfig model
+                pageWrapper Models.SegmentUI.segmentForm <| uiConfig model
+
+            AppRouting.MakeShitApp ->
+                pageWrapper Models.MakeShitApp.gridForm <| uiConfig model
 
             NotFound ->
                 div [] [ text "Sorry, nothing here :(" ]
         ]
+
+
+
+--pageWrapper: Config msg -> Html msg -> Html msg
+pageWrapper forwaredPage config =
+        Grid.container []
+        [ CDN.stylesheet
+        , CDN.fontAwesome
+        , forwaredPage config ]
 
 
 ---- PROGRAM ----
