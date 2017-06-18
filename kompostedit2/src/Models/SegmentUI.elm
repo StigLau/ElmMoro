@@ -6,6 +6,10 @@ import Html.Events exposing (onInput, onClick)
 import MsgModel exposing (Config, Msg(..), Model)
 import Models.KompostModels exposing (Komposition, Segment)
 import RemoteData exposing (succeed)
+import Bootstrap.Grid.Col as Col
+import Bootstrap.Form as Form
+import Bootstrap.Form.Input as Input
+import Bootstrap.Button as Button
 
 
 --asStartIn : Segment -> String -> Segment
@@ -50,29 +54,33 @@ validNr value =
       -1
 
 segmentForm : Config msg -> Html Msg
-segmentForm model =
-    Html.form []
-        [ h1 [] [ text "Segment editor" ]
-        , input
-            [ type_ "text"
-            , placeholder "Segment Id"
-            , onInput SetSegmentId
-            , Html.Attributes.value model.segment.id
+segmentForm config =
+    div []
+    [ h1 [] [ text "Editing Segment" ]
+    , Form.form [ class "container" ]
+        [ Form.row [ Form.rowSuccess ]
+            [ Form.colLabel [ Col.xs4 ] [ text "Segment ID:" ]
+            , Form.col [ Col.xs8 ]
+                [ Input.text
+                    [ Input.id "segmentId", Input.defaultValue config.segment.id, Input.success, Input.onInput SetSegmentId ]
+                ]
             ]
-            []
-        , input
-            [ type_ "text"
-            , placeholder "Start"
-            , onInput SetSegmentStart
-            , Html.Attributes.value (toString model.segment.start)
+        , Form.row []
+            [ Form.colLabelSm [ Col.xs4 ] [ text "Start and end" ]
+            , Form.col [ Col.xs4 ]
+                [ Input.number [ Input.small, Input.defaultValue (toString config.segment.start), Input.onInput SetSegmentStart, Input.attrs [ placeholder "Start" ]]
+                ]
+            , Form.col [ Col.xs4 ]
+                [ Input.number [ Input.small, Input.defaultValue (toString config.segment.end), Input.onInput SetSegmentEnd, Input.attrs [ placeholder "End" ] ]
+                ]
             ]
-            []
-        , input
-            [ type_ "number"
-            , placeholder "End"
-            , onInput SetSegmentEnd
-            , Html.Attributes.value (toString model.segment.end)
+        , Form.row [ Form.rowWarning ]
+            [ Form.colLabel [ Col.xs4 ] [  ]
+            , Form.col []
+                    [ Button.button
+                      [ Button.success, Button.small, Button.onClick UpdateSegment]
+                      [ text "Store" ]
+                    ]
+                ]
             ]
-            []
-        , button [ type_ "button", onClick UpdateSegment ] [ text "UpdateSegment" ]
         ]

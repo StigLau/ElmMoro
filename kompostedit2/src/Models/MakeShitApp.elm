@@ -1,6 +1,6 @@
 module Models.MakeShitApp exposing (..)
 
-import MsgModel exposing (Msg, Config)
+import MsgModel exposing (Msg, Config, Msg(..))
 import Html exposing (..)
 import Html.Attributes exposing (class, href, type_, placeholder)
 import Bootstrap.Grid as Grid
@@ -10,50 +10,44 @@ import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Form.Select as Select
 import Bootstrap.Form.Checkbox as Chk
+import Bootstrap.Button as Button
 
 
 gridForm : Config msg -> Html Msg
 gridForm config =
     div []
-        [ h1 [] [ text "Horizontal (grid) form" ]
+        [ h1 [] [ text "Editing Segment" ]
         , Form.form [ class "container" ]
             [ h3 [] [ text "Header in form" ]
             , Form.row [ Form.rowSuccess ]
-                [ Form.colLabel [ Col.xs4 ] [ text "Fill in:" ]
+                [ Form.colLabel [ Col.xs4 ] [ text "Segment ID:" ]
                 , Form.col [ Col.xs8 ]
                     [ Input.text
-                        [ Input.id "rowinput", Input.success ]
+                        [ Input.id "segmentId", Input.success, Input.onInput SetSegmentId ]
                     , Form.validationText [] [ text "This was cool !" ]
                     , Form.help [] [ text "Should be something..." ]
                     ]
                 ]
             , Form.row []
-                [ Form.colLabelSm [ Col.xs4 ] [ text "Postal" ]
+                [ Form.colLabelSm [ Col.xs4 ] [ text "Start and end" ]
                 , Form.col [ Col.xs4 ]
-                    [ Input.text [ Input.small ]
+                    [ Input.number [ Input.small, Input.onInput SetSegmentStart, Input.attrs [ placeholder "Start" ]]
                     , Form.help [] [ text "5 digits" ]
                     ]
                 , Form.col [ Col.xs4 ]
-                    [ Input.text
-                        [ Input.small, Input.attrs [ placeholder "Place" ] ]
+                    [ Input.number [ Input.small, Input.onInput SetSegmentEnd, Input.attrs [ placeholder "End" ] ]
                     ]
                 ]
-            , Form.row []
-                [ Form.col [ Col.offsetXs4, Col.xs8 ]
-                    [ Chk.custom [] "Lonely checker" ]
-                ]
             , Form.row [ Form.rowWarning ]
-                [ Form.colLabel [ Col.xs4 ] [ text "Row select:" ]
-                , Form.col [ Col.xs8 ]
-                    [ Select.custom [ Select.id "rowcustomselect" ]
-                        [ Select.item [] [ text "Option 1" ]
-                        , Select.item [] [ text "Option 2" ]
+                [ Form.colLabel [ Col.xs4 ] [  ]
+                , Form.col []
+                        [ Button.button
+                          [ Button.success, Button.small, Button.onClick UpdateSegment]
+                          [ text "Store" ]
                         ]
-                    , Form.validationText [] [ text "Can't select option 1 (:" ]
                     ]
                 ]
             ]
-        ]
 
 griddy config =
     Grid.container []
