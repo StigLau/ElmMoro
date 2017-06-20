@@ -1,6 +1,6 @@
-module Models.MakeShitApp exposing (..)
+module UI.MakeShitApp exposing (..)
 
-import MsgModel exposing (Msg, Config, Msg(..))
+import Models.MsgModel exposing (Msg, Config, Msg(..))
 import Html exposing (..)
 import Html.Attributes exposing (class, href, type_, placeholder)
 import Bootstrap.Grid as Grid
@@ -46,18 +46,5 @@ gridForm config =
                           [ text "Store" ]
                         ]
                     ]
-                ]
-            ]
-
-griddy config =
-    Grid.container []
-            [ Grid.row []
-                [ Grid.col [] [ text "1 of 2"]
-                , Grid.col [] [ text "2 of 2"]
-                ]
-            , Grid.row []
-                [ Grid.col [] [ text "1 of 3"]
-                , Grid.col [] [ text "2 of 3"]
-                , Grid.col [] [ text "3 of 3"]
                 ]
             ]

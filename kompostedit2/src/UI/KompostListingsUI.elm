@@ -1,16 +1,15 @@
-module Models.Listings exposing (getListings, listings)
+module UI.KompostListingsUI exposing (getListings, listings)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, type_)
-
 import Http
 import Json.Decode as JsonD
 import RemoteData exposing (WebData, isLoading)
-import MsgModel exposing (Msg(ListingsUpdated), DataRepresentation, Row)
 import Bootstrap.Button exposing (onClick)
 import Bootstrap.CDN
-import MsgModel exposing (Config)
 import Html.Attributes exposing (style)
+import Models.MsgModel exposing (Config, Msg(ListingsUpdated))
+import Models.KompostListing exposing (DataRepresentation, Row)
 
 
 storeUrl : String
@@ -27,7 +26,7 @@ rowDecoder = JsonD.map2 Row
                            (JsonD.field "id" JsonD.string)
                            (JsonD.field "key" JsonD.string)
 
-getListings : Cmd MsgModel.Msg
+getListings : Cmd Msg
 getListings =
     Http.get (storeUrl ++ "_all_docs") jsonBaseDecoder
         |> RemoteData.sendRequest

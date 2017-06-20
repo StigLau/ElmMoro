@@ -1,18 +1,33 @@
-module Models.KompostApi exposing (..)
+module Models.KompostApi exposing (getKomposition)
 
 import Json.Decode as JsonD
 import Json.Encode as JsonE
-import Http
+import Http exposing (emptyBody, expectJson)
+import RemoteData exposing (RemoteData(..))
+import Models.MsgModel exposing (Msg(KompositionUpdated))
+
 import Models.KompostModels exposing (Komposition, Segment, Mediafile)
 
 kompoUrl : String
 kompoUrl = "http://heap.kompo.st/"
 
-getKompo : String -> (Result Http.Error Komposition -> msg) -> Cmd msg
-getKompo id msg =
-    let _ = Debug.log "Fetching komposition " id
-    in
-        Http.get (kompoUrl ++ id) kompositionDecoder |> Http.send msg
+--getKompo : String -> (Result Http.Error Komposition -> msg) -> Cmd msg
+--getKompo id msg = Http.get (kompoUrl ++ id) kompositionDecoder |> Http.send msg
+
+
+getKomposition : String -> Cmd Msg
+getKomposition id =
+    Http.request
+        { method = "get"
+        , headers = []
+        , url = ("http://heap.kompo.st/" ++ id)
+        , body = emptyBody
+        , expect = expectJson kompositionDecoder
+        , timeout = Nothing
+        , withCredentials = True
+        }
+        |> RemoteData.sendRequest
+        |> Cmd.map KompositionUpdated
 
 updateKompo: Komposition -> (Result Http.Error Komposition -> msg) -> Cmd msg
 updateKompo komposition msg =

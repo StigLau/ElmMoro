@@ -1,9 +1,9 @@
-module Models.SegmentUI exposing (asStartIn, asIdIn, asCurrentSegmentIn, asEndIn, containsSegment, addSegmentToModel, segmentForm, showSegmentList)
+module UI.SegmentUI exposing (asStartIn, asIdIn, asCurrentSegmentIn, asEndIn, containsSegment, addSegmentToModel, segmentForm, showSegmentList)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src, style, type_, placeholder)
 import Html.Events exposing (onInput, onClick)
-import MsgModel exposing (Config, Msg(..), Model)
+import Models.MsgModel exposing (Config, Msg(..), Model)
 import Models.KompostModels exposing (Komposition, Segment)
 import RemoteData exposing (succeed)
 import Bootstrap.Grid.Col as Col
