@@ -32,24 +32,9 @@ getKomposition id =
 
 kompost : Config msg -> Html msg
 kompost config =
-  div
-        [ style
-            [ ( "display", "grid" )
-            , ( "grid-template-rows", "min-content min-content 1fr min-content" )
-            , ( "height", "100vh" )
-            , ( "color", "#616161" )
-            ]
-        ]
+  div [ ]
         [ theme config.loadingIndicator
-        , div
-            [ style
-                [ ( "display", "flex" )
-                , ( "align-items", "center" )
-                , ( "justify-content", "center" )
-                , ( "height", "75px" )
-                , ( "padding", "0 2rem" )
-                ]
-            ]
+        , div [ ]
             [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ]
             , Button.button [ Button.secondary, Button.onClick config.onClickViewListings ] [ text "List Komposti"]
             ]
@@ -61,18 +46,18 @@ kompost config =
 kompositionView kompost =
     case RemoteData.toMaybe kompost of
         Just kompo ->
-            Grid.container []
-            [
-                     Grid.row []
-                        [ Grid.col [] [ text <| "Name: " ++ toString kompo.name ]
-                        , Grid.col [] [ text <| "Revision: " ++ kompo.revision]
-                        ]
-                    , Grid.row []
-                        [ Grid.col [] [ text "Media link" ]
-                        , Grid.col [] [ text <| kompo.mediaFile.fileName ]
-                        , Grid.col [] [ text <| "Checksum: " ++ kompo.mediaFile.checksum ]
-                        ]
-                    , Models.SegmentUI.showSegmentList kompo.segments ]
+            Grid.container [] [
+                Grid.row []
+                [ Grid.col [] [ text <| "Name: " ++ toString kompo.name ]
+                , Grid.col [] [ text <| "Revision: " ++ kompo.revision]
+                ]
+                , Grid.row []
+                    [ Grid.col [] [ text "Media link" ]
+                    , Grid.col [] [ text <| kompo.mediaFile.fileName ]
+                    , Grid.col [] [ text <| "Checksum: " ++ kompo.mediaFile.checksum ]
+                    ]
+                , Models.SegmentUI.showSegmentList kompo.segments
+                ]
         Nothing -> text "Could not fetch komposition"
 
 editSegmentButton: Config msg -> Html msg
