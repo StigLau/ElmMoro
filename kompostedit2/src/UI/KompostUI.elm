@@ -19,11 +19,11 @@ kompost config =
         , div [ ] [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ]
             , Button.button [ Button.secondary, Button.onClick config.onClickViewListings ] [ text "List Komposti"]
             ]
-        , kompositionView config.kompost
+        , kompositionView config.kompost config
         , editSegmentButton config
         ]
 
-kompositionView kompost =
+kompositionView kompost config =
     case RemoteData.toMaybe kompost of
         Just kompo ->
             Grid.container []
@@ -37,7 +37,7 @@ kompositionView kompost =
                         , Grid.col [] [ text <| kompo.mediaFile.fileName ]
                         , Grid.col [] [ text <| "Checksum: " ++ kompo.mediaFile.checksum ]
                         ]
-                    , UI.SegmentUI.showSegmentList kompo.segments ]
+                    , UI.SegmentUI.showSegmentList kompo.segments config ]
         Nothing -> text "Could not fetch komposition"
 
 editSegmentButton: Config msg -> Html msg
