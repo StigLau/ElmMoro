@@ -2,15 +2,17 @@ module Models.Kompost exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (style)
+import Bootstrap.Grid as Grid
+import Bootstrap.Button as Button
 import Bootstrap.Button exposing (onClick)
 import RemoteData exposing (RemoteData(..))
 import UI exposing (theme)
 import MsgModel exposing (..)
+import Models.KompostApi exposing (kompositionDecoder)
+import Models.SegmentUI exposing (showSegmentList)
 import Json.Decode as JsonD
 import Json.Encode as JsonE
 import Http exposing (emptyBody, expectJson)
-import Models.KompostApi exposing (kompositionDecoder)
-
 
 
 getKomposition : String -> Cmd Msg
@@ -49,38 +51,30 @@ kompost config =
                 ]
             ]
             [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ]
-            , Bootstrap.Button.button
-                [ Bootstrap.Button.secondary
-                , Bootstrap.Button.onClick config.onClickViewListings
-                ]
-                [ text "List Komposti"
-                ]
+            , Button.button [ Button.secondary, Button.onClick config.onClickViewListings ] [ text "List Komposti"]
             ]
-        , div
-                [ style
-                  [ ( "display", "flex" )
-                  , ( "align-items", "center" )
-                  , ( "justify-content", "flex-end" )
-                  , ( "height", "75px" )
-                  , ( "padding", "0 2rem" )
-                  ]
-                ]
-                [ span []
-                  [ text "Total: "
-                  , case RemoteData.toMaybe config.kompost of
-                      Just kompost ->
-                              text <| (toString kompost) ++ "\x1F32E"
-
-                      Nothing ->
-                          text "loading or something."
-                  ]
-                ]
-        , (editSegmentButton config)
+        , kompositionView config.kompost
+        , editSegmentButton config
+        , Button.button [ Button.secondary, Button.onClick config.onClickViewListings ] [ text "List Komposti" ]
         ]
 
+kompositionView kompost =
+    case RemoteData.toMaybe kompost of
+        Just kompo ->
+            Grid.container []
+            [
+                     Grid.row []
+                        [ Grid.col [] [ text <| "Name: " ++ toString kompo.name ]
+                        , Grid.col [] [ text <| "Revision: " ++ kompo.revision]
+                        ]
+                    , Grid.row []
+                        [ Grid.col [] [ text "Media link" ]
+                        , Grid.col [] [ text <| kompo.mediaFile.fileName ]
+                        , Grid.col [] [ text <| "Checksum: " ++ kompo.mediaFile.checksum ]
+                        ]
+                    , Models.SegmentUI.showSegmentList kompo.segments ]
+        Nothing -> text "Could not fetch komposition"
+
 editSegmentButton: Config msg -> Html msg
-editSegmentButton config =  Bootstrap.Button.button
-   [ Bootstrap.Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
-   , Bootstrap.Button.secondary
-   , onClick <| (config.onClickEditSegment config.segment.id) ]
-   [ text config.segment.id ]
+editSegmentButton config =  Button.button [ Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
+   , Button.secondary, onClick <| (config.onClickEditSegment config.segment.id) ] [ text config.segment.id ]

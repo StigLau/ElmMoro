@@ -1,4 +1,4 @@
-module Models.SegmentUI exposing (asStartIn, asIdIn, asCurrentSegmentIn, asEndIn, containsSegment, addSegmentToModel, segmentForm)
+module Models.SegmentUI exposing (asStartIn, asIdIn, asCurrentSegmentIn, asEndIn, containsSegment, addSegmentToModel, segmentForm, showSegmentList)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src, style, type_, placeholder)
@@ -10,6 +10,7 @@ import Bootstrap.Grid.Col as Col
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
+import Bootstrap.Grid as Grid
 
 
 --asStartIn : Segment -> String -> Segment
@@ -83,4 +84,17 @@ segmentForm config =
                     ]
                 ]
             ]
+        ]
+
+showSegmentList : List Segment -> Html msg
+showSegmentList segs =
+  div [] (segs |> List.map showSingleSegment)
+
+
+showSingleSegment: Segment -> Html msg
+showSingleSegment segment =
+    Grid.row []
+        [ Grid.col [] [ text segment.id]
+        , Grid.col [] [ text <| toString segment.start ]
+        , Grid.col [] [ text <| toString segment.end ]
         ]
