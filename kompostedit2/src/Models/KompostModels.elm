@@ -1,30 +1,11 @@
 module Models.KompostModels exposing (..)
 
-type alias Model =
-    { dvlRef: String
-    , name: String
-    , revision: String
-    , start: Int
-    , end: Int
-    , config: Config
-    , mediaFile: Mediafile
-    , segments: List Segment
-    }
-
 type alias Komposition =
     { name: String
     , revision: String
     --, config: Config
     , mediaFile: Mediafile
     , segments: List Segment
-    }
-
-type alias Config =
-    { width : Int
-    , height : Int
-    , framerate : Int
-    , extensionType : String
-    , duration : Int
     }
 
 type alias Mediafile =

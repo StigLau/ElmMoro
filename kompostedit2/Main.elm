@@ -3,14 +3,14 @@ module App exposing (main, init, update, view)
 import Html exposing (Html, div, text)
 import RemoteData exposing (succeed, isLoading, RemoteData(..))
 import Navigation exposing (Location)
-import MsgModel exposing (Msg(..), Model, Config)
-import AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
-import Models.Listings exposing (..)
-import Models.SegmentUI exposing(..)
-import Models.Kompost exposing(..)
-import Models.Listings exposing(..)
+import Models.MsgModel exposing (Msg(..), Model, Config)
+import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
 import Models.KompostModels exposing (Komposition, Segment)
-import Models.MakeShitApp exposing (..)
+import Models.KompostApi exposing (getKomposition)
+import UI.SegmentUI exposing(..)
+import UI.KompostUI exposing(..)
+import UI.KompostListingsUI exposing(..)
+import UI.MakeShitApp exposing (..)
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.CDN as CDN
@@ -111,21 +111,21 @@ uiConfig model =
     }
 
 
-view : Model -> Html MsgModel.Msg
+view : Model -> Html Msg
 view model =
     div []
         [ case model.activePage of
             AppRouting.Listings ->
-                pageWrapper Models.Listings.listings <| uiConfig model
+                pageWrapper UI.KompostListingsUI.listings <| uiConfig model
 
             AppRouting.Kompost ->
-                pageWrapper Models.Kompost.kompost <| uiConfig model
+                pageWrapper UI.KompostUI.kompost <| uiConfig model
 
             AppRouting.Segment ->
-                pageWrapper Models.SegmentUI.segmentForm <| uiConfig model
+                pageWrapper UI.SegmentUI.segmentForm <| uiConfig model
 
             AppRouting.MakeShitApp ->
-                pageWrapper Models.MakeShitApp.gridForm <| uiConfig model
+                pageWrapper UI.MakeShitApp.gridForm <| uiConfig model
 
             NotFound ->
                 div [] [ text "Sorry, nothing here :(" ]
@@ -144,7 +144,7 @@ pageWrapper forwaredPage config =
 ---- PROGRAM ----
 
 
-main : Program Never Model MsgModel.Msg
+main : Program Never Model Msg
 main =
     Navigation.program LocationChanged
         { view = view

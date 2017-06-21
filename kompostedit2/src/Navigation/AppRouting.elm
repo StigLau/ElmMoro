@@ -1,4 +1,4 @@
-module AppRouting exposing (..)
+module Navigation.AppRouting exposing (..)
 
 import Navigation exposing (Location)
 import Route exposing ((:=), match)

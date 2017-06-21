@@ -1,9 +1,10 @@
-module MsgModel exposing (Msg(..), Model, Config, DataRepresentation, Row)
+module Models.MsgModel exposing (Msg(..), Model, Config)
 
 import RemoteData exposing (WebData)
-import AppRouting exposing (Page)
+import Navigation.AppRouting exposing (Page)
 import Navigation exposing (Location)
 import Models.KompostModels exposing (Komposition, Segment)
+import Models.KompostListing exposing (DataRepresentation)
 
 
 ---- MODEL ----
@@ -48,16 +49,4 @@ type alias Config msg =
     , kompost : WebData (Komposition)
     , loadingIndicator : Bool
     , segment : Segment
-    }
-
-
-type alias DataRepresentation =
-  { total_rows: Int
-  , offset: Int
-  , rows: List Row
-  }
-
-type alias Row =
-    { id: String
-    , key: String
     }

@@ -1,4 +1,4 @@
-module UI exposing (..)
+module UI.Theme exposing (..)
 
 import Bootstrap.Button exposing (onClick)
 import Bootstrap.CDN
