@@ -54,8 +54,8 @@ validNr value =
     Err _ ->
       -1
 
-segmentForm : Config msg -> Html msg
-segmentForm config =
+segmentForm : Config msg -> Bool -> Html msg
+segmentForm config editableSegmentId=
     div []
     [ h1 [] [ text "Editing Segment" ]
     , Form.form [ class "container" ]
@@ -63,7 +63,7 @@ segmentForm config =
             [ Form.colLabel [ Col.xs4 ]
                 [ text "Segment ID:" ]
             , Form.col [ Col.xs8 ]
-                [ Input.text [ Input.id "segmentId", Input.defaultValue config.segment.id, Input.success, Input.onInput config.onClickSetSegmentID ] ]
+                [ Input.text [ Input.id "segmentId", Input.defaultValue config.segment.id, Input.onInput config.onClickSetSegmentID, Input.disabled (not editableSegmentId)] ]
             ]
         , Form.row []
             [ Form.colLabelSm [ Col.xs4 ]

@@ -120,29 +120,27 @@ view model =
     div []
         [ case model.activePage of
             AppRouting.Listings ->
-                pageWrapper UI.KompostListingsUI.listings <| uiConfig model
+                pageWrapper <| UI.KompostListingsUI.listings <| uiConfig model
 
             AppRouting.Kompost ->
-                pageWrapper UI.KompostUI.kompost <| uiConfig model
+                pageWrapper <| UI.KompostUI.kompost <| uiConfig model
 
             AppRouting.Segment ->
-                pageWrapper UI.SegmentUI.segmentForm <| uiConfig model
+                pageWrapper <| UI.SegmentUI.segmentForm (uiConfig model) False
 
             AppRouting.MakeShitApp ->
-                pageWrapper UI.MakeShitApp.gridForm <| uiConfig model
+                pageWrapper <| UI.MakeShitApp.gridForm <| uiConfig model
 
             NotFound ->
                 div [] [ text "Sorry, nothing here :(" ]
         ]
 
-
-
---pageWrapper: Config msg -> Html msg -> Html msg
-pageWrapper forwaredPage config =
+pageWrapper: Html msg -> Html msg
+pageWrapper forwaredPage =
         Grid.container []
         [ CDN.stylesheet
         , CDN.fontAwesome
-        , forwaredPage config ]
+        , forwaredPage ]
 
 
 ---- PROGRAM ----
