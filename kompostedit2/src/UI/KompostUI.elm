@@ -14,32 +14,24 @@ import Models.MsgModel exposing (Config)
 
 kompost : Config msg -> Html msg
 kompost config =
-  div [ ]
-        [ theme config.loadingIndicator
-        , div [ ] [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ]
-            , Button.button [ Button.secondary, Button.onClick config.onClickViewListings ] [ text "List Komposti"]
-            ]
-        , kompositionView config.kompost config
-        , editSegmentButton config
-        ]
-
-kompositionView kompost config =
-    case RemoteData.toMaybe kompost of
+   case RemoteData.toMaybe config.kompost of
         Just kompo ->
-            Grid.container []
-            [
-                     Grid.row []
-                        [ Grid.col [] [ text <| "Name: " ++ toString kompo.name ]
-                        , Grid.col [] [ text <| "Revision: " ++ kompo.revision]
-                        ]
-                    , Grid.row []
-                        [ Grid.col [] [ text "Media link" ]
-                        , Grid.col [] [ text <| kompo.mediaFile.fileName ]
-                        , Grid.col [] [ text <| "Checksum: " ++ kompo.mediaFile.checksum ]
-                        ]
-                    , UI.SegmentUI.showSegmentList kompo.segments config ]
+            div [ ]
+                [ theme config.loadingIndicator
+                , div [ ] [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ] ]
+                , Grid.container []
+                    [ addRow "Name" (text kompo.name)
+                    , addRow "Revision" (text kompo.revision)
+                    , addRow "Media link" (a [ Html.Attributes.href kompo.mediaFile.fileName ] [text kompo.mediaFile.fileName])
+                    , addRow "Checksum" (text kompo.mediaFile.checksum)
+                    ]
+                , UI.SegmentUI.showSegmentList kompo.segments config
+                , Button.button [ Button.secondary, Button.onClick config.onClickViewListings ] [ text "List Komposti"]
+                ]
         Nothing -> text "Could not fetch komposition"
 
-editSegmentButton: Config msg -> Html msg
-editSegmentButton config =  Button.button [ Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
-   , Button.secondary, onClick <| (config.onClickEditSegment config.segment.id) ] [ text config.segment.id ]
+addRow title htmlIsh =
+    Grid.row []
+    [ Grid.col [] [ text title ]
+    , Grid.col [] [ htmlIsh ]
+    ]

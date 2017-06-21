@@ -44,6 +44,10 @@ type alias Config msg =
     { onClickViewListings : msg
     , onClickChooseDvl : String ->  msg
     , onClickEditSegment : String ->  msg
+    , onClickUpdateSegment : msg
+    , onClickSetSegmentID : String ->  msg
+    , onClickSetSegmentStart : String ->  msg
+    , onClickSetSegmentEnd : String ->  msg
     , onClickGotoTestpage : msg
     , listings : WebData ( DataRepresentation)
     , kompost : WebData (Komposition)
