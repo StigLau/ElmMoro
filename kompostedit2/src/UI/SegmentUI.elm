@@ -73,19 +73,15 @@ performSegmentOnModel segment function model  =
             model
 
 
-
-
 addSegmentToKomposition : Segment -> Komposition -> Komposition
 addSegmentToKomposition segment komposition =
     { komposition | segments = (Segment segment.id segment.start segment.end) :: komposition.segments }
 
 
-deleteSegmentFromKomposition : String -> Komposition -> Komposition
-deleteSegmentFromKomposition segmentId komposition =
-    let
-        filteredSegments = komposition.segments
-    in
-        komposition
+deleteSegmentFromKomposition : Segment -> Komposition -> Komposition
+deleteSegmentFromKomposition segment komposition =
+    { komposition | segments = List.filter (\n -> n.id /= segment.id) komposition.segments }
+
 
 validNr : String -> Int
 validNr value =
