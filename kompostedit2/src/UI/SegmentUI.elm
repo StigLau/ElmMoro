@@ -79,6 +79,11 @@ addSegmentToKomposition segment komposition =
     { komposition | segments = (Segment segment.id segment.start segment.end) :: komposition.segments }
 
 
+deleteSegmentFromKomposition : Segment -> Komposition -> Komposition
+deleteSegmentFromKomposition segment komposition =
+    { komposition | segments = List.filter (\n -> n.id /= segment.id) komposition.segments }
+
+
 validNr : String -> Int
 validNr value =
     case String.toInt value of
