@@ -101,13 +101,16 @@ update msg model =
         UpdateSegment ->
             case (containsSegment model.segment.id model.kompost) of
                 [] ->
-                    Debug.log "Seggie []: " addSegmentToModel model.segment model ! [ navigateTo Kompost ]
+                    Debug.log "Seggie []: " performSegmentOnModel model.segment UI.SegmentUI.addSegmentToKomposition model ! [ navigateTo Kompost ]
 
                 [ x ] ->
-                    addSegmentToModel (Segment model.segment.id model.segment.start model.segment.end) model ! [ navigateTo Kompost ]
+                    performSegmentOnModel (Segment model.segment.id model.segment.start model.segment.end) UI.SegmentUI.addSegmentToKomposition model ! [ navigateTo Kompost ]
 
                 head :: tail ->
                     Debug.log "Seggie heads tails: " model ! [ navigateTo Kompost ]
+
+        DeleteSegment ->
+            Debug.log "Deleting segment: " performSegmentOnModel model.segment UI.SegmentUI.addSegmentToKomposition model ! [ navigateTo Kompost ]
 
 
 
@@ -120,6 +123,7 @@ uiConfig model =
     , onClickChooseDvl = ChooseDvl
     , onClickEditSegment = EditSegment
     , onClickUpdateSegment = UpdateSegment
+    , onClickDeleteSegment = DeleteSegment
     , onClickSetSegmentID = SetSegmentId
     , onClickSetSegmentStart = SetSegmentStart
     , onClickSetSegmentEnd = SetSegmentEnd

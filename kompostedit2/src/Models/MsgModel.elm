@@ -33,6 +33,7 @@ type Msg
     | SetSegmentStart String
     | SetSegmentEnd String
     | UpdateSegment
+    | DeleteSegment
 
 
 {-| The config contains functions and messages that the UI can use to send messages to the update function,
@@ -43,6 +44,7 @@ type alias Config msg =
     , onClickChooseDvl : String -> msg
     , onClickEditSegment : String -> msg
     , onClickUpdateSegment : msg
+    , onClickDeleteSegment : msg
     , onClickSetSegmentID : String -> msg
     , onClickSetSegmentStart : String -> msg
     , onClickSetSegmentEnd : String -> msg

@@ -1,4 +1,4 @@
-module UI.SegmentUI exposing (asStartIn, asIdIn, asCurrentSegmentIn, asEndIn, containsSegment, addSegmentToModel, segmentForm, showSegmentList)
+module UI.SegmentUI exposing (asStartIn, asIdIn, asCurrentSegmentIn, asEndIn, containsSegment, performSegmentOnModel, addSegmentToKomposition, segmentForm, showSegmentList)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src, style, type_, placeholder)
@@ -64,20 +64,28 @@ containsSegment id webKomposition =
             []
 
 
-addSegmentToModel : Segment -> Model -> Model
-addSegmentToModel segment model =
+performSegmentOnModel segment function model  =
     case RemoteData.toMaybe model.kompost of
         Just komp ->
-            { model | kompost = succeed (addSegmentToKomposition segment komp) }
+            { model | kompost = succeed (function segment komp) }
 
         _ ->
             model
+
+
 
 
 addSegmentToKomposition : Segment -> Komposition -> Komposition
 addSegmentToKomposition segment komposition =
     { komposition | segments = (Segment segment.id segment.start segment.end) :: komposition.segments }
 
+
+deleteSegmentFromKomposition : String -> Komposition -> Komposition
+deleteSegmentFromKomposition segmentId komposition =
+    let
+        filteredSegments = komposition.segments
+    in
+        komposition
 
 validNr : String -> Int
 validNr value =
@@ -115,6 +123,8 @@ segmentForm config editableSegmentId =
                     [ Button.button [ Button.secondary, Button.onClick config.onClickViewListings ] [ text "Back" ] ]
                 , Form.col []
                     [ Button.button [ Button.primary, Button.small, Button.onClick config.onClickUpdateSegment ] [ text "Store" ] ]
+                , Form.col []
+                    [ Button.button [ Button.warning, Button.small, Button.onClick config.onClickDeleteSegment ] [ text "Delete" ] ]
                 ]
             ]
         ]
