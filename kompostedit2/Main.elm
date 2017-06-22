@@ -7,9 +7,9 @@ import Models.MsgModel exposing (Msg(..), Model, Config)
 import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
 import Models.KompostModels exposing (Komposition, Segment)
 import Models.KompostApi exposing (getKomposition)
-import UI.SegmentUI exposing(..)
-import UI.KompostUI exposing(..)
-import UI.KompostListingsUI exposing(..)
+import UI.SegmentUI exposing (..)
+import UI.KompostUI exposing (..)
+import UI.KompostListingsUI exposing (..)
 import UI.MakeShitApp exposing (..)
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
@@ -35,14 +35,12 @@ update msg model =
         NoOp ->
             model ! []
 
-
         ListingsUpdated newWebData ->
             { model
                 | listings = newWebData
                 , isLoading = False
             }
                 ! []
-
 
         LocationChanged loc ->
             { model | activePage = AppRouting.routeFromLocation loc } ! []
@@ -51,14 +49,19 @@ update msg model =
             model ! [ navigateTo page ]
 
         ChooseDvl id ->
-            let _ = Debug.log "Chose DVL and ready to load komposition " id
+            let
+                _ =
+                    Debug.log "Chose DVL and ready to load komposition " id
             in
                 { model | dvlId = Just id, activePage = Kompost } ! [ getKomposition id ]
 
         EditSegment id ->
             let
-                seg2 = model.segment
-                segment = { seg2 | id = id}
+                seg2 =
+                    model.segment
+
+                segment =
+                    { seg2 | id = id }
             in
                 { model | segment = segment } ! [ navigateTo AppRouting.Segment ]
 
@@ -66,34 +69,47 @@ update msg model =
             { model | kompost = komposition } ! [ navigateTo Kompost ]
 
         ShowTestpage ->
-            model ! [navigateTo AppRouting.MakeShitApp]
+            model ! [ navigateTo AppRouting.MakeShitApp ]
 
         SetSegmentId id ->
-            let newModel = id
-              |> asIdIn model.segment
-              |> asCurrentSegmentIn model
+            let
+                newModel =
+                    id
+                        |> asIdIn model.segment
+                        |> asCurrentSegmentIn model
             in
                 newModel ! []
 
         SetSegmentStart start ->
-            let newModel = start
-              |> asStartIn model.segment
-              |> asCurrentSegmentIn model
+            let
+                newModel =
+                    start
+                        |> asStartIn model.segment
+                        |> asCurrentSegmentIn model
             in
                 newModel ! []
 
         SetSegmentEnd end ->
-            let newModel = end
-              |> asEndIn model.segment
-              |> asCurrentSegmentIn model
+            let
+                newModel =
+                    end
+                        |> asEndIn model.segment
+                        |> asCurrentSegmentIn model
             in
                 newModel ! []
 
         UpdateSegment ->
             case (containsSegment model.segment.id model.kompost) of
-                [] -> Debug.log "Seggie []: " addSegmentToModel model.segment model ! [navigateTo Kompost]
-                [x] -> addSegmentToModel (Segment model.segment.id model.segment.start model.segment.end) model ! [navigateTo Kompost]
-                head :: tail -> Debug.log "Seggie heads tails: " model ! [navigateTo Kompost]
+                [] ->
+                    Debug.log "Seggie []: " addSegmentToModel model.segment model ! [ navigateTo Kompost ]
+
+                [ x ] ->
+                    addSegmentToModel (Segment model.segment.id model.segment.start model.segment.end) model ! [ navigateTo Kompost ]
+
+                head :: tail ->
+                    Debug.log "Seggie heads tails: " model ! [ navigateTo Kompost ]
+
+
 
 ---- VIEW ----
 
@@ -135,12 +151,15 @@ view model =
                 div [] [ text "Sorry, nothing here :(" ]
         ]
 
-pageWrapper: Html msg -> Html msg
+
+pageWrapper : Html msg -> Html msg
 pageWrapper forwaredPage =
-        Grid.container []
+    Grid.container []
         [ CDN.stylesheet
         , CDN.fontAwesome
-        , forwaredPage ]
+        , forwaredPage
+        ]
+
 
 
 ---- PROGRAM ----
@@ -155,7 +174,9 @@ main =
         , subscriptions = \_ -> Sub.none
         }
 
-{-- Offline testdata
+
+
+{--Offline testdata
 testListings = MsgModel.DataRepresentation 1 0 [testRow]
 testRow = MsgModel.Row "id123" "key123"
 

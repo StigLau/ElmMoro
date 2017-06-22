@@ -13,25 +13,30 @@ import Models.KompostListing exposing (DataRepresentation, Row)
 
 
 storeUrl : String
-storeUrl = "http://heap.kompo.st/"
+storeUrl =
+    "http://heap.kompo.st/"
+
 
 jsonBaseDecoder : JsonD.Decoder DataRepresentation
-jsonBaseDecoder = JsonD.map3 DataRepresentation
-                           (JsonD.field "total_rows" JsonD.int)
-                           (JsonD.field "offset" JsonD.int)
-                           (JsonD.field "rows" <| JsonD.list rowDecoder)
+jsonBaseDecoder =
+    JsonD.map3 DataRepresentation
+        (JsonD.field "total_rows" JsonD.int)
+        (JsonD.field "offset" JsonD.int)
+        (JsonD.field "rows" <| JsonD.list rowDecoder)
+
 
 rowDecoder : JsonD.Decoder Row
-rowDecoder = JsonD.map2 Row
-                           (JsonD.field "id" JsonD.string)
-                           (JsonD.field "key" JsonD.string)
+rowDecoder =
+    JsonD.map2 Row
+        (JsonD.field "id" JsonD.string)
+        (JsonD.field "key" JsonD.string)
+
 
 getListings : Cmd Msg
 getListings =
     Http.get (storeUrl ++ "_all_docs") jsonBaseDecoder
         |> RemoteData.sendRequest
         |> Cmd.map ListingsUpdated
-
 
 
 listings : Config msg -> Html msg
@@ -43,26 +48,33 @@ listings config =
                 [ tr []
                     [ th [] [ text "Id" ]
                     , case RemoteData.toMaybe config.listings of
-                                      Just listings ->
-                                              tbody [] (List.map (chooseDvlButton config) listings.rows)
-                                      Nothing ->
-                                          text "loading."
+                        Just listings ->
+                            tbody [] (List.map (chooseDvlButton config) listings.rows)
+
+                        Nothing ->
+                            text "loading."
                     ]
-                    , gotoTestPage config
+                , gotoTestPage config
                 ]
             ]
         ]
 
-chooseDvlButton: Config msg -> Row -> Html msg
-chooseDvlButton config row =  Bootstrap.Button.button
-   [ Bootstrap.Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
-   , Bootstrap.Button.secondary
-   , onClick <| (config.onClickChooseDvl row.id) ]
-   [ text row.id ]
 
-gotoTestPage: Config msg -> Html msg
-gotoTestPage config =  Bootstrap.Button.button
-   [ Bootstrap.Button.attrs [ style [ ( "margin-bottom", "auto" ) ] ]
-   , Bootstrap.Button.secondary
-   , onClick <| (config.onClickGotoTestpage) ]
-   [ text "Goto Testpage" ]
+chooseDvlButton : Config msg -> Row -> Html msg
+chooseDvlButton config row =
+    Bootstrap.Button.button
+        [ Bootstrap.Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
+        , Bootstrap.Button.secondary
+        , onClick <| (config.onClickChooseDvl row.id)
+        ]
+        [ text row.id ]
+
+
+gotoTestPage : Config msg -> Html msg
+gotoTestPage config =
+    Bootstrap.Button.button
+        [ Bootstrap.Button.attrs [ style [ ( "margin-bottom", "auto" ) ] ]
+        , Bootstrap.Button.secondary
+        , onClick <| (config.onClickGotoTestpage)
+        ]
+        [ text "Experimental" ]
