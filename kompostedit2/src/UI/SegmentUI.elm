@@ -1,4 +1,4 @@
-module UI.SegmentUI exposing (asStartIn, asIdIn, asCurrentSegmentIn, asEndIn, containsSegment, performSegmentOnModel, addSegmentToKomposition, segmentForm, showSegmentList)
+module UI.SegmentUI exposing (asStartIn, asIdIn, asCurrentSegmentIn, asEndIn, containsSegment, performSegmentOnModel, addSegmentToKomposition, deleteSegmentFromKomposition, segmentForm, showSegmentList)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src, style, type_, placeholder)

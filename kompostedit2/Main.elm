@@ -110,7 +110,7 @@ update msg model =
                     Debug.log "Seggie heads tails: " model ! [ navigateTo Kompost ]
 
         DeleteSegment ->
-            Debug.log "Deleting segment: " performSegmentOnModel model.segment UI.SegmentUI.addSegmentToKomposition model ! [ navigateTo Kompost ]
+            Debug.log "Deleting segment: " performSegmentOnModel model.segment UI.SegmentUI.deleteSegmentFromKomposition model ! [ navigateTo Kompost ]
 
 
 
