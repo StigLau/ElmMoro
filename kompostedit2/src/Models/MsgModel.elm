@@ -26,6 +26,7 @@ type Msg
     | LocationChanged Location
     | NavigateTo Page
     | ChooseDvl String
+    | GotoKompositionPage
     | EditSegment String
     | ShowTestpage
     | KompositionUpdated (WebData Komposition)
@@ -42,6 +43,7 @@ as well as some other necessary information for rendering the rest of the UI.
 type alias Config msg =
     { onClickViewListings : msg
     , onClickChooseDvl : String -> msg
+    , onClickgotoKompositionPage : msg
     , onClickEditSegment : String -> msg
     , onClickUpdateSegment : msg
     , onClickDeleteSegment : msg

@@ -31,7 +31,7 @@ init location =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case Debug.log "Debugmsg: " msg of
+    case Debug.log "Debugmsg " msg of
         NoOp ->
             model ! []
 
@@ -48,6 +48,9 @@ update msg model =
         NavigateTo page ->
             model ! [ navigateTo page ]
 
+        GotoKompositionPage ->
+            model ! [navigateTo Kompost]
+
         ChooseDvl id ->
             let
                 _ =
@@ -57,11 +60,9 @@ update msg model =
 
         EditSegment id ->
             let
-                seg2 =
-                    model.segment
-
-                segment =
-                    { seg2 | id = id }
+                segment = case (containsSegment id model.kompost) of
+                    [ segment ] -> segment
+                    _ -> model.segment
             in
                 { model | segment = segment } ! [ navigateTo AppRouting.Segment ]
 
@@ -101,17 +102,20 @@ update msg model =
         UpdateSegment ->
             case (containsSegment model.segment.id model.kompost) of
                 [] ->
-                    Debug.log "Seggie []: " performSegmentOnModel model.segment UI.SegmentUI.addSegmentToKomposition model ! [ navigateTo Kompost ]
+                    Debug.log "Adding segment []: " performSegmentOnModel model.segment UI.SegmentUI.addSegmentToKomposition model ! [ navigateTo Kompost ]
 
                 [ x ] ->
-                    performSegmentOnModel (Segment model.segment.id model.segment.start model.segment.end) UI.SegmentUI.addSegmentToKomposition model ! [ navigateTo Kompost ]
+                    let
+                        deleted = performSegmentOnModel model.segment UI.SegmentUI.deleteSegmentFromKomposition model
+                        addedTo = performSegmentOnModel model.segment UI.SegmentUI.addSegmentToKomposition deleted
+                    in
+                        Debug.log "Updating segment [x]: "  addedTo ! [ navigateTo Kompost ]
 
                 head :: tail ->
                     Debug.log "Seggie heads tails: " model ! [ navigateTo Kompost ]
 
         DeleteSegment ->
             Debug.log "Deleting segment: " performSegmentOnModel model.segment UI.SegmentUI.deleteSegmentFromKomposition model ! [ navigateTo Kompost ]
-
 
 
 ---- VIEW ----
@@ -121,6 +125,7 @@ uiConfig : Model -> Config Msg
 uiConfig model =
     { onClickViewListings = NavigateTo Listings
     , onClickChooseDvl = ChooseDvl
+    , onClickgotoKompositionPage = GotoKompositionPage
     , onClickEditSegment = EditSegment
     , onClickUpdateSegment = UpdateSegment
     , onClickDeleteSegment = DeleteSegment
