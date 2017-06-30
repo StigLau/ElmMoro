@@ -23,6 +23,7 @@ init location =
       , dvlId = Nothing
       , activePage = AppRouting.Listings --AppRouting.Kompost
       , isLoading = True
+      , editableSegment = False
       , segment = Segment "SegmentId" 1 2
       }
     , Cmd.batch [ getListings ]
@@ -99,6 +100,12 @@ update msg model =
             in
                 newModel ! []
 
+        CreateSegment ->
+            let
+                editableModel  = {model | editableSegment = True }
+            in
+                editableModel ! [ navigateTo AppRouting.Segment ]
+
         UpdateSegment ->
             case (containsSegment model.segment.id model.kompost) of
                 [] ->
@@ -126,6 +133,7 @@ uiConfig model =
     { onClickViewListings = NavigateTo Listings
     , onClickChooseDvl = ChooseDvl
     , onClickgotoKompositionPage = GotoKompositionPage
+    , onClickCreateSegment = CreateSegment
     , onClickEditSegment = EditSegment
     , onClickUpdateSegment = UpdateSegment
     , onClickDeleteSegment = DeleteSegment

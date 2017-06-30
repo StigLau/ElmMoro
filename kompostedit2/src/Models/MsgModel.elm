@@ -16,6 +16,7 @@ type alias Model =
     , dvlId : Maybe String
     , activePage : Page
     , isLoading : Bool
+    , editableSegment : Bool
     , segment : Segment
     }
 
@@ -33,6 +34,7 @@ type Msg
     | SetSegmentId String
     | SetSegmentStart String
     | SetSegmentEnd String
+    | CreateSegment
     | UpdateSegment
     | DeleteSegment
 
@@ -45,6 +47,7 @@ type alias Config msg =
     , onClickChooseDvl : String -> msg
     , onClickgotoKompositionPage : msg
     , onClickEditSegment : String -> msg
+    , onClickCreateSegment : msg
     , onClickUpdateSegment : msg
     , onClickDeleteSegment : msg
     , onClickSetSegmentID : String -> msg
