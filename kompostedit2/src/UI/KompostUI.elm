@@ -9,6 +9,7 @@ import Bootstrap.Button exposing (onClick)
 import RemoteData exposing (RemoteData(..))
 import UI.Theme exposing (theme)
 import UI.SegmentUI exposing (showSegmentList)
+import UI.DvlSpecificsUI exposing (showSpecifics)
 import Models.MsgModel exposing (Config)
 
 
@@ -19,12 +20,7 @@ kompost config =
             div []
                 [ theme config.loadingIndicator
                 , div [] [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ] ]
-                , Grid.container []
-                    [ addRow "Name" (text kompo.name)
-                    , addRow "Revision" (text kompo.revision)
-                    , addRow "Media link" (a [ Html.Attributes.href kompo.mediaFile.fileName ] [ text kompo.mediaFile.fileName ])
-                    , addRow "Checksum" (text kompo.mediaFile.checksum)
-                    ]
+                , UI.DvlSpecificsUI.showSpecifics kompo config
                 , UI.SegmentUI.showSegmentList kompo.segments config
                 , Button.button [ Button.secondary, Button.onClick config.onClickViewListings ] [ text "List Komposti" ]
                 , Button.button [ Button.primary, Button.small, Button.onClick (config.onClickCreateSegment) ] [ text "New Segment" ]
@@ -32,10 +28,3 @@ kompost config =
 
         Nothing ->
             text "Could not fetch komposition"
-
-
-addRow title htmlIsh =
-    Grid.row []
-        [ Grid.col [] [ text title ]
-        , Grid.col [] [ htmlIsh ]
-        ]

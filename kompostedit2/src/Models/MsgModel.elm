@@ -29,7 +29,7 @@ type Msg
     | ChooseDvl String
     | GotoKompositionPage
     | EditSegment String
-    | ShowTestpage
+    | EditSpecifics
     | KompositionUpdated (WebData Komposition)
     | SetSegmentId String
     | SetSegmentStart String
@@ -53,7 +53,7 @@ type alias Config msg =
     , onClickSetSegmentID : String -> msg
     , onClickSetSegmentStart : String -> msg
     , onClickSetSegmentEnd : String -> msg
-    , onClickGotoTestpage : msg
+    , onClickEditSpecifics : msg
     , listings : WebData DataRepresentation
     , kompost : WebData Komposition
     , loadingIndicator : Bool

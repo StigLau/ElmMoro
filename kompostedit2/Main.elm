@@ -10,7 +10,7 @@ import Models.KompostApi exposing (getKomposition)
 import UI.SegmentUI exposing (..)
 import UI.KompostUI exposing (..)
 import UI.KompostListingsUI exposing (..)
-import UI.MakeShitApp exposing (..)
+import UI.DvlSpecificsUI exposing (..)
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.CDN as CDN
@@ -70,8 +70,8 @@ update msg model =
         KompositionUpdated komposition ->
             { model | kompost = komposition } ! [ navigateTo Kompost ]
 
-        ShowTestpage ->
-            model ! [ navigateTo AppRouting.MakeShitApp ]
+        EditSpecifics ->
+            model ! [ navigateTo AppRouting.DvlSpecificsUI ]
 
         SetSegmentId id ->
             let
@@ -140,7 +140,7 @@ uiConfig model =
     , onClickSetSegmentID = SetSegmentId
     , onClickSetSegmentStart = SetSegmentStart
     , onClickSetSegmentEnd = SetSegmentEnd
-    , onClickGotoTestpage = ShowTestpage
+    , onClickEditSpecifics = EditSpecifics
     , listings = model.listings
     , kompost = model.kompost
     , loadingIndicator = True
@@ -161,8 +161,12 @@ view model =
             AppRouting.Segment ->
                 pageWrapper <| UI.SegmentUI.segmentForm (uiConfig model) False
 
-            AppRouting.MakeShitApp ->
-                pageWrapper <| UI.MakeShitApp.gridForm <| uiConfig model
+            AppRouting.DvlSpecificsUI ->
+                case RemoteData.toMaybe model.kompost of
+                    Just komposition ->
+                        pageWrapper <| UI.DvlSpecificsUI.editSpecifics komposition (uiConfig model)
+                    _ ->
+                        text "Komposition not rendereable"
 
             NotFound ->
                 div [] [ text "Sorry, nothing here :(" ]
