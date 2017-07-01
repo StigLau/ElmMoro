@@ -4,6 +4,7 @@ module Models.KompostModels exposing (..)
 type alias Komposition =
     { name : String
     , revision : String
+    , bpm : Maybe String
 
     --, config: Config
     , mediaFile : Mediafile

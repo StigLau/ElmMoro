@@ -20,6 +20,10 @@ editSpecifics kompo config =
         , Form.form [ class "container" ]
             [ editableRow "Name" kompo.name config.onClickSetSegmentID
             , editableRow "Revision" kompo.revision config.onClickSetSegmentID
+            , let bpm = case kompo.bpm of
+                    Just bpm -> bpm
+                    _ -> ""
+              in editableRow "BPM" bpm config.onClickSetSegmentID
             , editableRow "Media link" kompo.mediaFile.fileName config.onClickSetSegmentID
             , editableRow "Checksum" kompo.mediaFile.checksum config.onClickSetSegmentID
             , Button.button [ Button.secondary, Button.onClick (config.onClickgotoKompositionPage) ] [ text "Back" ]
@@ -31,6 +35,10 @@ showSpecifics kompo config =
     Grid.container []
         [ addRow "Name" (text kompo.name)
         , addRow "Revision" (text kompo.revision)
+        , let bpm = case kompo.bpm of
+                            Just bpm -> bpm
+                            _ -> ""
+                      in addRow "BPM" (text bpm)
         , addRow "Media link" (a [ Html.Attributes.href kompo.mediaFile.fileName ] [ text kompo.mediaFile.fileName ])
         , addRow "Checksum" (text kompo.mediaFile.checksum)
         , Button.button [ Button.primary, Button.small, Button.onClick (config.onClickEditSpecifics) ] [ text "Edit Specifics" ]

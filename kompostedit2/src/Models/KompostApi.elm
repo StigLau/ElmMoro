@@ -49,9 +49,10 @@ updateKompo komposition msg =
 
 kompositionDecoder : JsonD.Decoder Komposition
 kompositionDecoder =
-    JsonD.map4 Komposition
+    JsonD.map5 Komposition
         (JsonD.field "_id" JsonD.string)
         (JsonD.field "_rev" JsonD.string)
+        (JsonD.maybe <| JsonD.field "bpm" JsonD.string)
         (JsonD.field "mediaFile" mediaFileDecoder)
         (JsonD.field "segments" <| JsonD.list segmentDecoder)
 
