@@ -3,7 +3,7 @@ module Models.MsgModel exposing (Msg(..), Model, Config)
 import RemoteData exposing (WebData)
 import Navigation.AppRouting exposing (Page)
 import Navigation exposing (Location)
-import Models.KompostModels exposing (Komposition, Segment)
+import Models.KompostModels exposing (Komposition, Segment, CouchStatusMessage)
 import Models.KompostListing exposing (DataRepresentation)
 
 
@@ -31,6 +31,7 @@ type Msg
     | EditSegment String
     | EditSpecifics
     | KompositionUpdated (WebData Komposition)
+    | CouchServerStatus (WebData CouchStatusMessage)
     | SetSegmentId String
     | SetSegmentStart String
     | SetSegmentEnd String

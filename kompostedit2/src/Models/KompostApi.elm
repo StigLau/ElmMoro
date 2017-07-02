@@ -1,11 +1,11 @@
-module Models.KompostApi exposing (getKomposition)
+module Models.KompostApi exposing (getKomposition, updateKompo)
 
 import Json.Decode as JsonD
 import Json.Encode as JsonE
 import Http exposing (emptyBody, expectJson)
 import RemoteData exposing (RemoteData(..))
-import Models.MsgModel exposing (Msg(KompositionUpdated))
-import Models.KompostModels exposing (Komposition, Segment, Mediafile)
+import Models.MsgModel exposing (Msg(KompositionUpdated, GotoKompositionPage, CouchServerStatus))
+import Models.KompostModels exposing (Komposition, Segment, Mediafile, CouchStatusMessage)
 
 
 kompoUrl : String
@@ -33,19 +33,19 @@ getKomposition id =
         |> Cmd.map KompositionUpdated
 
 
-updateKompo : Komposition -> (Result Http.Error Komposition -> msg) -> Cmd msg
-updateKompo komposition msg =
+updateKompo : Komposition -> Cmd Msg
+updateKompo komposition =
     Http.request
         { method = "PUT"
         , headers = []
-        , url = kompoUrl ++ komposition.name --?" ++ toString komposition.name
+        , url = kompoUrl ++ komposition.name
         , body = Http.stringBody "application/json" <| encodeKomposition komposition
-        , expect = Http.expectJson kompositionDecoder
+        , expect = Http.expectJson couchServerStatusDecoder
         , timeout = Nothing
         , withCredentials = False
         }
-        |> Http.send msg
-
+        |> RemoteData.sendRequest
+        |> Cmd.map CouchServerStatus
 
 kompositionDecoder : JsonD.Decoder Komposition
 kompositionDecoder =
@@ -57,9 +57,12 @@ kompositionDecoder =
         (JsonD.field "segments" <| JsonD.list segmentDecoder)
 
 
-
--- _ = Debug.log "testing out stuff" komp
-
+couchServerStatusDecoder : JsonD.Decoder CouchStatusMessage
+couchServerStatusDecoder =
+    JsonD.map3 CouchStatusMessage
+        (JsonD.field "id" JsonD.string)
+        (JsonD.field "ok" JsonD.bool)
+        (JsonD.field "rev" JsonD.string)
 
 segmentDecoder : JsonD.Decoder Segment
 segmentDecoder =

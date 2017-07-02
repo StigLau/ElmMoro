@@ -6,7 +6,7 @@ import Navigation exposing (Location)
 import Models.MsgModel exposing (Msg(..), Model, Config)
 import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
 import Models.KompostModels exposing (Komposition, Segment)
-import Models.KompostApi exposing (getKomposition)
+import Models.KompostApi exposing (getKomposition, updateKompo)
 import UI.SegmentUI exposing (..)
 import UI.KompostUI exposing (..)
 import UI.KompostListingsUI exposing (..)
@@ -59,16 +59,16 @@ update msg model =
             in
                 { model | dvlId = Just id, activePage = Kompost } ! [ getKomposition id ]
 
-        EditSegment id ->
-            let
-                segment = case (containsSegment id model.kompost) of
-                    [ segment ] -> segment
-                    _ -> model.segment
-            in
-                { model | segment = segment } ! [ navigateTo AppRouting.Segment ]
-
         KompositionUpdated komposition ->
             { model | kompost = komposition } ! [ navigateTo Kompost ]
+
+        StoreKomposition ->
+            let
+                kompo = case RemoteData.toMaybe model.kompost of
+                    Just kompo -> kompo
+                    _ -> testKomposition
+            in
+                model ! [updateKompo kompo]
 
         EditSpecifics ->
             model ! [ navigateTo AppRouting.DvlSpecificsUI ]
@@ -106,6 +106,14 @@ update msg model =
             in
                 editableModel ! [ navigateTo AppRouting.Segment ]
 
+        EditSegment id ->
+                    let
+                        segment = case (containsSegment id model.kompost) of
+                            [ segment ] -> segment
+                            _ -> model.segment
+                    in
+                        { model | segment = segment } ! [ navigateTo AppRouting.Segment ]
+
         UpdateSegment ->
             case (containsSegment model.segment.id model.kompost) of
                 [] ->
@@ -124,9 +132,9 @@ update msg model =
         DeleteSegment ->
             Debug.log "Deleting segment: " performSegmentOnModel model.segment UI.SegmentUI.deleteSegmentFromKomposition model ! [ navigateTo Kompost ]
 
-        StoreKomposition ->
-            model ! []
-
+        CouchServerStatus serverstatus ->
+            let _ = Debug.log "Returned from server" serverstatus
+            in model ! [ navigateTo Kompost ]
 
 ---- VIEW ----
 
@@ -201,14 +209,14 @@ main =
 
 
 
-{--Offline testdata
-testListings = MsgModel.DataRepresentation 1 0 [testRow]
-testRow = MsgModel.Row "id123" "key123"
+-- Offline testdata
+--testListings = MsgModel.DataRepresentation 1 0 [testRow]
+--testRow = MsgModel.Row "id123" "key123"
 
-testKomposition = Models.KompostModels.Komposition "Name" "Revision01" testMediaFile [testSegment1, testSegment2]
-initModel = Model "dvlRef" "name" "revision" 0 1234  testConfig testMediaFile [testSegment1, testSegment2]
-testConfig = MsgModel.Config 1280 1080 24 "mp4" 1234
+testKomposition = Models.KompostModels.Komposition "Name" "Revision01" (Just "123") testMediaFile [testSegment1, testSegment2]
+--initModel = Model "dvlRef" "name" "revision" 0 1234  testConfig testMediaFile [testSegment1, testSegment2]
+--testConfig = MsgModel.Config 1280 1080 24 "mp4" 1234
 testMediaFile = Models.KompostModels.Mediafile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" 0 "A Checksum"
 testSegment1 = Segment "Purple Mountains Clouds" 7541667 19750000
 testSegment2 = Segment "Besseggen" 21250000  27625000
---}
+

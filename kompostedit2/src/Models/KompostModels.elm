@@ -24,3 +24,10 @@ type alias Segment =
     , start : Int
     , end : Int
     }
+
+type alias CouchStatusMessage =
+    { id: String
+    , ok: Bool
+    , rev: String
+    }
+
