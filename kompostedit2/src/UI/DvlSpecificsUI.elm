@@ -1,8 +1,8 @@
 module UI.DvlSpecificsUI exposing (showSpecifics, editSpecifics)
 
-import Models.MsgModel exposing (Msg, Config,  Msg(..))
+import Models.MsgModel exposing (Config,  Msg(..))
 import Html exposing (..)
-import Html.Attributes exposing (class, href, type_, placeholder)
+import Html.Attributes exposing (class, href)
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.CDN as CDN

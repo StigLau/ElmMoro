@@ -37,6 +37,7 @@ type Msg
     | CreateSegment
     | UpdateSegment
     | DeleteSegment
+    | StoreKomposition
 
 
 {-| The config contains functions and messages that the UI can use to send messages to the update function,
@@ -54,6 +55,7 @@ type alias Config msg =
     , onClickSetSegmentStart : String -> msg
     , onClickSetSegmentEnd : String -> msg
     , onClickEditSpecifics : msg
+    , onClickStoreKomposition : msg
     , listings : WebData DataRepresentation
     , kompost : WebData Komposition
     , loadingIndicator : Bool

@@ -10,6 +10,7 @@ import Bootstrap.CDN
 import Html.Attributes exposing (style)
 import Models.MsgModel exposing (Config, Msg(ListingsUpdated))
 import Models.KompostListing exposing (DataRepresentation, Row)
+import UI.Theme exposing (theme)
 
 
 storeUrl : String
@@ -42,7 +43,8 @@ getListings =
 listings : Config msg -> Html msg
 listings config =
     div [ class "listings" ]
-        [ h1 [] [ text ("Dvls in ") ]
+        [ theme config.loadingIndicator
+        , h1 [] [ text ("Dvls in ") ]
         , table [ class "table table-striped" ]
             [ thead []
                 [ tr []

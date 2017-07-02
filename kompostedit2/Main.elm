@@ -124,6 +124,9 @@ update msg model =
         DeleteSegment ->
             Debug.log "Deleting segment: " performSegmentOnModel model.segment UI.SegmentUI.deleteSegmentFromKomposition model ! [ navigateTo Kompost ]
 
+        StoreKomposition ->
+            model ! []
+
 
 ---- VIEW ----
 
@@ -141,6 +144,7 @@ uiConfig model =
     , onClickSetSegmentStart = SetSegmentStart
     , onClickSetSegmentEnd = SetSegmentEnd
     , onClickEditSpecifics = EditSpecifics
+    , onClickStoreKomposition = StoreKomposition
     , listings = model.listings
     , kompost = model.kompost
     , loadingIndicator = True
