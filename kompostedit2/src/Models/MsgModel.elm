@@ -12,7 +12,7 @@ import Models.KompostListing exposing (DataRepresentation)
 
 type alias Model =
     { listings : WebData DataRepresentation
-    , kompost : WebData Komposition
+    , kompost : Komposition
     , dvlId : Maybe String
     , activePage : Page
     , isLoading : Bool
@@ -58,7 +58,7 @@ type alias Config msg =
     , onClickEditSpecifics : msg
     , onClickStoreKomposition : msg
     , listings : WebData DataRepresentation
-    , kompost : WebData Komposition
+    , kompost : Komposition
     , loadingIndicator : Bool
     , segment : Segment
     }

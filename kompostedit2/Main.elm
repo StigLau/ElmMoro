@@ -19,9 +19,9 @@ import Bootstrap.CDN as CDN
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
     ( { listings = RemoteData.Loading
-      , kompost = RemoteData.Loading --succeed testKomposition
+      , kompost = testKomposition
       , dvlId = Nothing
-      , activePage = AppRouting.Listings --AppRouting.Kompost
+      , activePage = AppRouting.Listings
       , isLoading = True
       , editableSegment = False
       , segment = Segment "SegmentId" 1 2
@@ -53,22 +53,16 @@ update msg model =
             model ! [navigateTo Kompost]
 
         ChooseDvl id ->
-            let
-                _ =
-                    Debug.log "Chose DVL and ready to load komposition " id
-            in
-                { model | dvlId = Just id, activePage = Kompost } ! [ getKomposition id ]
+            { model | dvlId = Just id, activePage = Kompost } ! [ getKomposition id ]
 
-        KompositionUpdated komposition ->
-            { model | kompost = komposition } ! [ navigateTo Kompost ]
+        KompositionUpdated webKomposition ->
+            let newModel = case RemoteData.toMaybe webKomposition of
+                                Just kompost -> { model | kompost = kompost}
+                                _ -> model
+            in newModel ! [ navigateTo Kompost ]
 
         StoreKomposition ->
-            let
-                kompo = case RemoteData.toMaybe model.kompost of
-                    Just kompo -> kompo
-                    _ -> testKomposition
-            in
-                model ! [updateKompo kompo]
+                model ! [updateKompo model.kompost]
 
         EditSpecifics ->
             model ! [ navigateTo AppRouting.DvlSpecificsUI ]
@@ -134,9 +128,9 @@ update msg model =
 
         CouchServerStatus serverstatus ->
             let (newModel, navigation) = case RemoteData.toMaybe serverstatus of
-                    Just status ->  case RemoteData.toMaybe model.kompost of
-                        Just kompost -> ({ model | kompost = succeed { kompost | revision = status.rev} }, Kompost)
-                        _ -> (model, NotFound)
+                    Just status ->
+                        let kompost = model.kompost
+                        in ({ model | kompost = { kompost | revision = status.rev} }, Kompost)
                     _ -> (model, NotFound)
             in newModel ! [ navigateTo navigation ]
 
@@ -178,11 +172,7 @@ view model =
                 pageWrapper <| UI.SegmentUI.segmentForm (uiConfig model) model.editableSegment
 
             AppRouting.DvlSpecificsUI ->
-                case RemoteData.toMaybe model.kompost of
-                    Just komposition ->
-                        pageWrapper <| UI.DvlSpecificsUI.editSpecifics komposition (uiConfig model)
-                    _ ->
-                        text "Komposition not rendereable"
+                pageWrapper <| UI.DvlSpecificsUI.editSpecifics model.kompost (uiConfig model)
 
             NotFound ->
                 div [] [ text "Sorry, nothing here :(" ]

@@ -15,17 +15,12 @@ import Models.MsgModel exposing (Config)
 
 kompost : Config msg -> Html msg
 kompost config =
-    case RemoteData.toMaybe config.kompost of
-        Just kompo ->
-            div []
-                [ theme config.loadingIndicator
-                , div [] [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ] ]
-                , UI.DvlSpecificsUI.showSpecifics kompo config
-                , UI.SegmentUI.showSegmentList kompo.segments config
-                , Button.button [ Button.secondary, Button.onClick config.onClickViewListings ] [ text "List Komposti" ]
-                , Button.button [ Button.primary, Button.small, Button.onClick (config.onClickCreateSegment) ] [ text "New Segment" ]
-                , Button.button [ Button.success, Button.small, Button.onClick (config.onClickStoreKomposition) ] [ text "Store Komposition" ]
-                ]
-
-        Nothing ->
-            text "Could not fetch komposition"
+    div []
+        [ theme config.loadingIndicator
+        , div [] [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ] ]
+        , UI.DvlSpecificsUI.showSpecifics config.kompost  config
+        , UI.SegmentUI.showSegmentList config.kompost.segments config
+        , Button.button [ Button.secondary, Button.onClick config.onClickViewListings ] [ text "List Komposti" ]
+        , Button.button [ Button.primary, Button.small, Button.onClick (config.onClickCreateSegment) ] [ text "New Segment" ]
+        , Button.button [ Button.success, Button.small, Button.onClick (config.onClickStoreKomposition) ] [ text "Store Komposition" ]
+        ]

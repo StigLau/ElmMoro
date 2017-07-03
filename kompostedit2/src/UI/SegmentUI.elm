@@ -5,7 +5,6 @@ import Html.Attributes exposing (class, href, src, style, type_, placeholder)
 import Html.Events exposing (onInput, onClick)
 import Models.MsgModel exposing (Config, Msg(..), Model)
 import Models.KompostModels exposing (Komposition, Segment)
-import RemoteData exposing (succeed)
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
@@ -54,24 +53,13 @@ asCurrentSegmentIn =
     flip setCurrentSegment
 
 
-containsSegment : String -> RemoteData.WebData Komposition -> List Models.KompostModels.Segment
-containsSegment id webKomposition =
-    case RemoteData.toMaybe webKomposition of
-        Just komposition ->
-            List.filter (\seg -> seg.id == id) komposition.segments
-
-        _ ->
-            []
+containsSegment : String -> Komposition -> List Models.KompostModels.Segment
+containsSegment id komposition =
+    List.filter (\seg -> seg.id == id) komposition.segments
 
 
 performSegmentOnModel segment function model  =
-    case RemoteData.toMaybe model.kompost of
-        Just komp ->
-            { model | kompost = succeed (function segment komp) }
-
-        _ ->
-            model
-
+    { model | kompost = (function segment model.kompost) }
 
 addSegmentToKomposition : Segment -> Komposition -> Komposition
 addSegmentToKomposition segment komposition =
