@@ -133,13 +133,11 @@ update msg model =
             Debug.log "Deleting segment: " performSegmentOnModel model.segment UI.SegmentUI.deleteSegmentFromKomposition model ! [ navigateTo Kompost ]
 
         CouchServerStatus serverstatus ->
-            let (navigation, rev) = case RemoteData.toMaybe serverstatus of
-                         Just status ->  (Kompost, status.rev)
-                         _ -> (NotFound, "")
-
-                newModel = case RemoteData.toMaybe model.kompost of
-                    Just kompost -> { model | kompost = succeed { kompost | revision = rev} }
-                    _ -> model
+            let (newModel, navigation) = case RemoteData.toMaybe serverstatus of
+                    Just status ->  case RemoteData.toMaybe model.kompost of
+                        Just kompost -> ({ model | kompost = succeed { kompost | revision = status.rev} }, Kompost)
+                        _ -> (model, NotFound)
+                    _ -> (model, NotFound)
             in newModel ! [ navigateTo navigation ]
 
 ---- VIEW ----
