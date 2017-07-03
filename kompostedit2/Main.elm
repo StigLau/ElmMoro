@@ -112,7 +112,7 @@ update msg model =
                             [ segment ] -> segment
                             _ -> model.segment
                     in
-                        { model | segment = segment } ! [ navigateTo AppRouting.Segment ]
+                        { model | segment = segment, editableSegment=False } ! [ navigateTo AppRouting.Segment ]
 
         UpdateSegment ->
             case (containsSegment model.segment.id model.kompost) of
@@ -133,8 +133,17 @@ update msg model =
             Debug.log "Deleting segment: " performSegmentOnModel model.segment UI.SegmentUI.deleteSegmentFromKomposition model ! [ navigateTo Kompost ]
 
         CouchServerStatus serverstatus ->
-            let _ = Debug.log "Returned from server" serverstatus
-            in model ! [ navigateTo Kompost ]
+            let (navigation, rev) = case RemoteData.toMaybe serverstatus of
+                         Just status ->  (Kompost, status.rev)
+                         _ -> (NotFound, "")
+                _ = Debug.log "new Revision" rev
+
+                kompost = case RemoteData.toMaybe model.kompost of
+                    Just komposition -> komposition
+                    _ -> testKomposition
+                kompost2 = { kompost | revision = rev}
+                model2 = { model | kompost = succeed kompost2 }
+            in model2 ! [ navigateTo navigation ]
 
 ---- VIEW ----
 
@@ -171,7 +180,7 @@ view model =
                 pageWrapper <| UI.KompostUI.kompost <| uiConfig model
 
             AppRouting.Segment ->
-                pageWrapper <| UI.SegmentUI.segmentForm (uiConfig model) False
+                pageWrapper <| UI.SegmentUI.segmentForm (uiConfig model) model.editableSegment
 
             AppRouting.DvlSpecificsUI ->
                 case RemoteData.toMaybe model.kompost of

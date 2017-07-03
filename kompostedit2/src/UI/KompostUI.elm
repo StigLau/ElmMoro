@@ -24,7 +24,7 @@ kompost config =
                 , UI.SegmentUI.showSegmentList kompo.segments config
                 , Button.button [ Button.secondary, Button.onClick config.onClickViewListings ] [ text "List Komposti" ]
                 , Button.button [ Button.primary, Button.small, Button.onClick (config.onClickCreateSegment) ] [ text "New Segment" ]
-                , Button.button [ Button.primary, Button.small, Button.onClick (config.onClickStoreKomposition) ] [ text "Store Komposition" ]
+                , Button.button [ Button.success, Button.small, Button.onClick (config.onClickStoreKomposition) ] [ text "Store Komposition" ]
                 ]
 
         Nothing ->

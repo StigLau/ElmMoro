@@ -118,7 +118,7 @@ segmentForm config editableSegmentId =
                 , Form.col []
                     [ Button.button [ Button.secondary, Button.onClick (config.onClickgotoKompositionPage) ] [ text "Back" ] ]
                 , Form.col []
-                    [ Button.button [ Button.primary, Button.small, Button.onClick config.onClickUpdateSegment ] [ text "Update" ] ]
+                    [ Button.button [ Button.primary, Button.small, Button.onClick config.onClickUpdateSegment ] [ text "Save" ] ]
                 , Form.col []
                     [ Button.button [ Button.warning, Button.small, Button.onClick config.onClickDeleteSegment ] [ text "Delete" ] ]
                 ]
@@ -134,7 +134,7 @@ showSegmentList segs config =
 showSingleSegment : Config msg -> Segment -> Html msg
 showSingleSegment config segment =
     Grid.row []
-        [ Grid.col [] [ Button.button [ Button.success, Button.small, Button.onClick (config.onClickEditSegment segment.id) ] [ text segment.id ] ]
+        [ Grid.col [] [ Button.button [ Button.secondary, Button.small, Button.onClick (config.onClickEditSegment segment.id) ] [ text segment.id ] ]
         , Grid.col [] [ text <| toString segment.start ]
         , Grid.col [] [ text <| toString segment.end ]
         ]
