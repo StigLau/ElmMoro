@@ -136,14 +136,11 @@ update msg model =
             let (navigation, rev) = case RemoteData.toMaybe serverstatus of
                          Just status ->  (Kompost, status.rev)
                          _ -> (NotFound, "")
-                _ = Debug.log "new Revision" rev
 
-                kompost = case RemoteData.toMaybe model.kompost of
-                    Just komposition -> komposition
-                    _ -> testKomposition
-                kompost2 = { kompost | revision = rev}
-                model2 = { model | kompost = succeed kompost2 }
-            in model2 ! [ navigateTo navigation ]
+                newModel = case RemoteData.toMaybe model.kompost of
+                    Just kompost -> { model | kompost = succeed { kompost | revision = rev} }
+                    _ -> model
+            in newModel ! [ navigateTo navigation ]
 
 ---- VIEW ----
 
