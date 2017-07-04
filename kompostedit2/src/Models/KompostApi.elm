@@ -39,7 +39,7 @@ updateKompo komposition =
         { method = "PUT"
         , headers = []
         , url = kompoUrl ++ komposition.name
-        , body = Http.stringBody "application/json" <| encodeKomposition komposition
+        , body = Http.stringBody "application/json" <| encodeKomposition komposition komposition.revision
         , expect = Http.expectJson couchServerStatusDecoder
         , timeout = Nothing
         , withCredentials = False
@@ -53,7 +53,7 @@ createKompo komposition =
         { method = "POST"
         , headers = []
         , url = kompoUrl
-        , body = Http.stringBody "application/json" <| encodeKomposition komposition
+        , body = Http.stringBody "application/json" <| encodeNewKomposition komposition
         , expect = Http.expectJson couchServerStatusDecoder
         , timeout = Nothing
         , withCredentials = False
@@ -94,12 +94,23 @@ mediaFileDecoder =
         (JsonD.field "checksum" JsonD.string)
 
 
-encodeKomposition : Komposition -> String
-encodeKomposition kompo =
+encodeNewKomposition : Komposition -> String
+encodeNewKomposition kompo =
     JsonE.encode 0 <|
         JsonE.object
             [ ( "_id", JsonE.string kompo.name )
-            , ( "_rev", JsonE.string kompo.revision )
+            , ( "bpm", JsonE.float kompo.bpm)
+            , ( "mediaFile", encodeMediaFile kompo.mediaFile )
+            , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
+            ]
+
+
+encodeKomposition : Komposition -> String -> String
+encodeKomposition kompo revision =
+    JsonE.encode 0 <|
+        JsonE.object
+            [ ( "_id", JsonE.string kompo.name )
+            , ( "_rev", JsonE.string revision )
             , ( "bpm", JsonE.float kompo.bpm)
             , ( "mediaFile", encodeMediaFile kompo.mediaFile )
             , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
