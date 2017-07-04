@@ -134,6 +134,15 @@ update msg model =
                     _ -> (model, NotFound)
             in newModel ! [ navigateTo navigation ]
 
+        DvlSpecificsMsg msg ->
+                    let
+                        (newModel, cmd, childMsg) = UI.DvlSpecificsUI.update msg model
+                        cmds = case UI.DvlSpecificsUI.extractFromOutmessage childMsg of
+                            Just page -> [navigateTo page]
+                            Nothing ->  []
+                    in
+                        newModel ! cmds
+
 ---- VIEW ----
 
 
@@ -172,7 +181,7 @@ view model =
                 pageWrapper <| UI.SegmentUI.segmentForm (uiConfig model) model.editableSegment
 
             AppRouting.DvlSpecificsUI ->
-                pageWrapper <| UI.DvlSpecificsUI.editSpecifics model.kompost (uiConfig model)
+                Html.map DvlSpecificsMsg(pageWrapper <| UI.DvlSpecificsUI.editSpecifics model.kompost)
 
             NotFound ->
                 div [] [ text "Sorry, nothing here :(" ]

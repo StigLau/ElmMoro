@@ -5,6 +5,7 @@ import Navigation.AppRouting exposing (Page)
 import Navigation exposing (Location)
 import Models.KompostModels exposing (Komposition, Segment, CouchStatusMessage)
 import Models.KompostListing exposing (DataRepresentation)
+import Models.DvlSpecificsModel exposing (Msg)
 
 
 ---- MODEL ----
@@ -39,6 +40,7 @@ type Msg
     | UpdateSegment
     | DeleteSegment
     | StoreKomposition
+    | DvlSpecificsMsg Models.DvlSpecificsModel.Msg
 
 
 {-| The config contains functions and messages that the UI can use to send messages to the update function,
