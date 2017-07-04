@@ -5,10 +5,11 @@ import Html.Attributes exposing (class, href, type_)
 import Http
 import Json.Decode as JsonD
 import RemoteData exposing (WebData, isLoading)
-import Bootstrap.Button exposing (onClick)
+import Bootstrap.Button as Button exposing (onClick)
+import Bootstrap.Grid as Grid
 import Bootstrap.CDN
 import Html.Attributes exposing (style)
-import Models.MsgModel exposing (Msg(ListingsUpdated, ChooseDvl))
+import Models.Msg exposing (Msg(ListingsUpdated, ChooseDvl, NewKomposition))
 import Models.BaseModel exposing (Model, DataRepresentation, Row)
 
 
@@ -53,6 +54,7 @@ listings model =
 
                         Nothing ->
                             text "loading."
+                    , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick NewKomposition ] [ text "New Komposition" ]]]
                     ]
                 ]
             ]
@@ -61,9 +63,9 @@ listings model =
 
 chooseDvlButton : Model -> Row -> Html Msg
 chooseDvlButton model row =
-    Bootstrap.Button.button
-        [ Bootstrap.Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
-        , Bootstrap.Button.secondary
+    Button.button
+        [ Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
+        , Button.secondary
         , onClick <| (ChooseDvl row.id)
         ]
         [ text row.id ]

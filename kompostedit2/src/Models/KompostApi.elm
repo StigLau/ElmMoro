@@ -1,10 +1,10 @@
-module Models.KompostApi exposing (getKomposition, updateKompo)
+module Models.KompostApi exposing (getKomposition, updateKompo, createKompo)
 
 import Json.Decode as JsonD
 import Json.Encode as JsonE
 import Http exposing (emptyBody, expectJson)
 import RemoteData exposing (RemoteData(..))
-import Models.MsgModel exposing (Msg(KompositionUpdated, CouchServerStatus))
+import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus))
 import Models.BaseModel exposing (Komposition, Segment, Mediafile, CouchStatusMessage)
 
 
@@ -39,6 +39,20 @@ updateKompo komposition =
         { method = "PUT"
         , headers = []
         , url = kompoUrl ++ komposition.name
+        , body = Http.stringBody "application/json" <| encodeKomposition komposition
+        , expect = Http.expectJson couchServerStatusDecoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> RemoteData.sendRequest
+        |> Cmd.map CouchServerStatus
+
+createKompo : Komposition -> Cmd Msg
+createKompo komposition =
+    Http.request
+        { method = "POST"
+        , headers = []
+        , url = kompoUrl
         , body = Http.stringBody "application/json" <| encodeKomposition komposition
         , expect = Http.expectJson couchServerStatusDecoder
         , timeout = Nothing

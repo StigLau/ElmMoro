@@ -1,4 +1,4 @@
-module Models.MsgModel exposing (Msg(..))
+module Models.Msg exposing (Msg(..))
 
 import Models.BaseModel exposing (..)
 import RemoteData exposing (WebData)
@@ -19,9 +19,10 @@ type Msg
     | NavigateTo Page
     | ChooseDvl String
     | EditSpecifics
+    | NewKomposition
+    | StoreKomposition
     | KompositionUpdated (WebData Komposition)
     | CreateSegment
     | CouchServerStatus (WebData CouchStatusMessage)
-    | StoreKomposition
     | DvlSpecificsMsg Models.DvlSpecificsModel.Msg
     | SegmentMsg Segment.Model.Msg

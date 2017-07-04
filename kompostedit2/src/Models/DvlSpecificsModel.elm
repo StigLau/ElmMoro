@@ -4,7 +4,8 @@ import Navigation.AppRouting exposing (Page)
 import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo))
 
 type Msg
-    = SetFileName String
+    = SetKompositionName String
+    | SetFileName String
     | SetBpm String
     | SetChecksum String
     | InternalNavigateTo Page
@@ -25,6 +26,10 @@ update msg model =
                 kompost = model.kompost
                 nuBpm = Result.withDefault 0 (String.toFloat bpm)
             in ({ model | kompost = {kompost | bpm = nuBpm}}, Cmd.none, Nothing)
+
+        SetKompositionName name ->
+            let kompost = model.kompost
+            in ({model | kompost = {kompost | name = name }}, Cmd.none, Nothing)
 
         SetFileName fileName ->
             let

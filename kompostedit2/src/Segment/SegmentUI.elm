@@ -3,7 +3,6 @@ module Segment.SegmentUI exposing (segmentForm, showSegmentList)
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src, style, type_, placeholder)
 import Html.Events exposing (onInput, onClick)
-import Models.MsgModel exposing (..)
 import Models.BaseModel exposing (..)
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Form as Form
@@ -12,7 +11,7 @@ import Bootstrap.Button as Button
 import Bootstrap.Grid as Grid
 import Segment.Model exposing (Msg(..))
 import Navigation.AppRouting exposing (Page(Kompost))
-import Models.MsgModel exposing (Msg)
+import Models.Msg exposing (Msg)
 
 
 segmentForm : Model -> Bool -> Html Segment.Model.Msg

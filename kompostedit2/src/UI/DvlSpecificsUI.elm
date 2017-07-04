@@ -1,7 +1,7 @@
 module UI.DvlSpecificsUI exposing (showSpecifics, editSpecifics)
 
 import Models.BaseModel exposing (..)
-import Models.MsgModel exposing(Msg(EditSpecifics))
+import Models.Msg exposing(Msg(EditSpecifics))
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import Bootstrap.Grid as Grid
@@ -18,9 +18,13 @@ import Navigation.AppRouting exposing (Page(Kompost))
 
 editSpecifics : Komposition -> Html DvlSpecificsModel.Msg
 editSpecifics kompo =
-    div [] [ h1 [] [ text "Editing Specifics" ]
+    let editable = case kompo.revision of
+            "" -> False
+            _ -> True
+    in
+        div [] [ h1 [] [ text "Editing Specifics" ]
         , Form.form [ class "container" ]
-            [ (wrapping "Name" (Input.text [ Input.id "Name", Input.defaultValue kompo.name, Input.disabled True]))
+            [ (wrapping "Name" (Input.text [ Input.id "Name", Input.defaultValue kompo.name, Input.onInput DvlSpecificsModel.SetKompositionName, Input.disabled editable]))
             , (wrapping "Revision" (Input.text [ Input.id "Revision", Input.defaultValue kompo.revision, Input.disabled True]))
             , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.defaultValue (toString kompo.bpm), Input.onInput DvlSpecificsModel.SetBpm ]))
             , (wrapping "Media link" (Input.text [ Input.id "Media link", Input.defaultValue kompo.mediaFile.fileName, Input.onInput DvlSpecificsModel.SetFileName ]))
@@ -37,7 +41,7 @@ showSpecifics kompo =
         , addRow "Media link" (a [ Html.Attributes.href kompo.mediaFile.fileName ] [ text kompo.mediaFile.fileName ])
         , addRow "Checksum" (text kompo.mediaFile.checksum)
         , Grid.row [] [ Grid.col [] [ ] , Grid.col [] [  ],
-            Grid.col [] [  Button.button [ Button.primary, Button.small, Button.onClick Models.MsgModel.EditSpecifics ] [ text "Edit Specifics" ] ] ]
+            Grid.col [] [  Button.button [ Button.primary, Button.small, Button.onClick Models.Msg.EditSpecifics ] [ text "Edit Specifics" ] ] ]
         ]
 
 addRow title htmlIsh =

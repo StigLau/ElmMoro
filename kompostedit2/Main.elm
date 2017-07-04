@@ -3,11 +3,11 @@ module Main exposing (main, init, update, view)
 import Html exposing (Html, div, text)
 import RemoteData exposing (succeed, isLoading, RemoteData(..))
 import Navigation exposing (Location)
-import Models.MsgModel exposing (Msg(..))
+import Models.Msg exposing (Msg(..))
 import Models.BaseModel exposing (..)
 import Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
 import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
-import Models.KompostApi exposing (getKomposition, updateKompo)
+import Models.KompostApi exposing (getKomposition, updateKompo, createKompo)
 import Segment.SegmentUI exposing (segmentForm, showSegmentList)
 import Segment.Model exposing (update)
 import UI.KompostUI exposing (..)
@@ -21,7 +21,7 @@ import Bootstrap.CDN as CDN
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
     ( { listings = RemoteData.Loading
-      , kompost = testKomposition
+      , kompost = emptyKompostion
       , dvlId = Nothing
       , activePage = AppRouting.Listings
       , isLoading = True
@@ -54,6 +54,8 @@ update msg model =
         ChooseDvl id ->
             { model | dvlId = Just id, activePage = Kompost } ! [ getKomposition id ]
 
+        NewKomposition -> { model | kompost = emptyKompostion } ! [ navigateTo AppRouting.DvlSpecificsUI ]
+
         KompositionUpdated webKomposition ->
             let newModel = case RemoteData.toMaybe webKomposition of
                                 Just kompost -> { model | kompost = kompost}
@@ -61,7 +63,12 @@ update msg model =
             in newModel ! [ navigateTo Kompost ]
 
         StoreKomposition ->
-                model ! [updateKompo model.kompost]
+            let
+                command = case model.kompost.revision of
+                    "" -> createKompo model.kompost
+                    _  -> updateKompo model.kompost
+            in
+                model ! [command]
 
         EditSpecifics ->
             model ! [ navigateTo AppRouting.DvlSpecificsUI ]
@@ -145,10 +152,10 @@ main =
 --testListings = MsgModel.DataRepresentation 1 0 [testRow]
 --testRow = MsgModel.Row "id123" "key123"
 
-testKomposition = Komposition "Name" "Revision01" 123 testMediaFile [testSegment1, testSegment2]
+emptyKompostion = Komposition "" "" 0 testMediaFile [testSegment1, testSegment2]
 --initModel = Model "dvlRef" "name" "revision" 0 1234  testConfig testMediaFile [testSegment1, testSegment2]
 --testConfig = MsgModel.Config 1280 1080 24 "mp4" 1234
-testMediaFile = Mediafile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" 0 "A Checksum"
+testMediaFile = Mediafile "https://www.not.configured.com/watch?v=Scxs7L0vhZ4" 0 "No checksum"
 testSegment1 = Segment "Purple Mountains Clouds" 7541667 19750000
 testSegment2 = Segment "Besseggen" 21250000  27625000
 
