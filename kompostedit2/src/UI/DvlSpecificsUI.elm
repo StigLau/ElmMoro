@@ -19,16 +19,11 @@ editSpecifics : Komposition -> Html DvlSpecificsModel.Msg
 editSpecifics kompo =
     div [] [ h1 [] [ text "Editing Specifics" ]
         , Form.form [ class "container" ]
-            [ immutableRow "Name" kompo.name
-            , immutableRow "Revision" kompo.revision
-            , Form.row [  ]
-                        [ Form.colLabel [ Col.xs4 ]
-                            [ text "Bpm" ]
-                        , Form.col [ Col.xs8 ]
-                            [ Input.number [ Input.id "bpm", Input.defaultValue (toString kompo.bpm), Input.onInput DvlSpecificsModel.SetBpm ] ]
-                        ]
-            , editableRow "Media link" kompo.mediaFile.fileName SetFileName
-            , editableRow "Checksum" kompo.mediaFile.checksum SetChecksum
+            [ (wrapping "Name" (Input.text [ Input.id "Name", Input.defaultValue kompo.name, Input.disabled True]))
+            , (wrapping "Revision" (Input.text [ Input.id "Revision", Input.defaultValue kompo.revision, Input.disabled True]))
+            , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.defaultValue (toString kompo.bpm), Input.onInput DvlSpecificsModel.SetBpm ]))
+            , (wrapping "Media link" (Input.text [ Input.id "Media link", Input.defaultValue kompo.mediaFile.fileName, Input.onInput DvlSpecificsModel.SetFileName ]))
+            , (wrapping "Checksum" (Input.text [ Input.id "Checksum", Input.defaultValue kompo.mediaFile.checksum, Input.onInput DvlSpecificsModel.SetChecksum ]))
             , Button.button [ Button.secondary, Button.onClick (DvlSpecificsModel.InternalNavigateTo Kompost) ] [ text "Save" ]
             ]
         ]
@@ -49,19 +44,10 @@ addRow title htmlIsh =
         , Grid.col [] [ htmlIsh ]
         ]
 
-editableRow identifier defaultValue action =
-        Form.row [  ]
-          [ Form.colLabel [ Col.xs4 ]
-              [ text identifier ]
-          , Form.col [ Col.xs8 ]
-              [ Input.text [ Input.id identifier, Input.defaultValue defaultValue, Input.onInput action ] ]
-          ]
-
-immutableRow identifier defaultValue =
-        Form.row [  ]
-          [ Form.colLabel [ Col.xs4 ]
-              [ text identifier ]
-          , Form.col [ Col.xs8 ]
-              [ Input.text [ Input.id identifier, Input.defaultValue defaultValue, Input.disabled True] ]
-          ]
-
+wrapping identifier funk =
+    Form.row [  ]
+        [ Form.colLabel [ Col.xs4 ]
+            [ text identifier ]
+        , Form.col [ Col.xs8 ]
+            [ funk ]
+        ]
