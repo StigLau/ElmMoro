@@ -1,6 +1,6 @@
-module UI.DvlSpecificsUI exposing (showSpecifics, editSpecifics, update, extractFromOutmessage)
+module UI.DvlSpecificsUI exposing (showSpecifics, editSpecifics)
 
-import Models.MsgModel exposing ( Model)
+import Models.BaseModel exposing ( ..)
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import Bootstrap.Grid as Grid
@@ -11,7 +11,6 @@ import Bootstrap.Form.Input as Input
 import Bootstrap.Form.Select as Select
 import Bootstrap.Form.Checkbox as Chk
 import Bootstrap.Button as Button
-import Models.KompostModels exposing (Komposition)
 import Models.DvlSpecificsModel as DvlSpecificsModel exposing (..)
 import RemoteData exposing (WebData)
 import Navigation.AppRouting exposing (Page(Kompost))
@@ -67,37 +66,3 @@ immutableRow identifier defaultValue =
               [ Input.text [ Input.id identifier, Input.defaultValue defaultValue, Input.disabled True] ]
           ]
 
-extractFromOutmessage: Maybe DvlSpecificsModel.OutMsg -> Maybe Page
-extractFromOutmessage childMsg =
-    case childMsg of
-        Just (DvlSpecificsModel.OutNavigateTo page) -> Just page
-        _ -> Nothing
-
-
-update : DvlSpecificsModel.Msg -> Model -> ( Model, Cmd DvlSpecificsModel.Msg, Maybe OutMsg )
-update msg model =
-    case msg of
-        DvlSpecificsModel.SetBpm bpm ->
-            let
-                kompost = model.kompost
-            in ({ model | kompost = {kompost | bpm = Just bpm}}, Cmd.none, Nothing)
-
-        DvlSpecificsModel.SetFileName fileName ->
-            let
-                mediaFile = model.kompost.mediaFile
-            in ((updateMediaFile { mediaFile | fileName = fileName } model), Cmd.none, Nothing)
-
-        DvlSpecificsModel.SetChecksum checksum ->
-            let
-                mediaFile = model.kompost.mediaFile
-            in ((updateMediaFile { mediaFile | checksum = checksum } model), Cmd.none, Nothing)
-
-        DvlSpecificsModel.InternalNavigateTo page ->
-            let _ = Debug.log "Navigating to" page
-                _ = Debug.log "BPM is" model.kompost.bpm
-            in (model, Cmd.none, Just (DvlSpecificsModel.OutNavigateTo Kompost))
-
-updateMediaFile mediaFile model =
-    let
-        kompost = model.kompost
-    in { model | kompost = {kompost | mediaFile = mediaFile}}

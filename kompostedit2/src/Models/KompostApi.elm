@@ -5,7 +5,7 @@ import Json.Encode as JsonE
 import Http exposing (emptyBody, expectJson)
 import RemoteData exposing (RemoteData(..))
 import Models.MsgModel exposing (Msg(KompositionUpdated, GotoKompositionPage, CouchServerStatus))
-import Models.KompostModels exposing (Komposition, Segment, Mediafile, CouchStatusMessage)
+import Models.BaseModel exposing (Komposition, Segment, Mediafile, CouchStatusMessage)
 
 
 kompoUrl : String

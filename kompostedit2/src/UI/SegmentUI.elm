@@ -3,8 +3,8 @@ module UI.SegmentUI exposing (asStartIn, asIdIn, asCurrentSegmentIn, asEndIn, co
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src, style, type_, placeholder)
 import Html.Events exposing (onInput, onClick)
-import Models.MsgModel exposing (Config, Msg(..), Model)
-import Models.KompostModels exposing (Komposition, Segment)
+import Models.MsgModel exposing (Config, Msg(..))
+import Models.BaseModel exposing (..)
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
@@ -53,7 +53,7 @@ asCurrentSegmentIn =
     flip setCurrentSegment
 
 
-containsSegment : String -> Komposition -> List Models.KompostModels.Segment
+containsSegment : String -> Komposition -> List Segment
 containsSegment id komposition =
     List.filter (\seg -> seg.id == id) komposition.segments
 

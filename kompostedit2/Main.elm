@@ -1,11 +1,12 @@
-module App exposing (main, init, update, view)
+module Main exposing (main, init, update, view)
 
 import Html exposing (Html, div, text)
 import RemoteData exposing (succeed, isLoading, RemoteData(..))
 import Navigation exposing (Location)
-import Models.MsgModel exposing (Msg(..), Model, Config)
+import Models.MsgModel exposing (Msg(..), Config)
+import Models.BaseModel exposing (..)
+import Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
 import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
-import Models.KompostModels exposing (Komposition, Segment)
 import Models.KompostApi exposing (getKomposition, updateKompo)
 import UI.SegmentUI exposing (..)
 import UI.KompostUI exposing (..)
@@ -136,8 +137,8 @@ update msg model =
 
         DvlSpecificsMsg msg ->
                     let
-                        (newModel, cmd, childMsg) = UI.DvlSpecificsUI.update msg model
-                        cmds = case UI.DvlSpecificsUI.extractFromOutmessage childMsg of
+                        (newModel, cmd, childMsg) = Models.DvlSpecificsModel.update msg model
+                        cmds = case Models.DvlSpecificsModel.extractFromOutmessage childMsg of
                             Just page -> [navigateTo page]
                             Nothing ->  []
                     in
@@ -216,10 +217,10 @@ main =
 --testListings = MsgModel.DataRepresentation 1 0 [testRow]
 --testRow = MsgModel.Row "id123" "key123"
 
-testKomposition = Models.KompostModels.Komposition "Name" "Revision01" (Just "123") testMediaFile [testSegment1, testSegment2]
+testKomposition = Komposition "Name" "Revision01" (Just "123") testMediaFile [testSegment1, testSegment2]
 --initModel = Model "dvlRef" "name" "revision" 0 1234  testConfig testMediaFile [testSegment1, testSegment2]
 --testConfig = MsgModel.Config 1280 1080 24 "mp4" 1234
-testMediaFile = Models.KompostModels.Mediafile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" 0 "A Checksum"
+testMediaFile = Mediafile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" 0 "A Checksum"
 testSegment1 = Segment "Purple Mountains Clouds" 7541667 19750000
 testSegment2 = Segment "Besseggen" 21250000  27625000
 

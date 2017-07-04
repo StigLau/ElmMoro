@@ -9,7 +9,7 @@ import Bootstrap.Button exposing (onClick)
 import Bootstrap.CDN
 import Html.Attributes exposing (style)
 import Models.MsgModel exposing (Config, Msg(ListingsUpdated))
-import Models.KompostListing exposing (DataRepresentation, Row)
+import Models.BaseModel exposing (DataRepresentation, Row)
 import UI.Theme exposing (theme)
 
 

@@ -1,25 +1,15 @@
-module Models.MsgModel exposing (Msg(..), Model, Config)
+module Models.MsgModel exposing (Msg(..), Config)
 
+import Models.BaseModel exposing (..)
 import RemoteData exposing (WebData)
 import Navigation.AppRouting exposing (Page)
 import Navigation exposing (Location)
-import Models.KompostModels exposing (Komposition, Segment, CouchStatusMessage)
-import Models.KompostListing exposing (DataRepresentation)
 import Models.DvlSpecificsModel exposing (Msg)
 
 
 ---- MODEL ----
 
 
-type alias Model =
-    { listings : WebData DataRepresentation
-    , kompost : Komposition
-    , dvlId : Maybe String
-    , activePage : Page
-    , isLoading : Bool
-    , editableSegment : Bool
-    , segment : Segment
-    }
 
 
 type Msg
