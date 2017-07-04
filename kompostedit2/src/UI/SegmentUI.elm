@@ -72,13 +72,7 @@ deleteSegmentFromKomposition segment komposition =
 
 
 validNr : String -> Int
-validNr value =
-    case String.toInt value of
-        Ok int ->
-            int
-
-        Err _ ->
-            -1
+validNr value = Result.withDefault 0 (String.toInt value)
 
 
 segmentForm : Config msg -> Bool -> Html msg

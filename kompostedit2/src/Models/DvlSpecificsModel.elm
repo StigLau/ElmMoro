@@ -25,7 +25,8 @@ update msg model =
         SetBpm bpm ->
             let
                 kompost = model.kompost
-            in ({ model | kompost = {kompost | bpm = bpm}}, Cmd.none, Nothing)
+                nuBpm = Result.withDefault 0 (String.toFloat bpm)
+            in ({ model | kompost = {kompost | bpm = nuBpm}}, Cmd.none, Nothing)
 
         SetFileName fileName ->
             let
