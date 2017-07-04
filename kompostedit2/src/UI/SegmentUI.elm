@@ -116,7 +116,7 @@ segmentForm config editableSegmentId =
 
 showSegmentList : List Segment -> Config msg -> Html msg
 showSegmentList segs config =
-    div [] (segs |> List.map (showSingleSegment config))
+    div [] ((List.sortBy .start segs) |> List.map (showSingleSegment config))
 
 
 showSingleSegment : Config msg -> Segment -> Html msg
