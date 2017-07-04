@@ -21,10 +21,7 @@ editSpecifics kompo =
         , Form.form [ class "container" ]
             [ immutableRow "Name" kompo.name
             , immutableRow "Revision" kompo.revision
-            , let bpm = case kompo.bpm of
-                    Just bpm -> bpm
-                    _ -> ""
-              in editableRow "BPM" bpm DvlSpecificsModel.SetBpm
+            , editableRow "BPM" kompo.bpm  DvlSpecificsModel.SetBpm
             , editableRow "Media link" kompo.mediaFile.fileName SetFileName
             , editableRow "Checksum" kompo.mediaFile.checksum SetChecksum
             , Button.button [ Button.secondary, Button.onClick (DvlSpecificsModel.InternalNavigateTo Kompost) ] [ text "Save" ]
@@ -35,10 +32,7 @@ showSpecifics kompo config =
     Grid.container []
         [ addRow "Name" (text kompo.name)
         , addRow "Revision" (text kompo.revision)
-        , let bpm = case kompo.bpm of
-                            Just bpm -> bpm
-                            _ -> ""
-                      in addRow "BPM" (text bpm)
+        , addRow "BPM" (text kompo.bpm)
         , addRow "Media link" (a [ Html.Attributes.href kompo.mediaFile.fileName ] [ text kompo.mediaFile.fileName ])
         , addRow "Checksum" (text kompo.mediaFile.checksum)
         , Button.button [ Button.primary, Button.small, Button.onClick (config.onClickEditSpecifics) ] [ text "Edit Specifics" ]

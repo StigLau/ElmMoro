@@ -52,7 +52,7 @@ kompositionDecoder =
     JsonD.map5 Komposition
         (JsonD.field "_id" JsonD.string)
         (JsonD.field "_rev" JsonD.string)
-        (JsonD.maybe <| JsonD.field "bpm" JsonD.string)
+        (JsonD.field "bpm" JsonD.string)
         (JsonD.field "mediaFile" mediaFileDecoder)
         (JsonD.field "segments" <| JsonD.list segmentDecoder)
 
@@ -86,6 +86,7 @@ encodeKomposition kompo =
         JsonE.object
             [ ( "_id", JsonE.string kompo.name )
             , ( "_rev", JsonE.string kompo.revision )
+            , ( "bpm", JsonE.string kompo.bpm)
             , ( "mediaFile", encodeMediaFile kompo.mediaFile )
             , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
             ]

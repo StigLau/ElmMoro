@@ -17,7 +17,7 @@ type alias Model =
 type alias Komposition =
     { name : String
     , revision : String
-    , bpm : Maybe String
+    , bpm : String
 
     --, config: Config
     , mediaFile : Mediafile

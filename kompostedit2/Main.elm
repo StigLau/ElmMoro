@@ -217,7 +217,7 @@ main =
 --testListings = MsgModel.DataRepresentation 1 0 [testRow]
 --testRow = MsgModel.Row "id123" "key123"
 
-testKomposition = Komposition "Name" "Revision01" (Just "123") testMediaFile [testSegment1, testSegment2]
+testKomposition = Komposition "Name" "Revision01" "123" testMediaFile [testSegment1, testSegment2]
 --initModel = Model "dvlRef" "name" "revision" 0 1234  testConfig testMediaFile [testSegment1, testSegment2]
 --testConfig = MsgModel.Config 1280 1080 24 "mp4" 1234
 testMediaFile = Mediafile "https://www.youtube.com/watch?v=Scxs7L0vhZ4" 0 "A Checksum"
