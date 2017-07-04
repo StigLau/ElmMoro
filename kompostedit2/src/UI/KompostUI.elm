@@ -16,8 +16,7 @@ import Models.MsgModel exposing (Config)
 kompost : Config msg -> Html msg
 kompost config =
     div []
-        [ theme config.loadingIndicator
-        , div [] [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ] ]
+        [ div [] [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ] ]
         , UI.DvlSpecificsUI.showSpecifics config.kompost  config
         , UI.SegmentUI.showSegmentList config.kompost.segments config
         , Button.button [ Button.secondary, Button.onClick config.onClickViewListings ] [ text "List Komposti" ]
