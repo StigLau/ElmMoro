@@ -4,7 +4,7 @@ import Json.Decode as JsonD
 import Json.Encode as JsonE
 import Http exposing (emptyBody, expectJson)
 import RemoteData exposing (RemoteData(..))
-import Models.MsgModel exposing (Msg(KompositionUpdated, GotoKompositionPage, CouchServerStatus))
+import Models.MsgModel exposing (Msg(KompositionUpdated, CouchServerStatus))
 import Models.BaseModel exposing (Komposition, Segment, Mediafile, CouchStatusMessage)
 
 

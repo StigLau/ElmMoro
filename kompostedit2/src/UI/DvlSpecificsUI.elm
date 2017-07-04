@@ -1,6 +1,7 @@
 module UI.DvlSpecificsUI exposing (showSpecifics, editSpecifics)
 
-import Models.BaseModel exposing ( ..)
+import Models.BaseModel exposing (..)
+import Models.MsgModel exposing(Msg(EditSpecifics))
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import Bootstrap.Grid as Grid
@@ -28,14 +29,15 @@ editSpecifics kompo =
             ]
         ]
 
-showSpecifics kompo config =
+showSpecifics kompo =
     Grid.container []
         [ addRow "Name" (text kompo.name)
         , addRow "Revision" (text kompo.revision)
         , addRow "BPM" (text (toString kompo.bpm))
         , addRow "Media link" (a [ Html.Attributes.href kompo.mediaFile.fileName ] [ text kompo.mediaFile.fileName ])
         , addRow "Checksum" (text kompo.mediaFile.checksum)
-        , Button.button [ Button.primary, Button.small, Button.onClick (config.onClickEditSpecifics) ] [ text "Edit Specifics" ]
+        , Grid.row [] [ Grid.col [] [ ] , Grid.col [] [  ],
+            Grid.col [] [  Button.button [ Button.primary, Button.small, Button.onClick Models.MsgModel.EditSpecifics ] [ text "Edit Specifics" ] ] ]
         ]
 
 addRow title htmlIsh =

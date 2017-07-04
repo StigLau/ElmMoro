@@ -38,6 +38,7 @@ type alias Segment =
     , end : Int
     }
 
+{-- Status from Couch server --}
 type alias CouchStatusMessage =
     { id: String
     , ok: Bool
@@ -59,3 +60,7 @@ type alias Row =
     { id : String
     , key : String
     }
+
+{--Navigation between pages--}
+type OutMsg
+    = OutNavigateTo Page

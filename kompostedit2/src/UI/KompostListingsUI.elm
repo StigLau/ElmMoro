@@ -8,9 +8,8 @@ import RemoteData exposing (WebData, isLoading)
 import Bootstrap.Button exposing (onClick)
 import Bootstrap.CDN
 import Html.Attributes exposing (style)
-import Models.MsgModel exposing (Config, Msg(ListingsUpdated))
-import Models.BaseModel exposing (DataRepresentation, Row)
-import UI.Theme exposing (theme)
+import Models.MsgModel exposing (Msg(ListingsUpdated, ChooseDvl))
+import Models.BaseModel exposing (Model, DataRepresentation, Row)
 
 
 storeUrl : String
@@ -40,18 +39,17 @@ getListings =
         |> Cmd.map ListingsUpdated
 
 
-listings : Config msg -> Html msg
-listings config =
+listings : Model -> Html Msg
+listings model =
     div [ class "listings" ]
-        [ theme config.loadingIndicator
-        , h1 [] [ text ("Dvls in ") ]
+        [ h1 [] [ text ("Dvls in ") ]
         , table [ class "table table-striped" ]
             [ thead []
                 [ tr []
                     [ th [] [ text "Id" ]
-                    , case RemoteData.toMaybe config.listings of
+                    , case RemoteData.toMaybe model.listings of
                         Just listings ->
-                            tbody [] (List.map (chooseDvlButton config) listings.rows)
+                            tbody [] (List.map (chooseDvlButton model) listings.rows)
 
                         Nothing ->
                             text "loading."
@@ -61,11 +59,11 @@ listings config =
         ]
 
 
-chooseDvlButton : Config msg -> Row -> Html msg
-chooseDvlButton config row =
+chooseDvlButton : Model -> Row -> Html Msg
+chooseDvlButton model row =
     Bootstrap.Button.button
         [ Bootstrap.Button.attrs [ style [ ( "margin-top", "auto" ) ] ]
         , Bootstrap.Button.secondary
-        , onClick <| (config.onClickChooseDvl row.id)
+        , onClick <| (ChooseDvl row.id)
         ]
         [ text row.id ]

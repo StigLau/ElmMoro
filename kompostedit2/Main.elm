@@ -3,12 +3,13 @@ module Main exposing (main, init, update, view)
 import Html exposing (Html, div, text)
 import RemoteData exposing (succeed, isLoading, RemoteData(..))
 import Navigation exposing (Location)
-import Models.MsgModel exposing (Msg(..), Config)
+import Models.MsgModel exposing (Msg(..))
 import Models.BaseModel exposing (..)
 import Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
 import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
 import Models.KompostApi exposing (getKomposition, updateKompo)
-import UI.SegmentUI exposing (..)
+import Segment.SegmentUI exposing (segmentForm, showSegmentList)
+import Segment.Model exposing (update)
 import UI.KompostUI exposing (..)
 import UI.KompostListingsUI exposing (..)
 import UI.DvlSpecificsUI exposing (..)
@@ -50,9 +51,6 @@ update msg model =
         NavigateTo page ->
             model ! [ navigateTo page ]
 
-        GotoKompositionPage ->
-            model ! [navigateTo Kompost]
-
         ChooseDvl id ->
             { model | dvlId = Just id, activePage = Kompost } ! [ getKomposition id ]
 
@@ -68,64 +66,11 @@ update msg model =
         EditSpecifics ->
             model ! [ navigateTo AppRouting.DvlSpecificsUI ]
 
-        SetSegmentId id ->
-            let
-                newModel =
-                    id
-                        |> asIdIn model.segment
-                        |> asCurrentSegmentIn model
-            in
-                newModel ! []
-
-        SetSegmentStart start ->
-            let
-                newModel =
-                    start
-                        |> asStartIn model.segment
-                        |> asCurrentSegmentIn model
-            in
-                newModel ! []
-
-        SetSegmentEnd end ->
-            let
-                newModel =
-                    end
-                        |> asEndIn model.segment
-                        |> asCurrentSegmentIn model
-            in
-                newModel ! []
-
         CreateSegment ->
             let
                 editableModel  = {model | editableSegment = True }
             in
                 editableModel ! [ navigateTo AppRouting.Segment ]
-
-        EditSegment id ->
-                    let
-                        segment = case (containsSegment id model.kompost) of
-                            [ segment ] -> segment
-                            _ -> model.segment
-                    in
-                        { model | segment = segment, editableSegment=False } ! [ navigateTo AppRouting.Segment ]
-
-        UpdateSegment ->
-            case (containsSegment model.segment.id model.kompost) of
-                [] ->
-                    Debug.log "Adding segment []: " performSegmentOnModel model.segment UI.SegmentUI.addSegmentToKomposition model ! [ navigateTo Kompost ]
-
-                [ x ] ->
-                    let
-                        deleted = performSegmentOnModel model.segment UI.SegmentUI.deleteSegmentFromKomposition model
-                        addedTo = performSegmentOnModel model.segment UI.SegmentUI.addSegmentToKomposition deleted
-                    in
-                        Debug.log "Updating segment [x]: "  addedTo ! [ navigateTo Kompost ]
-
-                head :: tail ->
-                    Debug.log "Seggie heads tails: " model ! [ navigateTo Kompost ]
-
-        DeleteSegment ->
-            Debug.log "Deleting segment: " performSegmentOnModel model.segment UI.SegmentUI.deleteSegmentFromKomposition model ! [ navigateTo Kompost ]
 
         CouchServerStatus serverstatus ->
             let (newModel, navigation) = case RemoteData.toMaybe serverstatus of
@@ -143,49 +88,34 @@ update msg model =
                             Nothing ->  []
                     in
                         newModel ! cmds
+        SegmentMsg msg ->
+            let
+                ( newModel, _, childMsg ) = Segment.Model.update msg model
+                cmds = case Segment.Model.extractFromOutmessage childMsg of
+                       Just (page)  -> [navigateTo page]
+                       Nothing ->  []
+            in
+                newModel ! cmds
 
----- VIEW ----
-
-
-uiConfig : Model -> Config Msg
-uiConfig model =
-    { onClickViewListings = NavigateTo Listings
-    , onClickChooseDvl = ChooseDvl
-    , onClickgotoKompositionPage = GotoKompositionPage
-    , onClickCreateSegment = CreateSegment
-    , onClickEditSegment = EditSegment
-    , onClickUpdateSegment = UpdateSegment
-    , onClickDeleteSegment = DeleteSegment
-    , onClickSetSegmentID = SetSegmentId
-    , onClickSetSegmentStart = SetSegmentStart
-    , onClickSetSegmentEnd = SetSegmentEnd
-    , onClickEditSpecifics = EditSpecifics
-    , onClickStoreKomposition = StoreKomposition
-    , listings = model.listings
-    , kompost = model.kompost
-    , loadingIndicator = True
-    , segment = model.segment
-    }
-
-
+---- VIEW Base ----
 view : Model -> Html Msg
 view model =
     div []
         [ case model.activePage of
             AppRouting.Listings ->
-                pageWrapper <| UI.KompostListingsUI.listings <| uiConfig model
+                pageWrapper <| UI.KompostListingsUI.listings <| model
 
             AppRouting.Kompost ->
-                pageWrapper <| UI.KompostUI.kompost <| uiConfig model
+                pageWrapper <| UI.KompostUI.kompost model
 
             AppRouting.Segment ->
-                pageWrapper <| UI.SegmentUI.segmentForm (uiConfig model) model.editableSegment
+                Html.map SegmentMsg(pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)
 
             AppRouting.DvlSpecificsUI ->
                 Html.map DvlSpecificsMsg(pageWrapper <| UI.DvlSpecificsUI.editSpecifics model.kompost)
 
             NotFound ->
-                div [] [ text "Sorry, nothing here :(" ]
+                div [] [ text "Sorry, nothing< here :(" ]
         ]
 
 
@@ -200,8 +130,6 @@ pageWrapper forwaredPage =
 
 
 ---- PROGRAM ----
-
-
 main : Program Never Model Msg
 main =
     Navigation.program LocationChanged

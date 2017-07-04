@@ -1,7 +1,7 @@
-module Models.DvlSpecificsModel exposing (Msg(..), OutMsg(OutNavigateTo), update, extractFromOutmessage)
+module Models.DvlSpecificsModel exposing (Msg(..), update, extractFromOutmessage)
 
 import Navigation.AppRouting exposing (Page)
-import Models.BaseModel exposing (Model)
+import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo))
 
 type Msg
     = SetFileName String
@@ -9,8 +9,6 @@ type Msg
     | SetChecksum String
     | InternalNavigateTo Page
 
-type OutMsg
-    = OutNavigateTo Page
 
 extractFromOutmessage: Maybe OutMsg -> Maybe Page
 extractFromOutmessage childMsg =
