@@ -7,6 +7,8 @@ import Http exposing (emptyBody, expectJson)
 import RemoteData exposing (RemoteData(..))
 import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus))
 import Models.BaseModel exposing (Komposition, Segment, Mediafile, CouchStatusMessage)
+import Json.Decode exposing (int, string, float, Decoder, nullable)
+import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
 
 
 kompoUrl : String
@@ -117,6 +119,40 @@ encodeMediaFile mediaFile =
 
 encodeSegment : Segment -> JsonE.Value
 encodeSegment segment =
+    JsonE.object
+        [ ( "id", JsonE.string segment.id )
+        , ( "start", JsonE.int segment.start )
+        , ( "end", JsonE.int segment.end )
+        ]
+
+type alias User =
+  { id : Int
+  , email : Maybe String
+  , name : String
+  , percentExcited : Float
+  }
+
+
+userDecoder : Decoder User
+userDecoder =
+  decode User
+    |> required "id" int
+    |> required "email" (JsonD.maybe JsonD.string) -- `null` decodes to `Nothing`
+    |> optional "name" string "(fallback if name is `null` or not present)"
+    |> hardcoded 1.0
+
+
+type alias Sources =
+  { sources : Maybe String
+  }
+
+sourcesDecoder : Decoder Sources
+sourcesDecoder =
+    decode Sources
+        |> required "sources" (JsonD.maybe JsonD.string)
+
+encodeSources : Sources -> JsonE.Value
+encodeSources segment =
     JsonE.object
         [ ( "id", JsonE.string segment.id )
         , ( "start", JsonE.int segment.start )
