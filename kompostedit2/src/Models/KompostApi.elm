@@ -1,4 +1,4 @@
-module Models.KompostApi exposing (getKomposition, updateKompo, createKompo)
+module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo)
 
 import Json.Decode as JsonD
 import Json.Encode as JsonE
@@ -54,6 +54,20 @@ createKompo komposition =
         , headers = []
         , url = kompoUrl
         , body = Http.stringBody "application/json" <| encodeNewKomposition komposition
+        , expect = Http.expectJson couchServerStatusDecoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> RemoteData.sendRequest
+        |> Cmd.map CouchServerStatus
+
+deleteKompo : Komposition -> Cmd Msg
+deleteKompo komposition =
+    Http.request
+        { method = "DELETE"
+        , headers = []
+        , url = kompoUrl ++ komposition.name ++ "?rev=" ++ komposition.revision
+        , body = Http.emptyBody
         , expect = Http.expectJson couchServerStatusDecoder
         , timeout = Nothing
         , withCredentials = False

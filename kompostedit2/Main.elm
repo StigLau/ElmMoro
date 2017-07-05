@@ -1,13 +1,13 @@
 module Main exposing (main, init, update, view)
 
 import Html exposing (Html, div, text)
-import RemoteData exposing (succeed, isLoading, RemoteData(..))
+import RemoteData exposing (succeed, RemoteData(..))
 import Navigation exposing (Location)
 import Models.Msg exposing (Msg(..))
 import Models.BaseModel exposing (..)
 import Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
 import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
-import Models.KompostApi exposing (getKomposition, updateKompo, createKompo)
+import Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo)
 import Segment.SegmentUI exposing (segmentForm, showSegmentList)
 import Segment.Model exposing (update)
 import UI.KompostUI exposing (..)
@@ -24,9 +24,9 @@ init location =
       , kompost = emptyKompostion
       , dvlId = Nothing
       , activePage = AppRouting.Listings
-      , isLoading = True
       , editableSegment = False
       , segment = Segment "SegmentId" 1 2
+      , sources = Just ["http://somedvl.kompo.st"]
       }
     , Cmd.batch [ getListings ]
     )
@@ -35,15 +35,8 @@ init location =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case Debug.log "Debugmsg " msg of
-        NoOp ->
-            model ! []
-
         ListingsUpdated newWebData ->
-            { model
-                | listings = newWebData
-                , isLoading = False
-            }
-                ! []
+            { model | listings = newWebData } ! []
 
         LocationChanged loc ->
             { model | activePage = AppRouting.routeFromLocation loc } ! []
@@ -70,6 +63,8 @@ update msg model =
             in
                 model ! [command]
 
+        DeleteKomposition -> model ! [deleteKompo model.kompost]
+
         EditSpecifics ->
             model ! [ navigateTo AppRouting.DvlSpecificsUI ]
 
@@ -84,7 +79,7 @@ update msg model =
                     Just status ->
                         let kompost = model.kompost
                         in ({ model | kompost = { kompost | revision = status.rev} }, Kompost)
-                    _ -> (model, NotFound)
+                    _ -> (model, AppRouting.Kompost)
             in newModel ! [ navigateTo navigation ]
 
         DvlSpecificsMsg msg ->
@@ -156,6 +151,6 @@ emptyKompostion = Komposition "" "" 0 testMediaFile [testSegment1, testSegment2]
 --initModel = Model "dvlRef" "name" "revision" 0 1234  testConfig testMediaFile [testSegment1, testSegment2]
 --testConfig = MsgModel.Config 1280 1080 24 "mp4" 1234
 testMediaFile = Mediafile "https://www.not.configured.com/watch?v=Scxs7L0vhZ4" 0 "No checksum"
-testSegment1 = Segment "Purple Mountains Clouds" 7541667 19750000
-testSegment2 = Segment "Besseggen" 21250000  27625000
+testSegment1 = Segment "First segment" 7541667 19750000
+testSegment2 = Segment "Second segment" 21250000  27625000
 

@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class, href, type_)
 import Http
 import Json.Decode as JsonD
-import RemoteData exposing (WebData, isLoading)
+import RemoteData exposing (WebData)
 import Bootstrap.Button as Button exposing (onClick)
 import Bootstrap.Grid as Grid
 import Bootstrap.CDN

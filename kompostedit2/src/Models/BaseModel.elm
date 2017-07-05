@@ -9,9 +9,9 @@ type alias Model =
     , kompost : Komposition
     , dvlId : Maybe String
     , activePage : Page
-    , isLoading : Bool
     , editableSegment : Bool
     , segment : Segment
+    , sources : Maybe (List String)
     }
 
 type alias Komposition =
