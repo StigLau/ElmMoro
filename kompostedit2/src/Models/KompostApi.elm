@@ -2,6 +2,7 @@ module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, del
 
 import Json.Decode as JsonD
 import Json.Encode as JsonE
+import Json.Decode.Pipeline as JsonDPipe
 import Http exposing (emptyBody, expectJson)
 import RemoteData exposing (RemoteData(..))
 import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus))
@@ -13,64 +14,48 @@ kompoUrl =
     "http://heap.kompo.st/"
 
 
+base =
+    { method = ""
+    , headers = []
+    , url = ""
+    , body = Http.emptyBody
+    , expect = Http.expectJson couchServerStatusDecoder
+    , timeout = Nothing
+    , withCredentials = False
+    }
 
 --getKompo : String -> (Result Http.Error Komposition -> msg) -> Cmd msg
 --getKompo id msg = Http.get (kompoUrl ++ id) kompositionDecoder |> Http.send msg
 
-
 getKomposition : String -> Cmd Msg
 getKomposition id =
-    Http.request
-        { method = "get"
-        , headers = []
-        , url = ("http://heap.kompo.st/" ++ id)
-        , body = emptyBody
-        , expect = expectJson kompositionDecoder
-        , timeout = Nothing
-        , withCredentials = True
-        }
+    Http.get (kompoUrl ++ id) kompositionDecoder
         |> RemoteData.sendRequest
         |> Cmd.map KompositionUpdated
 
+createKompo : Komposition -> Cmd Msg
+createKompo komposition =
+    Http.post kompoUrl (Http.stringBody "application/json" <| encodeNewKomposition komposition) couchServerStatusDecoder
+        |> RemoteData.sendRequest
+        |> Cmd.map CouchServerStatus
 
 updateKompo : Komposition -> Cmd Msg
 updateKompo komposition =
     Http.request
-        { method = "PUT"
-        , headers = []
+        { base | method = "PUT"
         , url = kompoUrl ++ komposition.name
         , body = Http.stringBody "application/json" <| encodeKomposition komposition komposition.revision
-        , expect = Http.expectJson couchServerStatusDecoder
-        , timeout = Nothing
-        , withCredentials = False
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
 
-createKompo : Komposition -> Cmd Msg
-createKompo komposition =
-    Http.request
-        { method = "POST"
-        , headers = []
-        , url = kompoUrl
-        , body = Http.stringBody "application/json" <| encodeNewKomposition komposition
-        , expect = Http.expectJson couchServerStatusDecoder
-        , timeout = Nothing
-        , withCredentials = False
-        }
-        |> RemoteData.sendRequest
-        |> Cmd.map CouchServerStatus
 
 deleteKompo : Komposition -> Cmd Msg
 deleteKompo komposition =
     Http.request
-        { method = "DELETE"
-        , headers = []
+        { base
+        | method = "DELETE"
         , url = kompoUrl ++ komposition.name ++ "?rev=" ++ komposition.revision
-        , body = Http.emptyBody
-        , expect = Http.expectJson couchServerStatusDecoder
-        , timeout = Nothing
-        , withCredentials = False
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
