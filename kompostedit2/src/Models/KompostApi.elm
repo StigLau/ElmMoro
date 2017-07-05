@@ -95,20 +95,15 @@ mediaFileDecoder =
 
 encodeKomposition : Komposition -> String
 encodeKomposition kompo =
-    case kompo.revision of
-        "" -> encodeKompositionBase kompo []
-        revision -> encodeKompositionBase kompo [( "_rev", JsonE.string revision )]
-
-encodeKompositionBase : Komposition -> List( String, JsonE.Value ) -> String
-encodeKompositionBase kompo additions =
-    let baseListings =
+       JsonE.encode 0 <| JsonE.object (
             [ ( "_id", JsonE.string kompo.name )
             , ( "bpm", JsonE.float kompo.bpm)
             , ( "mediaFile", encodeMediaFile kompo.mediaFile )
             , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
-            ]
-    in JsonE.encode 0 <|
-        JsonE.object (baseListings ++ additions)
+            ] ++ case kompo.revision of
+                "" -> []
+                revision -> [( "_rev", JsonE.string revision )]
+        )
 
 
 encodeMediaFile : Mediafile -> JsonE.Value
