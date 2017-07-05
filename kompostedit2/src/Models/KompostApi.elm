@@ -35,7 +35,7 @@ getKomposition id =
 
 createKompo : Komposition -> Cmd Msg
 createKompo komposition =
-    Http.post kompoUrl (Http.stringBody "application/json" <| encodeNewKomposition komposition) couchServerStatusDecoder
+    Http.post kompoUrl (Http.stringBody "application/json" <| encodeKomposition komposition) couchServerStatusDecoder
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
 
@@ -44,7 +44,7 @@ updateKompo komposition =
     Http.request
         { base | method = "PUT"
         , url = kompoUrl ++ komposition.name
-        , body = Http.stringBody "application/json" <| encodeKomposition komposition komposition.revision
+        , body = Http.stringBody "application/json" <| encodeKomposition komposition
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
@@ -93,27 +93,22 @@ mediaFileDecoder =
         (JsonD.field "checksum" JsonD.string)
 
 
-encodeNewKomposition : Komposition -> String
-encodeNewKomposition kompo =
-    JsonE.encode 0 <|
-        JsonE.object
+encodeKomposition : Komposition -> String
+encodeKomposition kompo =
+    case kompo.revision of
+        "" -> encodeKompositionBase kompo []
+        revision -> encodeKompositionBase kompo [( "_rev", JsonE.string revision )]
+
+encodeKompositionBase : Komposition -> List( String, JsonE.Value ) -> String
+encodeKompositionBase kompo additions =
+    let baseListings =
             [ ( "_id", JsonE.string kompo.name )
             , ( "bpm", JsonE.float kompo.bpm)
             , ( "mediaFile", encodeMediaFile kompo.mediaFile )
             , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
             ]
-
-
-encodeKomposition : Komposition -> String -> String
-encodeKomposition kompo revision =
-    JsonE.encode 0 <|
-        JsonE.object
-            [ ( "_id", JsonE.string kompo.name )
-            , ( "_rev", JsonE.string revision )
-            , ( "bpm", JsonE.float kompo.bpm)
-            , ( "mediaFile", encodeMediaFile kompo.mediaFile )
-            , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
-            ]
+    in JsonE.encode 0 <|
+        JsonE.object (baseListings ++ additions)
 
 
 encodeMediaFile : Mediafile -> JsonE.Value
