@@ -7,7 +7,7 @@ import Models.Msg exposing (Msg(..))
 import Models.BaseModel exposing (..)
 import Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
 import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
-import Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo)
+import Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, getRandomGif)
 import Segment.SegmentUI exposing (segmentForm, showSegmentList)
 import Segment.Model exposing (update)
 import UI.KompostUI exposing (..)
@@ -98,6 +98,15 @@ update msg model =
                        Nothing ->  []
             in
                 newModel ! cmds
+
+        MorePlease ->
+              (model, getRandomGif "cats")
+
+        NewGif (Ok newUrl) ->
+           ( model, Cmd.none)
+
+        NewGif (Err _) ->
+              (model, Cmd.none)
 
 ---- VIEW Base ----
 view : Model -> Html Msg

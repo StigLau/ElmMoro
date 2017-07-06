@@ -24,8 +24,8 @@ kompost model =
         , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick CreateSegment ] [ text "New Segment" ]]]
         , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick MorePlease ] [ text "EvaluateMd5" ]]]
         , Grid.simpleRow
-            [ Grid.col []
-            , Grid.col [Button.button [ Button.success, Button.small, Button.onClick StoreKomposition ] [ text "Store Komposition" ]]
-            , Grid.col [Button.button [ Button.danger, Button.small, Button.onClick DeleteKomposition ] [ text "Delete Komposition" ]]
+            [ Grid.col [] []
+            , Grid.col [] [Button.button [ Button.success, Button.small, Button.onClick StoreKomposition ] [ text "Store Komposition" ]]
+            , Grid.col [] [Button.button [ Button.danger, Button.small, Button.onClick DeleteKomposition ] [ text "Delete Komposition" ]]
             ]
         ]
