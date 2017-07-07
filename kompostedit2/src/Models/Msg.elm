@@ -18,6 +18,8 @@ type Msg
     | NewKomposition
     | StoreKomposition
     | DeleteKomposition
+    | FetchStuffFromRemoteServer
+    | DataBackFromRemoteServer (Result Http.Error String)
     | KompositionUpdated (WebData Komposition)
     | CreateSegment
     | CouchServerStatus (WebData CouchStatusMessage)

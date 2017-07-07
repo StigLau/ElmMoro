@@ -1,4 +1,4 @@
-module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo)
+module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, getDataFromRemoteServer)
 
 import Json.Decode as JsonD
 import Json.Encode as JsonE
@@ -6,7 +6,7 @@ import Json.Decode.Pipeline as JsonDPipe
 import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
 import Http exposing (emptyBody, expectJson)
 import RemoteData exposing (RemoteData(..))
-import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus))
+import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, DataBackFromRemoteServer))
 import Models.BaseModel exposing (Komposition, Segment, Mediafile, CouchStatusMessage)
 
 
@@ -141,3 +141,18 @@ encodeSource source =
         [ ( "source", JsonE.string source )
         ]
 
+
+getDataFromRemoteServer : String -> Cmd Msg
+getDataFromRemoteServer topic =
+  let
+    url =
+      "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=" ++ topic
+
+    request =
+      Http.get url decodeGifUrl
+  in
+    Http.send DataBackFromRemoteServer request
+
+decodeGifUrl : JsonD.Decoder String
+decodeGifUrl =
+  JsonD.at ["data", "image_url"] JsonD.string
