@@ -7,7 +7,7 @@ import Models.Msg exposing (Msg(..))
 import Models.BaseModel exposing (..)
 import Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
 import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
-import Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, getRandomGif)
+import Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo)
 import Segment.SegmentUI exposing (segmentForm, showSegmentList)
 import Segment.Model exposing (update)
 import UI.KompostUI exposing (..)
@@ -26,7 +26,6 @@ init location =
       , activePage = AppRouting.Listings
       , editableSegment = False
       , segment = Segment "SegmentId" 1 2
-      , sources = Just ["http://somedvl.kompo.st"]
       }
     , Cmd.batch [ getListings ]
     )
@@ -99,15 +98,6 @@ update msg model =
             in
                 newModel ! cmds
 
-        MorePlease ->
-              (model, getRandomGif "cats")
-
-        NewGif (Ok newUrl) ->
-           ( model, Cmd.none)
-
-        NewGif (Err _) ->
-              (model, Cmd.none)
-
 ---- VIEW Base ----
 view : Model -> Html Msg
 view model =
@@ -156,7 +146,7 @@ main =
 --testListings = MsgModel.DataRepresentation 1 0 [testRow]
 --testRow = MsgModel.Row "id123" "key123"
 
-emptyKompostion = Komposition "" "" 0 testMediaFile [testSegment1, testSegment2]
+emptyKompostion = Komposition "" "" 0 testMediaFile [testSegment1, testSegment2] []
 --initModel = Model "dvlRef" "name" "revision" 0 1234  testConfig testMediaFile [testSegment1, testSegment2]
 --testConfig = MsgModel.Config 1280 1080 24 "mp4" 1234
 testMediaFile = Mediafile "https://www.not.configured.com/watch?v=Scxs7L0vhZ4" 0 "No checksum"

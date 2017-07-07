@@ -3,6 +3,7 @@ module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, del
 import Json.Decode as JsonD
 import Json.Encode as JsonE
 import Json.Decode.Pipeline as JsonDPipe
+import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
 import Http exposing (emptyBody, expectJson)
 import RemoteData exposing (RemoteData(..))
 import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus))
@@ -62,12 +63,13 @@ deleteKompo komposition =
 
 kompositionDecoder : JsonD.Decoder Komposition
 kompositionDecoder =
-    JsonD.map5 Komposition
-        (JsonD.field "_id" JsonD.string)
-        (JsonD.field "_rev" JsonD.string)
-        (JsonD.field "bpm" JsonD.float)
-        (JsonD.field "mediaFile" mediaFileDecoder)
-        (JsonD.field "segments" <| JsonD.list segmentDecoder)
+  Json.Decode.Pipeline.decode Komposition
+    |> required "_id" JsonD.string
+    |> required "_rev" JsonD.string
+    |> required "bpm" JsonD.float
+    |> required "mediaFile" mediaFileDecoder
+    |> required "segments" (JsonD.list segmentDecoder)
+    |> optional "sources" (JsonD.list JsonD.string) []
 
 
 couchServerStatusDecoder : JsonD.Decoder CouchStatusMessage
@@ -103,6 +105,9 @@ encodeKomposition kompo =
             ] ++ case kompo.revision of
                 "" -> []
                 revision -> [( "_rev", JsonE.string revision )]
+              ++ case kompo.sources of
+                    [] -> []
+                    _ -> [( "sources", encodeSources kompo.sources)]
         )
 
 
@@ -122,3 +127,17 @@ encodeSegment segment =
         , ( "start", JsonE.int segment.start )
         , ( "end", JsonE.int segment.end )
         ]
+
+encodeSources : List String -> JsonE.Value
+encodeSources sources =
+    JsonE.object
+    [
+    ( "source", JsonE.list <| List.map encodeSource sources )
+    ]
+
+encodeSource : String -> JsonE.Value
+encodeSource source =
+    JsonE.object
+        [ ( "source", JsonE.string source )
+        ]
+

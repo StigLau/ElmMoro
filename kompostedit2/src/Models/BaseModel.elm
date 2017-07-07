@@ -11,7 +11,6 @@ type alias Model =
     , activePage : Page
     , editableSegment : Bool
     , segment : Segment
-    , sources : Maybe (List String)
     }
 
 type alias Komposition =
@@ -22,6 +21,7 @@ type alias Komposition =
     --, config: Config
     , mediaFile : Mediafile
     , segments : List Segment
+    , sources : List String
     }
 
 

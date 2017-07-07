@@ -10,7 +10,7 @@ import RemoteData exposing (RemoteData(..))
 import Segment.SegmentUI exposing (showSegmentList)
 import UI.DvlSpecificsUI exposing (showSpecifics)
 import Models.BaseModel exposing (Model)
-import Models.Msg exposing (Msg(NavigateTo, StoreKomposition, DeleteKomposition, SegmentMsg, CreateSegment, MorePlease))
+import Models.Msg exposing (Msg(NavigateTo, StoreKomposition, DeleteKomposition, SegmentMsg, CreateSegment))
 import Navigation.AppRouting exposing (Page(Listings))
 
 
@@ -22,7 +22,6 @@ kompost model =
         , UI.DvlSpecificsUI.showSpecifics model.kompost
         , Html.map SegmentMsg(Segment.SegmentUI.showSegmentList model.kompost.segments)
         , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick CreateSegment ] [ text "New Segment" ]]]
-        , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick MorePlease ] [ text "EvaluateMd5" ]]]
         , Grid.simpleRow
             [ Grid.col [] []
             , Grid.col [] [Button.button [ Button.success, Button.small, Button.onClick StoreKomposition ] [ text "Store Komposition" ]]
