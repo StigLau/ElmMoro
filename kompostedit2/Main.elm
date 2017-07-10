@@ -6,13 +6,14 @@ import Navigation exposing (Location)
 import Models.Msg exposing (Msg(..))
 import Models.BaseModel exposing (..)
 import Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
-import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
 import Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, getDataFromRemoteServer)
-import Segment.SegmentUI exposing (segmentForm, showSegmentList)
+import Segment.SegmentUI exposing (segmentForm)
 import Segment.Model exposing (update)
 import UI.KompostUI exposing (..)
 import UI.KompostListingsUI exposing (..)
 import UI.DvlSpecificsUI exposing (..)
+import UI.MediaFileUI exposing (editSpecifics)
+import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.CDN as CDN
@@ -25,7 +26,8 @@ init location =
       , dvlId = Nothing
       , activePage = AppRouting.Listings
       , editableSegment = False
-      , segment = Segment "SegmentId" 1 2
+      , segment = testSegment1
+      , editingMediaFile = testMediaFile
       }
     , Cmd.batch [ getListings ]
     )
@@ -124,6 +126,9 @@ view model =
             AppRouting.DvlSpecificsUI ->
                 Html.map DvlSpecificsMsg(pageWrapper <| UI.DvlSpecificsUI.editSpecifics model.kompost)
 
+            AppRouting.MediaFileUI ->
+                Html.map DvlSpecificsMsg(pageWrapper <| UI.MediaFileUI.editSpecifics model.kompost)
+
             NotFound ->
                 div [] [ text "Sorry, nothing< here :(" ]
         ]
@@ -155,7 +160,7 @@ main =
 --testListings = MsgModel.DataRepresentation 1 0 [testRow]
 --testRow = MsgModel.Row "id123" "key123"
 
-emptyKompostion = Komposition "" "" 0 testMediaFile [testSegment1, testSegment2] ["source1", "Source2"]
+emptyKompostion = Komposition "" "" 0 testMediaFile [testSegment1, testSegment2] [testMediaFile, testMediaFile]
 --initModel = Model "dvlRef" "name" "revision" 0 1234  testConfig testMediaFile [testSegment1, testSegment2]
 --testConfig = MsgModel.Config 1280 1080 24 "mp4" 1234
 testMediaFile = Mediafile "https://www.not.configured.com/watch?v=Scxs7L0vhZ4" 0 "No checksum"

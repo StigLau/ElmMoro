@@ -12,6 +12,7 @@ type Page
     | Kompost
     | Segment
     | DvlSpecificsUI
+    | MediaFileUI
     | NotFound
 
 
@@ -20,6 +21,7 @@ routeParsers =
     , kompost = Kompost := Route.static "Main.elm#kompost"
     , segment = Segment := Route.static "Main.elm#segment"
     , dvlSpecificsUI = DvlSpecificsUI := Route.static "Main.elm#dvlSpecificsUI"
+    , mediaFileUI = DvlSpecificsUI := Route.static "Main.elm#mediaFileUI"
     }
 
 
@@ -30,6 +32,7 @@ router =
         , routeParsers.kompost
         , routeParsers.segment
         , routeParsers.dvlSpecificsUI
+        , routeParsers.mediaFileUI
         ]
 
 
@@ -54,6 +57,9 @@ navigateTo page =
 
         DvlSpecificsUI ->
             Route.reverse routeParsers.dvlSpecificsUI []
+
+        MediaFileUI ->
+            Route.reverse routeParsers.mediaFileUI []
 
         NotFound ->
             "/"

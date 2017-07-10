@@ -2,6 +2,7 @@ module Models.DvlSpecificsModel exposing (Msg(..), update, extractFromOutmessage
 
 import Navigation.AppRouting exposing (Page)
 import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo))
+import Navigation.AppRouting exposing (navigateTo, Page(MediaFileUI))
 
 type Msg
     = SetKompositionName String
@@ -9,6 +10,7 @@ type Msg
     | SetBpm String
     | SetChecksum String
     | InternalNavigateTo Page
+    | EditMediaFile String
 
 
 extractFromOutmessage: Maybe OutMsg -> Maybe Page
@@ -45,6 +47,18 @@ update msg model =
             let _ = Debug.log "Navigating to" page
                 _ = Debug.log "BPM is" model.kompost.bpm
             in (model, Cmd.none, Just (OutNavigateTo Navigation.AppRouting.Kompost))
+
+        EditMediaFile id ->
+            {--
+                let
+                                segment = case (containsSegment id model.kompost) of
+                                    [ segment ] -> segment
+                                    _ -> model.segment
+                            in
+                                ({ model | segment = segment, editableSegment=False }, [ ], Just (OutNavigateTo AppRouting.Segment) )
+            --}
+                (model, navigateTo MediaFileUI, Nothing)
+
 
 updateMediaFile mediaFile model =
     let

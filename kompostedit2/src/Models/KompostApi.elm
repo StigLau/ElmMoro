@@ -69,7 +69,7 @@ kompositionDecoder =
     |> required "bpm" JsonD.float
     |> required "mediaFile" mediaFileDecoder
     |> required "segments" (JsonD.list segmentDecoder)
-    |> optional "sources" (JsonD.list JsonD.string) []
+    |> optional "sources" (JsonD.list mediaFileDecoder) []
 
 
 couchServerStatusDecoder : JsonD.Decoder CouchStatusMessage
@@ -97,17 +97,20 @@ mediaFileDecoder =
 
 encodeKomposition : Komposition -> String
 encodeKomposition kompo =
+    let
+        revision = case kompo.revision of
+               "" -> []
+               revision -> [( "_rev", JsonE.string revision )]
+        sources = case kompo.sources of
+             [] -> [( "sources", JsonE.list <| List.map encodeMediaFile kompo.sources)]
+             _ -> [( "sources", JsonE.list <| List.map encodeMediaFile kompo.sources)]
+     in
        JsonE.encode 0 <| JsonE.object (
             [ ( "_id", JsonE.string kompo.name )
             , ( "bpm", JsonE.float kompo.bpm)
             , ( "mediaFile", encodeMediaFile kompo.mediaFile )
             , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
-            ] ++ case kompo.revision of
-                "" -> []
-                revision -> [( "_rev", JsonE.string revision )]
-              ++ case kompo.sources of
-                    [] -> []
-                    _ -> [( "sources", encodeSources kompo.sources)]
+            ]   ++ revision ++ sources
         )
 
 
