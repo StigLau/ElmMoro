@@ -11,7 +11,6 @@ type Msg
     | EditSegment String
     | UpdateSegment
     | DeleteSegment
-    | InternalNavigateTo Page
 
 
 type OutMsg
@@ -72,11 +71,6 @@ update msg model =
 
         DeleteSegment ->
             Debug.log "Deleting segment: " (performSegmentOnModel model.segment deleteSegmentFromKomposition model, [ ], Just (OutNavigateTo AppRouting.Kompost))
-
-        InternalNavigateTo page ->
-            let _ = Debug.log "Navigating to" page
-                _ = Debug.log "BPM is" model.kompost.bpm
-            in (model, [Cmd.none], Just (OutNavigateTo Kompost))
 
 
 extractFromOutmessage: Maybe OutMsg -> Maybe Page

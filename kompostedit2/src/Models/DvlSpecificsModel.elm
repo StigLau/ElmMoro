@@ -1,8 +1,8 @@
 module Models.DvlSpecificsModel exposing (Msg(..), update, extractFromOutmessage)
 
 import Navigation.AppRouting exposing (Page)
-import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo))
-import Navigation.AppRouting exposing (navigateTo, Page(MediaFileUI))
+import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo), Komposition, Mediafile)
+import Navigation.AppRouting exposing (navigateTo, Page(MediaFileUI, Segment))
 
 type Msg
     = SetKompositionName String
@@ -49,18 +49,19 @@ update msg model =
             in (model, Cmd.none, Just (OutNavigateTo Navigation.AppRouting.Kompost))
 
         EditMediaFile id ->
-            {--
-                let
-                                segment = case (containsSegment id model.kompost) of
-                                    [ segment ] -> segment
-                                    _ -> model.segment
-                            in
-                                ({ model | segment = segment, editableSegment=False }, [ ], Just (OutNavigateTo AppRouting.Segment) )
-            --}
-                (model, navigateTo MediaFileUI, Nothing)
+            let
+                mediaFile = case (containsMediaFile id model.kompost) of
+                    [ mediaFile ] -> mediaFile
+                    _ -> model.editingMediaFile
+            in
+                ({ model | editingMediaFile = mediaFile}, Cmd.none,  Just (OutNavigateTo MediaFileUI))
 
 
 updateMediaFile mediaFile model =
     let
         kompost = model.kompost
     in { model | kompost = {kompost | mediaFile = mediaFile}}
+
+containsMediaFile : String -> Komposition -> List Mediafile
+containsMediaFile id komposition =
+    List.filter (\mediaFile -> mediaFile.fileName == id) komposition.sources

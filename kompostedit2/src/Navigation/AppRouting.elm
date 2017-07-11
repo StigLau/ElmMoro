@@ -21,7 +21,7 @@ routeParsers =
     , kompost = Kompost := Route.static "Main.elm#kompost"
     , segment = Segment := Route.static "Main.elm#segment"
     , dvlSpecificsUI = DvlSpecificsUI := Route.static "Main.elm#dvlSpecificsUI"
-    , mediaFileUI = DvlSpecificsUI := Route.static "Main.elm#mediaFileUI"
+    , mediaFileUI = MediaFileUI := Route.static "Main.elm#mediaFileUI"
     }
 
 

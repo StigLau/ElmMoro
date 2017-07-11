@@ -8,24 +8,18 @@ import Bootstrap.Grid.Col as Col
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
-import Models.BaseModel exposing (Komposition, Mediafile)
+import Models.BaseModel exposing (Model, Mediafile)
 import Models.Msg exposing (Msg)
 import Models.DvlSpecificsModel as DvlSpecificsModel exposing (Msg(EditMediaFile))
 import Navigation.AppRouting exposing (Page(Kompost))
 
-editSpecifics : Komposition -> Html DvlSpecificsModel.Msg
-editSpecifics kompo =
-    let editable = case kompo.revision of
-            "" -> False
-            _ -> True
-    in
-        div [] [ h1 [] [ text "Editing Specifics" ]
+editSpecifics : Model -> Html DvlSpecificsModel.Msg
+editSpecifics model =
+        let mediaFile = model.editingMediaFile
+        in div [] [ h1 [] [ text "Editing Specifics" ]
         , Form.form [ class "container" ]
-            [ (wrapping "Name" (Input.text [ Input.id "Name", Input.defaultValue kompo.name, Input.onInput DvlSpecificsModel.SetKompositionName, Input.disabled editable]))
-            , (wrapping "Revision" (Input.text [ Input.id "Revision", Input.defaultValue kompo.revision, Input.disabled True]))
-            , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.defaultValue (toString kompo.bpm), Input.onInput DvlSpecificsModel.SetBpm ]))
-            , (wrapping "Media link" (Input.text [ Input.id "Media link", Input.defaultValue kompo.mediaFile.fileName, Input.onInput DvlSpecificsModel.SetFileName ]))
-            , (wrapping "Checksum" (Input.text [ Input.id "Checksum", Input.defaultValue kompo.mediaFile.checksum, Input.onInput DvlSpecificsModel.SetChecksum ]))
+            [ (wrapping "URL" (Input.text [ Input.id "URL", Input.defaultValue mediaFile.fileName, Input.onInput DvlSpecificsModel.SetFileName]))
+            , (wrapping "Checksum" (Input.text [ Input.id "Checksum", Input.defaultValue mediaFile.checksum, Input.onInput DvlSpecificsModel.SetChecksum ]))
             , Button.button [ Button.secondary, Button.onClick (DvlSpecificsModel.InternalNavigateTo Kompost) ] [ text "Save" ]
             ]
         ]

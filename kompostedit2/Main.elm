@@ -127,7 +127,7 @@ view model =
                 Html.map DvlSpecificsMsg(pageWrapper <| UI.DvlSpecificsUI.editSpecifics model.kompost)
 
             AppRouting.MediaFileUI ->
-                Html.map DvlSpecificsMsg(pageWrapper <| UI.MediaFileUI.editSpecifics model.kompost)
+                Html.map DvlSpecificsMsg(pageWrapper <| UI.MediaFileUI.editSpecifics model)
 
             NotFound ->
                 div [] [ text "Sorry, nothing< here :(" ]
