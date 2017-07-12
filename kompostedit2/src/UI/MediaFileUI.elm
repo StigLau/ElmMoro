@@ -10,7 +10,7 @@ import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
 import Models.BaseModel exposing (Model, Mediafile)
 import Models.Msg exposing (Msg)
-import Models.DvlSpecificsModel as DvlSpecificsModel exposing (Msg(EditMediaFile))
+import Models.DvlSpecificsModel as DvlSpecificsModel exposing (Msg(EditMediaFile, SaveMediaFile))
 import Navigation.AppRouting exposing (Page(Kompost))
 
 editSpecifics : Model -> Html DvlSpecificsModel.Msg
@@ -18,9 +18,9 @@ editSpecifics model =
         let mediaFile = model.editingMediaFile
         in div [] [ h1 [] [ text "Editing Specifics" ]
         , Form.form [ class "container" ]
-            [ (wrapping "URL" (Input.text [ Input.id "URL", Input.defaultValue mediaFile.fileName, Input.onInput DvlSpecificsModel.SetFileName]))
-            , (wrapping "Checksum" (Input.text [ Input.id "Checksum", Input.defaultValue mediaFile.checksum, Input.onInput DvlSpecificsModel.SetChecksum ]))
-            , Button.button [ Button.secondary, Button.onClick (DvlSpecificsModel.InternalNavigateTo Kompost) ] [ text "Save" ]
+            [ (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.fileName, Input.onInput DvlSpecificsModel.SetFileName]))
+            , (wrapping "Checksum" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput DvlSpecificsModel.SetChecksum ]))
+            , Button.button [ Button.secondary, Button.onClick SaveMediaFile ] [ text "Save" ]
             ]
         ]
 
