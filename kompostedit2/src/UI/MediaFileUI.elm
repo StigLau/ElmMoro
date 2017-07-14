@@ -15,12 +15,20 @@ import Models.DvlSpecificsModel as DvlSpecificsModel exposing (Msg(EditMediaFile
 editSpecifics : Model -> Html DvlSpecificsModel.Msg
 editSpecifics model =
         let mediaFile = model.editingMediaFile
-        in div [] [ h1 [] [ text "Editing Specifics" ]
+        in div [] [ h1 [] [ text "Editing Media File" ]
         , Form.form [ class "container" ]
             [ (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.fileName, Input.onInput DvlSpecificsModel.SetFileName]))
             , (wrapping "Checksum" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput DvlSpecificsModel.SetChecksum ]))
-            , Button.button [ Button.secondary, Button.onClick SaveMediaFile ] [ text "Save" ]
-            , Button.button [ Button.warning, Button.onClick (DeleteMediaFile mediaFile.fileName) ] [ text "Delete" ]
+            , Form.row []
+                [ Form.colLabel [ Col.xs4 ]
+                    []
+                , Form.col []
+                    [ Button.button [ Button.primary, Button.small, Button.onClick SaveMediaFile ] [ text "Save" ] ]
+                , Form.col []
+                    [  ]
+                , Form.col []
+                    [ Button.button [ Button.warning, Button.small, Button.onClick (DeleteMediaFile mediaFile.fileName)] [ text "Delete" ] ]
+                ]
             ]
         ]
 
