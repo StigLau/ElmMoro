@@ -94,15 +94,12 @@ asIdIn =
 
 
 
---setStart : String -> Segment -> Segment
-
-
 setStart newStart segment =
-    { segment | start = (validNr newStart) }
+    { segment | start = Result.withDefault 0 (String.toInt newStart) }
 
 
 setEnd newEnd segment =
-    { segment | end = (validNr newEnd) }
+    { segment | end = Result.withDefault 0 (String.toInt newEnd) }
 
 
 setId newId segment =
@@ -135,7 +132,3 @@ addSegmentToKomposition segment komposition =
 deleteSegmentFromKomposition : Segment -> Komposition -> Komposition
 deleteSegmentFromKomposition segment komposition =
     { komposition | segments = List.filter (\n -> n.id /= segment.id) komposition.segments }
-
-
-validNr : String -> Int
-validNr value = Result.withDefault 0 (String.toInt value)
