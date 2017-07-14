@@ -13,7 +13,7 @@ import UI.KompostUI exposing (..)
 import UI.KompostListingsUI exposing (..)
 import UI.DvlSpecificsUI exposing (..)
 import UI.MediaFileUI exposing (editSpecifics)
-import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Listings, Kompost, NotFound))
+import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(..))
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.CDN as CDN
@@ -24,7 +24,7 @@ init location =
     ( { listings = RemoteData.Loading
       , kompost = emptyKompostion
       , dvlId = Nothing
-      , activePage = AppRouting.Listings --Kompost
+      , activePage = KompostUI
       , editableSegment = False
       , segment = testSegment1
       , editingMediaFile = testMediaFile
@@ -46,7 +46,7 @@ update msg model =
             model ! [ navigateTo page ]
 
         ChooseDvl id ->
-            { model | dvlId = Just id, activePage = Kompost } ! [ getKomposition id ]
+            { model | dvlId = Just id, activePage = KompostUI } ! [ getKomposition id ]
 
         NewKomposition -> { model | kompost = emptyKompostion } ! [ navigateTo AppRouting.DvlSpecificsUI ]
 
@@ -54,7 +54,7 @@ update msg model =
             let newModel = case RemoteData.toMaybe webKomposition of
                     Just kompost -> { model | kompost = kompost}
                     _ -> model
-            in newModel ! [ navigateTo Kompost ]
+            in newModel ! [ navigateTo KompostUI ]
 
         StoreKomposition ->
             let
@@ -70,14 +70,14 @@ update msg model =
             model ! [ navigateTo AppRouting.DvlSpecificsUI ]
 
         CreateSegment ->
-            {model | editableSegment = True } ! [ navigateTo AppRouting.Segment ]
+            {model | editableSegment = True } ! [ navigateTo SegmentUI ]
 
         CouchServerStatus serverstatus ->
             let (newModel, navigation) = case RemoteData.toMaybe serverstatus of
                     Just status ->
                         let kompost = model.kompost
-                        in ({ model | kompost = { kompost | revision = status.rev} }, Kompost)
-                    _ -> (model, AppRouting.Kompost)
+                        in ({ model | kompost = { kompost | revision = status.rev} }, KompostUI)
+                    _ -> (model, KompostUI)
             in newModel ! [ navigateTo navigation ]
 
         DvlSpecificsMsg msg ->
@@ -111,19 +111,19 @@ view : Model -> Html Msg
 view model =
     div []
         [ case model.activePage of
-            AppRouting.Listings ->
+            ListingsUI ->
                 pageWrapper <| UI.KompostListingsUI.listings <| model
 
-            AppRouting.Kompost ->
+            KompostUI ->
                 pageWrapper <| UI.KompostUI.kompost model
 
-            AppRouting.Segment ->
+            SegmentUI ->
                 Html.map SegmentMsg(pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)
 
-            AppRouting.DvlSpecificsUI ->
+            DvlSpecificsUI ->
                 Html.map DvlSpecificsMsg(pageWrapper <| UI.DvlSpecificsUI.editSpecifics model.kompost)
 
-            AppRouting.MediaFileUI ->
+            MediaFileUI ->
                 Html.map DvlSpecificsMsg(pageWrapper <| UI.MediaFileUI.editSpecifics model)
 
             NotFound ->

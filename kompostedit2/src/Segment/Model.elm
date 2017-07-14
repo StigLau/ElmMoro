@@ -1,7 +1,7 @@
 module Segment.Model exposing (..)
 
 import Models.BaseModel exposing (Model, Komposition, Segment)
-import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(Kompost, Listings))
+import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(KompostUI, ListingsUI, SegmentUI))
 
 
 type Msg
@@ -52,25 +52,25 @@ update msg model =
                     [ segment ] -> segment
                     _ -> model.segment
             in
-                ({ model | segment = segment, editableSegment=False }, [ ], Just (OutNavigateTo AppRouting.Segment) )
+                ({ model | segment = segment, editableSegment=False }, [ ], Just (OutNavigateTo SegmentUI) )
 
         UpdateSegment ->
             case (containsSegment model.segment.id model.kompost) of
                 [] ->
-                    Debug.log "Adding segment []: " (performSegmentOnModel model.segment addSegmentToKomposition model, [ ], Just (OutNavigateTo AppRouting.Kompost))
+                    Debug.log "Adding segment []: " (performSegmentOnModel model.segment addSegmentToKomposition model, [ ], Just (OutNavigateTo KompostUI))
 
                 [ x ] ->
                     let
                         deleted = performSegmentOnModel model.segment deleteSegmentFromKomposition model
                         addedTo = performSegmentOnModel model.segment addSegmentToKomposition deleted
                     in
-                        Debug.log "Updating segment [x]: "  (addedTo, [ ], Just (OutNavigateTo AppRouting.Kompost))
+                        Debug.log "Updating segment [x]: "  (addedTo, [ ], Just (OutNavigateTo KompostUI))
 
                 head :: tail ->
-                    Debug.log "Seggie heads tails: " (model, [ ], Just (OutNavigateTo AppRouting.Kompost))
+                    Debug.log "Seggie heads tails: " (model, [ ], Just (OutNavigateTo KompostUI))
 
         DeleteSegment ->
-            Debug.log "Deleting segment: " (performSegmentOnModel model.segment deleteSegmentFromKomposition model, [ ], Just (OutNavigateTo AppRouting.Kompost))
+            Debug.log "Deleting segment: " (performSegmentOnModel model.segment deleteSegmentFromKomposition model, [ ], Just (OutNavigateTo KompostUI))
 
 
 extractFromOutmessage: Maybe OutMsg -> Maybe Page

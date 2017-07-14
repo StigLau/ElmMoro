@@ -11,7 +11,6 @@ import Bootstrap.Button as Button
 import Models.BaseModel exposing (Model, Mediafile)
 import Models.Msg exposing (Msg)
 import Models.DvlSpecificsModel as DvlSpecificsModel exposing (Msg(EditMediaFile, SaveMediaFile, DeleteMediaFile))
-import Navigation.AppRouting exposing (Page(Kompost))
 
 editSpecifics : Model -> Html DvlSpecificsModel.Msg
 editSpecifics model =

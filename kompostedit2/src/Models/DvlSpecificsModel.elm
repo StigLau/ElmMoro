@@ -2,7 +2,7 @@ module Models.DvlSpecificsModel exposing (Msg(..), update, extractFromOutmessage
 
 import Navigation.AppRouting exposing (Page)
 import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo), Komposition, Mediafile)
-import Navigation.AppRouting exposing (navigateTo, Page(MediaFileUI, Kompost))
+import Navigation.AppRouting exposing (navigateTo, Page(MediaFileUI, KompostUI))
 
 type Msg
     = SetKompositionName String
@@ -48,7 +48,7 @@ update msg model =
         InternalNavigateTo page ->
             let _ = Debug.log "Navigating to" page
                 _ = Debug.log "BPM is" model.kompost.bpm
-            in (model, Cmd.none, Just (OutNavigateTo Navigation.AppRouting.Kompost))
+            in (model, Cmd.none, Just (OutNavigateTo Navigation.AppRouting.KompostUI))
 
         EditMediaFile id ->
             let
@@ -61,21 +61,21 @@ update msg model =
         SaveMediaFile  ->
             case (containsMediaFile model.editingMediaFile.fileName model.kompost) of
                 [] ->
-                    Debug.log "Adding MediaFile []: " (performMediaFileOnModel model.editingMediaFile addMediaFileToKomposition model, Cmd.none, Just (OutNavigateTo Kompost))
+                    Debug.log "Adding MediaFile []: " (performMediaFileOnModel model.editingMediaFile addMediaFileToKomposition model, Cmd.none, Just (OutNavigateTo KompostUI))
 
                 [ x ] ->
                     let
                         deleted = performMediaFileOnModel model.editingMediaFile deleteMediaFileFromKomposition model
                         addedTo = performMediaFileOnModel model.editingMediaFile addMediaFileToKomposition deleted
                     in
-                        Debug.log "Updating mediaFile [x]: "  (addedTo, Cmd.none, Just (OutNavigateTo Kompost))
+                        Debug.log "Updating mediaFile [x]: "  (addedTo, Cmd.none, Just (OutNavigateTo KompostUI))
 
                 head :: tail ->
-                    Debug.log "Seggie heads tails: " (model, Cmd.none, Just (OutNavigateTo Kompost))
+                    Debug.log "Seggie heads tails: " (model, Cmd.none, Just (OutNavigateTo KompostUI))
 
         DeleteMediaFile id ->
             let modifiedModel = performMediaFileOnModel model.editingMediaFile deleteMediaFileFromKomposition model
-            in (modifiedModel, Cmd.none, Just (OutNavigateTo Kompost))
+            in (modifiedModel, Cmd.none, Just (OutNavigateTo KompostUI))
 
 
 containsMediaFile : String -> Komposition -> List Mediafile

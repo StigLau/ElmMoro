@@ -10,7 +10,7 @@ import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
 import Bootstrap.Grid as Grid
 import Segment.Model exposing (Msg(..))
-import Navigation.AppRouting exposing (Page(Kompost))
+import Navigation.AppRouting exposing (Page(KompostUI))
 import Models.Msg exposing (Msg)
 
 

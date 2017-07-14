@@ -11,13 +11,13 @@ import Segment.SegmentUI exposing (showSegmentList)
 import UI.DvlSpecificsUI exposing (showSpecifics)
 import Models.BaseModel exposing (Model)
 import Models.Msg exposing (Msg(NavigateTo, StoreKomposition, DeleteKomposition, SegmentMsg, CreateSegment, FetchStuffFromRemoteServer))
-import Navigation.AppRouting exposing (Page(Listings))
+import Navigation.AppRouting exposing (Page(ListingsUI))
 
 
 kompost : Model -> Html Models.Msg.Msg
 kompost model =
     div []
-        [ Grid.row [] [ Grid.col [] [] , Grid.col [] [], Grid.col [] [Button.button [ Button.secondary, Button.onClick (NavigateTo Listings) ] [ text "List Komposti" ]]]
+        [ Grid.row [] [ Grid.col [] [] , Grid.col [] [], Grid.col [] [Button.button [ Button.secondary, Button.onClick (NavigateTo ListingsUI) ] [ text "List Komposti" ]]]
         , div [] [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ] ]
         , UI.DvlSpecificsUI.showSpecifics model.kompost
         , h4 []  [ text "Segments:" ]

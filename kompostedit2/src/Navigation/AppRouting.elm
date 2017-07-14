@@ -8,18 +8,18 @@ import Route exposing ((:=), match)
 
 
 type Page
-    = Listings
-    | Kompost
-    | Segment
+    = ListingsUI
+    | KompostUI
+    | SegmentUI
     | DvlSpecificsUI
     | MediaFileUI
     | NotFound
 
 
 routeParsers =
-    { listings = Listings := Route.static "Main.elm#listings"
-    , kompost = Kompost := Route.static "Main.elm#kompost"
-    , segment = Segment := Route.static "Main.elm#segment"
+    { listings = ListingsUI := Route.static "Main.elm#listings"
+    , kompost = KompostUI := Route.static "Main.elm#kompost"
+    , segment = SegmentUI := Route.static "Main.elm#segment"
     , dvlSpecificsUI = DvlSpecificsUI := Route.static "Main.elm#dvlSpecificsUI"
     , mediaFileUI = MediaFileUI := Route.static "Main.elm#mediaFileUI"
     }
@@ -46,13 +46,13 @@ routeFromLocation location =
 navigateTo : Page -> Cmd msg
 navigateTo page =
     (case page of
-        Listings ->
+        ListingsUI ->
             Route.reverse routeParsers.listings []
 
-        Kompost ->
+        KompostUI ->
             Route.reverse routeParsers.kompost []
 
-        Segment ->
+        SegmentUI ->
             Route.reverse routeParsers.segment []
 
         DvlSpecificsUI ->

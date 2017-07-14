@@ -16,7 +16,7 @@ import Models.Msg exposing(Msg(EditSpecifics, DvlSpecificsMsg))
 import Models.DvlSpecificsModel as DvlSpecificsModel exposing (..)
 import Models.DvlSpecificsModel exposing (..)
 import UI.MediaFileUI exposing (showMediaFileList)
-import Navigation.AppRouting exposing (Page(Kompost))
+import Navigation.AppRouting exposing (Page(KompostUI))
 
 editSpecifics : Komposition -> Html DvlSpecificsModel.Msg
 editSpecifics kompo =
@@ -29,7 +29,7 @@ editSpecifics kompo =
             [(wrapping "Name" (Input.text [ Input.id "Name", Input.defaultValue kompo.name, Input.onInput DvlSpecificsModel.SetKompositionName, Input.disabled editable]))
             , (wrapping "Revision" (Input.text [ Input.id "Revision", Input.defaultValue kompo.revision, Input.disabled True]))
             , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.defaultValue (toString kompo.bpm), Input.onInput DvlSpecificsModel.SetBpm ]))
-            , Button.button [ Button.secondary, Button.onClick (DvlSpecificsModel.InternalNavigateTo Kompost) ] [ text "Save" ]
+            , Button.button [ Button.secondary, Button.onClick (DvlSpecificsModel.InternalNavigateTo KompostUI) ] [ text "Save" ]
             ]
         ]
 
