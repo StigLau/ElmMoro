@@ -10,7 +10,7 @@ import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
 import Models.BaseModel exposing (Model, Mediafile)
 import Models.Msg exposing (Msg)
-import Models.DvlSpecificsModel as DvlSpecificsModel exposing (Msg(EditMediaFile, SaveMediaFile))
+import Models.DvlSpecificsModel as DvlSpecificsModel exposing (Msg(EditMediaFile, SaveMediaFile, DeleteMediaFile))
 import Navigation.AppRouting exposing (Page(Kompost))
 
 editSpecifics : Model -> Html DvlSpecificsModel.Msg
@@ -21,6 +21,7 @@ editSpecifics model =
             [ (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.fileName, Input.onInput DvlSpecificsModel.SetFileName]))
             , (wrapping "Checksum" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput DvlSpecificsModel.SetChecksum ]))
             , Button.button [ Button.secondary, Button.onClick SaveMediaFile ] [ text "Save" ]
+            , Button.button [ Button.warning, Button.onClick (DeleteMediaFile mediaFile.fileName) ] [ text "Delete" ]
             ]
         ]
 
@@ -34,7 +35,7 @@ showSingleMediaFile mf =
     Grid.row []
         [ Grid.col [] [ Html.map Models.Msg.DvlSpecificsMsg(Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile mf.fileName) ] [ text mf.fileName ]) ]
         , Grid.col [] [ text <| toString mf.startingOffset ]
-        , Grid.col [] [ text <| toString mf.checksum ]
+        , Grid.col [] [ text <| mf.checksum ]
         ]
 
 wrapping identifier funk =

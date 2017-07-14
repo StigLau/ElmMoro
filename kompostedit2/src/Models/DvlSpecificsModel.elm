@@ -12,6 +12,7 @@ type Msg
     | InternalNavigateTo Page
     | EditMediaFile String
     | SaveMediaFile
+    | DeleteMediaFile String
 
 
 extractFromOutmessage: Maybe OutMsg -> Maybe Page
@@ -71,6 +72,11 @@ update msg model =
 
                 head :: tail ->
                     Debug.log "Seggie heads tails: " (model, Cmd.none, Just (OutNavigateTo Kompost))
+
+        DeleteMediaFile id ->
+            let modifiedModel = performMediaFileOnModel model.editingMediaFile deleteMediaFileFromKomposition model
+            in (modifiedModel, Cmd.none, Just (OutNavigateTo Kompost))
+
 
 containsMediaFile : String -> Komposition -> List Mediafile
 containsMediaFile id komposition =

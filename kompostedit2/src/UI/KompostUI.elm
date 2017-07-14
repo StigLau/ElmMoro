@@ -20,6 +20,7 @@ kompost model =
         [ Grid.row [] [ Grid.col [] [] , Grid.col [] [], Grid.col [] [Button.button [ Button.secondary, Button.onClick (NavigateTo Listings) ] [ text "List Komposti" ]]]
         , div [] [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ] ]
         , UI.DvlSpecificsUI.showSpecifics model.kompost
+        , h4 []  [ text "Segments:" ]
         , Html.map SegmentMsg(Segment.SegmentUI.showSegmentList model.kompost.segments)
         , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick CreateSegment ] [ text "New Segment" ]]]
         , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick FetchStuffFromRemoteServer ] [ text "Get data from remote server" ]]]

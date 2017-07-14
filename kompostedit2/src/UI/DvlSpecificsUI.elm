@@ -39,10 +39,11 @@ showSpecifics kompo =
         [ addRow "Name" (text kompo.name)
         , addRow "Revision" (text kompo.revision)
         , addRow "BPM" (text (toString kompo.bpm))
-        , addRow "sources" (showMediaFileList kompo.sources)
+        , h4 []  [ text "Sources:" ]
+        , showMediaFileList kompo.sources
         , Grid.row [] [ Grid.col [] [ ] , Grid.col [] [  ],
             Grid.col []
-            [ Button.button [ Button.primary, Button.small, Button.onClick Models.Msg.EditSpecifics ] [ text "Edit Specifics" ]
+            [ Button.button [ Button.secondary, Button.onClick Models.Msg.EditSpecifics ] [ text "Edit Specifics" ]
             , Html.map Models.Msg.DvlSpecificsMsg(Button.button [ Button.secondary, Button.onClick (EditMediaFile "") ] [ text "New Source" ])
             ] ]
         ]
