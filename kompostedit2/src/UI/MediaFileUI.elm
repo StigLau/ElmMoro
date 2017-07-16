@@ -18,6 +18,7 @@ editSpecifics model =
         in div [] [ h1 [] [ text "Editing Media File" ]
         , Form.form [ class "container" ]
             [ (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.fileName, Input.onInput DvlSpecificsModel.SetFileName]))
+            , (wrapping "Starting Offset" (Input.text [ Input.id "Starting Offset", Input.defaultValue (toString mediaFile.startingOffset), Input.onInput DvlSpecificsModel.SetOffset ]))
             , (wrapping "Checksum" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput DvlSpecificsModel.SetChecksum ]))
             , Form.row []
                 [ Form.colLabel [ Col.xs4 ]

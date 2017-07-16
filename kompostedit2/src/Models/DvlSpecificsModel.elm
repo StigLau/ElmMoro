@@ -9,6 +9,7 @@ type Msg
     | SetFileName String
     | SetBpm String
     | SetChecksum String
+    | SetOffset String
     | InternalNavigateTo Page
     | EditMediaFile String
     | SaveMediaFile
@@ -44,6 +45,11 @@ update msg model =
             let
                 mediaFile = model.editingMediaFile
             in ({ model | editingMediaFile = {mediaFile | checksum = checksum }} , Cmd.none, Nothing)
+
+        SetOffset value ->
+            let
+                mediaFile = model.editingMediaFile
+            in ({ model | editingMediaFile = {mediaFile | startingOffset = 123 }} , Cmd.none, Nothing)
 
         InternalNavigateTo page ->
             let _ = Debug.log "Navigating to" page
