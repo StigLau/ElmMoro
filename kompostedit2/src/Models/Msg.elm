@@ -4,7 +4,7 @@ import Models.BaseModel exposing (..)
 import RemoteData exposing (WebData)
 import Navigation.AppRouting exposing (Page)
 import Navigation exposing (Location)
-import Models.DvlSpecificsModel exposing (Msg)
+import DvlSpecifics.Msg exposing (Msg)
 import Segment.Model exposing (Msg)
 import Http exposing (Error)
 
@@ -21,7 +21,8 @@ type Msg
     | FetchStuffFromRemoteServer
     | DataBackFromRemoteServer (Result Http.Error String)
     | KompositionUpdated (WebData Komposition)
+    | SegmentListUpdated (WebData Komposition)
     | CreateSegment
     | CouchServerStatus (WebData CouchStatusMessage)
-    | DvlSpecificsMsg Models.DvlSpecificsModel.Msg
+    | DvlSpecificsMsg DvlSpecifics.Msg.Msg
     | SegmentMsg Segment.Model.Msg

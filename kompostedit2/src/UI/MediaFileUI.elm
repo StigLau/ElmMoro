@@ -10,16 +10,16 @@ import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
 import Models.BaseModel exposing (Model, Mediafile)
 import Models.Msg exposing (Msg)
-import Models.DvlSpecificsModel as DvlSpecificsModel exposing (Msg(EditMediaFile, SaveMediaFile, DeleteMediaFile))
+import DvlSpecifics.Msg as SpecificsMsg exposing (Msg(EditMediaFile, SaveMediaFile, DeleteMediaFile, FetchAndLoadMediaFile))
 
-editSpecifics : Model -> Html DvlSpecificsModel.Msg
+editSpecifics : Model -> Html SpecificsMsg.Msg
 editSpecifics model =
         let mediaFile = model.editingMediaFile
         in div [] [ h1 [] [ text "Editing Media File" ]
         , Form.form [ class "container" ]
-            [ (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.fileName, Input.onInput DvlSpecificsModel.SetFileName]))
-            , (wrapping "Starting Offset" (Input.text [ Input.id "Starting Offset", Input.defaultValue (toString mediaFile.startingOffset), Input.onInput DvlSpecificsModel.SetOffset ]))
-            , (wrapping "Checksum" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput DvlSpecificsModel.SetChecksum ]))
+            [ (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.fileName, Input.onInput SpecificsMsg.SetFileName]))
+            , (wrapping "Starting Offset" (Input.text [ Input.id "Starting Offset", Input.defaultValue (toString mediaFile.startingOffset), Input.onInput SpecificsMsg.SetOffset ]))
+            , (wrapping "Checksum" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput SpecificsMsg.SetChecksum ]))
             , Form.row []
                 [ Form.colLabel [ Col.xs4 ]
                     []
@@ -44,6 +44,7 @@ showSingleMediaFile mf =
         [ Grid.col [] [ Html.map Models.Msg.DvlSpecificsMsg(Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile mf.fileName) ] [ text mf.fileName ]) ]
         , Grid.col [] [ text <| toString mf.startingOffset ]
         , Grid.col [] [ text <| mf.checksum ]
+        , Grid.col [] [ Html.map Models.Msg.DvlSpecificsMsg(Button.button [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile mf.fileName) ] [ text "Fetch" ]) ]
         ]
 
 wrapping identifier funk =

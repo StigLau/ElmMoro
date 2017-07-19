@@ -1,4 +1,4 @@
-module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, getDataFromRemoteServer)
+module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, getDataFromRemoteServer, getDvlSegmentList)
 
 import Json.Decode as JsonD
 import Json.Encode as JsonE
@@ -6,7 +6,7 @@ import Json.Decode.Pipeline as JsonDPipe
 import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
 import Http exposing (emptyBody, expectJson)
 import RemoteData exposing (RemoteData(..))
-import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, DataBackFromRemoteServer))
+import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, DataBackFromRemoteServer, SegmentListUpdated))
 import Models.BaseModel exposing (Komposition, Segment, Mediafile, CouchStatusMessage)
 
 
@@ -33,6 +33,13 @@ getKomposition id =
     Http.get (kompoUrl ++ id) kompositionDecoder
         |> RemoteData.sendRequest
         |> Cmd.map KompositionUpdated
+
+getDvlSegmentList : String -> Cmd Msg
+getDvlSegmentList id =
+    let _ = Debug.log "In getDvlSegmentList " (kompoUrl ++ id)
+    in Http.get (kompoUrl ++ id) kompositionDecoder
+        |> RemoteData.sendRequest
+        |> Cmd.map SegmentListUpdated
 
 createKompo : Komposition -> Cmd Msg
 createKompo komposition =

@@ -13,12 +13,11 @@ import Bootstrap.Button as Button
 import RemoteData exposing (WebData)
 import Models.BaseModel exposing (..)
 import Models.Msg exposing(Msg(EditSpecifics, DvlSpecificsMsg))
-import Models.DvlSpecificsModel as DvlSpecificsModel exposing (..)
-import Models.DvlSpecificsModel exposing (..)
+import DvlSpecifics.Msg as SpecificsMsg exposing (Msg)
 import UI.MediaFileUI exposing (showMediaFileList)
 import Navigation.AppRouting exposing (Page(KompostUI))
 
-editSpecifics : Komposition -> Html DvlSpecificsModel.Msg
+editSpecifics : Komposition -> Html SpecificsMsg.Msg
 editSpecifics kompo =
     let editable = case kompo.revision of
             "" -> False
@@ -26,10 +25,10 @@ editSpecifics kompo =
     in
         div [] [ h1 [] [ text "Editing Specifics" ]
         , Form.form [ class "container" ]
-            [(wrapping "Name" (Input.text [ Input.id "Name", Input.defaultValue kompo.name, Input.onInput DvlSpecificsModel.SetKompositionName, Input.disabled editable]))
+            [(wrapping "Name" (Input.text [ Input.id "Name", Input.defaultValue kompo.name, Input.onInput SpecificsMsg.SetKompositionName, Input.disabled editable]))
             , (wrapping "Revision" (Input.text [ Input.id "Revision", Input.defaultValue kompo.revision, Input.disabled True]))
-            , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.defaultValue (toString kompo.bpm), Input.onInput DvlSpecificsModel.SetBpm ]))
-            , Button.button [ Button.secondary, Button.onClick (DvlSpecificsModel.InternalNavigateTo KompostUI) ] [ text "Save" ]
+            , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.defaultValue (toString kompo.bpm), Input.onInput SpecificsMsg.SetBpm ]))
+            , Button.button [ Button.secondary, Button.onClick (SpecificsMsg.InternalNavigateTo KompostUI) ] [ text "Save" ]
             ]
         ]
 
@@ -44,7 +43,7 @@ showSpecifics kompo =
         , Grid.row [] [ Grid.col [] [ ] , Grid.col [] [  ],
             Grid.col []
             [ Button.button [ Button.secondary, Button.onClick Models.Msg.EditSpecifics ] [ text "Edit Specifics" ]
-            , Html.map Models.Msg.DvlSpecificsMsg(Button.button [ Button.secondary, Button.onClick (EditMediaFile "") ] [ text "New Source" ])
+            , Html.map Models.Msg.DvlSpecificsMsg(Button.button [ Button.secondary, Button.onClick (SpecificsMsg.EditMediaFile "") ] [ text "New Source" ])
             ] ]
         ]
 

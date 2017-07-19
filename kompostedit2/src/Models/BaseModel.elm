@@ -2,6 +2,7 @@ module Models.BaseModel exposing (..)
 
 import Navigation.AppRouting exposing (Page)
 import RemoteData exposing (WebData)
+import Set
 
 
 type alias Model =
@@ -12,6 +13,7 @@ type alias Model =
     , editableSegment : Bool
     , segment : Segment
     , editingMediaFile: Mediafile
+    , subSegmentList: (Set.Set String)
     }
 
 type alias Komposition =

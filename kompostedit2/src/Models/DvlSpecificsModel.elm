@@ -1,19 +1,11 @@
-module Models.DvlSpecificsModel exposing (Msg(..), update, extractFromOutmessage)
+module Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
 
 import Navigation.AppRouting exposing (Page)
 import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo), Komposition, Mediafile)
 import Navigation.AppRouting exposing (navigateTo, Page(MediaFileUI, KompostUI))
-
-type Msg
-    = SetKompositionName String
-    | SetFileName String
-    | SetBpm String
-    | SetChecksum String
-    | SetOffset String
-    | InternalNavigateTo Page
-    | EditMediaFile String
-    | SaveMediaFile
-    | DeleteMediaFile String
+import Models.KompostApi exposing (getDvlSegmentList)
+import DvlSpecifics.Msg exposing (Msg(..))
+import Models.Msg exposing (Msg)
 
 
 extractFromOutmessage: Maybe OutMsg -> Maybe Page
@@ -23,7 +15,7 @@ extractFromOutmessage childMsg =
         _ -> Nothing
 
 
-update : Msg -> Model -> ( Model, Cmd Msg, Maybe OutMsg )
+update : DvlSpecifics.Msg.Msg -> Model -> ( Model, Cmd Models.Msg.Msg, Maybe OutMsg )
 update msg model =
     case msg of
         SetBpm bpm ->
@@ -49,7 +41,7 @@ update msg model =
         SetOffset value ->
             let
                 mediaFile = model.editingMediaFile
-            in ({ model | editingMediaFile = {mediaFile | startingOffset = 123 }} , Cmd.none, Nothing)
+            in ({ model | editingMediaFile = {mediaFile | startingOffset = Result.withDefault 0 (String.toFloat value) }} , Cmd.none, Nothing)
 
         InternalNavigateTo page ->
             let _ = Debug.log "Navigating to" page
@@ -63,6 +55,14 @@ update msg model =
                     _ -> Debug.log "Reusing Editing Media File" model.editingMediaFile
             in
                 ({ model | editingMediaFile = mediaFile}, Cmd.none,  Just (OutNavigateTo MediaFileUI))
+
+        FetchAndLoadMediaFile id ->
+            let
+                mediaFile = case (containsMediaFile id model.kompost) of
+                    [ mediaFile ] -> Debug.log "We found preexisting media file" mediaFile
+                    _ -> Debug.log "Reusing Editing Media File" model.editingMediaFile
+            in
+                ( model, getDvlSegmentList id, Nothing)
 
         SaveMediaFile  ->
             case (containsMediaFile model.editingMediaFile.fileName model.kompost) of

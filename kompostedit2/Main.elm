@@ -6,7 +6,7 @@ import Navigation exposing (Location)
 import Models.Msg exposing (Msg(..))
 import Models.BaseModel exposing (..)
 import Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
-import Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, getDataFromRemoteServer)
+import Models.KompostApi exposing (getKomposition,getDvlSegmentList, updateKompo, createKompo, deleteKompo, getDataFromRemoteServer)
 import Segment.SegmentUI exposing (segmentForm)
 import Segment.Model exposing (update)
 import UI.KompostUI exposing (..)
@@ -17,6 +17,7 @@ import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(..))
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.CDN as CDN
+import Set
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
@@ -28,6 +29,7 @@ init location =
       , editableSegment = False
       , segment = testSegment1
       , editingMediaFile = testMediaFile
+      , subSegmentList = Set.empty
       }
     , Cmd.batch [ getListings ]
     )
@@ -55,6 +57,13 @@ update msg model =
                     Just kompost -> { model | kompost = kompost}
                     _ -> model
             in newModel ! [ navigateTo KompostUI ]
+
+        SegmentListUpdated webKomposition ->
+            let newModel = case RemoteData.toMaybe webKomposition of
+                    Just kompost -> { model | kompost = kompost}
+                    _ -> model
+                segmentNames = Debug.log "SegmentListUpdated" List.map (\segment -> segment.id) newModel.kompost.segments
+            in { model | subSegmentList = Set.fromList segmentNames } ! [ ]
 
         StoreKomposition ->
             let
@@ -84,10 +93,11 @@ update msg model =
             let
                 (newModel, cmd, childMsg) = Models.DvlSpecificsModel.update msg model
                 cmds = case Models.DvlSpecificsModel.extractFromOutmessage childMsg of
-                    Just page -> [navigateTo page]
-                    Nothing ->  []
+                        Just page -> [navigateTo page]
+                        Nothing ->  [cmd]
             in
                 newModel ! cmds
+
         SegmentMsg msg ->
             let
                 ( newModel, _, childMsg ) = Segment.Model.update msg model

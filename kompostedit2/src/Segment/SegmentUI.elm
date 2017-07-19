@@ -12,7 +12,7 @@ import Bootstrap.Grid as Grid
 import Segment.Model exposing (Msg(..))
 import Navigation.AppRouting exposing (Page(KompostUI))
 import Models.Msg exposing (Msg)
-
+import Set exposing (Set)
 
 segmentForm : Model -> Bool -> Html Segment.Model.Msg
 segmentForm model editableSegmentId =
@@ -43,6 +43,7 @@ segmentForm model editableSegmentId =
                 , Form.col []
                     [ Button.button [ Button.warning, Button.small, Button.onClick DeleteSegment ] [ text "Delete" ] ]
                 ]
+            , text (toString (Set.toList model.subSegmentList))
             ]
         ]
 
