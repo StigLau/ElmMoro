@@ -1,7 +1,7 @@
 module Segment.SegmentUI exposing (segmentForm, showSegmentList)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, href, src, style, type_, placeholder)
+import Html.Attributes exposing (class, href, src, style, type_, placeholder, for)
 import Html.Events exposing (onInput, onClick)
 import Models.BaseModel exposing (..)
 import Bootstrap.Grid.Col as Col
@@ -9,6 +9,7 @@ import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
 import Bootstrap.Grid as Grid
+import Bootstrap.Form.Select as Select
 import Segment.Model exposing (Msg(..))
 import Navigation.AppRouting exposing (Page(KompostUI))
 import Models.Msg exposing (Msg)
@@ -19,12 +20,9 @@ segmentForm model editableSegmentId =
     div []
         [ h1 [] [ text "Editing Segment" ]
         , Form.form [ class "container" ]
-            [ Form.row [ Form.rowSuccess ]
-                [ Form.colLabel [ Col.xs4 ]
-                    [ text "Segment ID:" ]
-                , Form.col [ Col.xs8 ]
-                    [ Input.text [ Input.id "segmentId", Input.defaultValue model.segment.id, Input.onInput SetSegmentId, Input.disabled (not editableSegmentId) ] ]
-                ]
+            [ Form.label [ for "segmentId" ] [ text "Segment ID" ]
+                , Select.select [ Select.id "segmentId", Select.onInput SetSegmentId ]
+                (selectItems ([model.segment.id] ++ Set.toList model.subSegmentList))
             , Form.row []
                 [ Form.colLabelSm [ Col.xs4 ]
                     [ text "Start and end" ]
@@ -43,10 +41,11 @@ segmentForm model editableSegmentId =
                 , Form.col []
                     [ Button.button [ Button.warning, Button.small, Button.onClick DeleteSegment ] [ text "Delete" ] ]
                 ]
-            , text (toString (Set.toList model.subSegmentList))
             ]
         ]
 
+selectItems: List String -> List (Select.Item msg)
+selectItems segIds = List.map (\id -> Select.item [] [ text id]) segIds
 
 showSegmentList : List Segment -> Html Segment.Model.Msg
 showSegmentList segs =
