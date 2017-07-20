@@ -23,10 +23,10 @@ kompost model =
         , h4 []  [ text "Segments:" ]
         , Html.map SegmentMsg(Segment.SegmentUI.showSegmentList model.kompost.segments)
         , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick CreateSegment ] [ text "New Segment" ]]]
-        , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick FetchStuffFromRemoteServer ] [ text "Get data from remote server" ]]]
         , Grid.simpleRow
             [ Grid.col [] []
             , Grid.col [] [Button.button [ Button.success, Button.small, Button.onClick StoreKomposition ] [ text "Store Komposition" ]]
             , Grid.col [] [Button.button [ Button.danger, Button.small, Button.onClick DeleteKomposition ] [ text "Delete Komposition" ]]
             ]
+        , Grid.simpleRow [Grid.col [] [text ("Status: " ++ toString model.statusMessage)]]
         ]

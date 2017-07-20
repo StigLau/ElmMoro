@@ -8,7 +8,7 @@ import Set
 type alias Model =
     { listings : WebData DataRepresentation
     , kompost : Komposition
-    , dvlId : Maybe String
+    , statusMessage: List String
     , activePage : Page
     , editableSegment : Bool
     , segment : Segment

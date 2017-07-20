@@ -18,11 +18,11 @@ type Msg
     | NewKomposition
     | StoreKomposition
     | DeleteKomposition
-    | FetchStuffFromRemoteServer
-    | DataBackFromRemoteServer (Result Http.Error String)
+    | FetchStuffFromRemoteServer String
     | KompositionUpdated (WebData Komposition)
     | SegmentListUpdated (WebData Komposition)
     | CreateSegment
     | CouchServerStatus (WebData CouchStatusMessage)
     | DvlSpecificsMsg DvlSpecifics.Msg.Msg
     | SegmentMsg Segment.Model.Msg
+    | ETagResponse (Result Http.Error String)

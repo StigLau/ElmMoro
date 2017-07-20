@@ -1,4 +1,4 @@
-module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, getDataFromRemoteServer, getDvlSegmentList)
+module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, getDvlSegmentList, fetchETagHeader)
 
 import Json.Decode as JsonD
 import Json.Encode as JsonE
@@ -6,8 +6,9 @@ import Json.Decode.Pipeline as JsonDPipe
 import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
 import Http exposing (emptyBody, expectJson)
 import RemoteData exposing (RemoteData(..))
-import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, DataBackFromRemoteServer, SegmentListUpdated))
+import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, SegmentListUpdated, ETagResponse))
 import Models.BaseModel exposing (Komposition, Segment, Mediafile, CouchStatusMessage)
+import Dict
 
 
 kompoUrl : String
@@ -152,17 +153,25 @@ encodeSource source =
         ]
 
 
-getDataFromRemoteServer : String -> Cmd Msg
-getDataFromRemoteServer topic =
-  let
-    url =
-      "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=" ++ topic
+fetchETagHeader : String -> Cmd Msg
+fetchETagHeader id =
+        Http.send ETagResponse (getHeader "ETag" (kompoUrl ++ id))
 
-    request =
-      Http.get url decodeGifUrl
-  in
-    Http.send DataBackFromRemoteServer request
 
-decodeGifUrl : JsonD.Decoder String
-decodeGifUrl =
-  JsonD.at ["data", "image_url"] JsonD.string
+getHeader : String -> String -> Http.Request String
+getHeader name url =
+    Http.request
+        { method = "GET"
+        , headers = []
+        , url = url
+        , body = Http.emptyBody
+        , expect = Http.expectStringResponse (extractHeader name)
+        , timeout = Nothing
+        , withCredentials = False
+        }
+
+
+extractHeader : String -> Http.Response String -> Result String String
+extractHeader name resp =
+    Dict.get name resp.headers
+        |> Result.fromMaybe ("header " ++ name ++ " not found")

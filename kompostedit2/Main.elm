@@ -6,7 +6,7 @@ import Navigation exposing (Location)
 import Models.Msg exposing (Msg(..))
 import Models.BaseModel exposing (..)
 import Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
-import Models.KompostApi exposing (getKomposition,getDvlSegmentList, updateKompo, createKompo, deleteKompo, getDataFromRemoteServer)
+import Models.KompostApi exposing (getKomposition,getDvlSegmentList, updateKompo, createKompo, deleteKompo, fetchETagHeader)
 import Segment.SegmentUI exposing (segmentForm)
 import Segment.Model exposing (update)
 import UI.KompostUI exposing (..)
@@ -24,10 +24,10 @@ init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
     ( { listings = RemoteData.Loading
       , kompost = emptyKompostion
-      , dvlId = Nothing
+      , statusMessage = []
       , activePage = KompostUI
       , editableSegment = False
-      , segment = testSegment1
+      , segment = Segment "" -1 -1
       , editingMediaFile = testMediaFile
       , subSegmentList = Set.empty
       }
@@ -48,7 +48,7 @@ update msg model =
             model ! [ navigateTo page ]
 
         ChooseDvl id ->
-            { model | dvlId = Just id, activePage = KompostUI } ! [ getKomposition id ]
+            { model | activePage = KompostUI } ! [ getKomposition id ]
 
         NewKomposition -> { model | kompost = emptyKompostion } ! [ navigateTo AppRouting.DvlSpecificsUI ]
 
@@ -107,14 +107,14 @@ update msg model =
             in
                 newModel ! cmds
 
-        FetchStuffFromRemoteServer ->
-            (model, getDataFromRemoteServer "cats")
+        FetchStuffFromRemoteServer id ->
+            (model, fetchETagHeader id)
 
-        DataBackFromRemoteServer (Ok newUrl) ->
-            (model, Cmd.none)
+        ETagResponse (Ok value) ->
+             ( { model | statusMessage = [String.dropLeft 1 (String.dropRight 1 value)]} , Cmd.none )
 
-        DataBackFromRemoteServer (Err _) ->
-            (model, Cmd.none)
+        ETagResponse (Err err) ->
+            ( { model | statusMessage = [toString err] }, Cmd.none )
 
 ---- VIEW Base ----
 view : Model -> Html Msg
@@ -164,13 +164,6 @@ main =
 
 
 -- Offline testdata
---testListings = MsgModel.DataRepresentation 1 0 [testRow]
---testRow = MsgModel.Row "id123" "key123"
 
-emptyKompostion = Komposition "" "" 0 testMediaFile [testSegment1, testSegment2] [testMediaFile]
---initModel = Model "dvlRef" "name" "revision" 0 1234  testConfig testMediaFile [testSegment1, testSegment2]
---testConfig = MsgModel.Config 1280 1080 24 "mp4" 1234
-testMediaFile = Mediafile "https://www.not.configured.com/watch?v=Scxs7L0vhZ4" 0 "No checksum"
-testSegment1 = Segment "First segment" 7541667 19750000
-testSegment2 = Segment "Second segment" 21250000  27625000
-
+emptyKompostion = Komposition "" "" 0 testMediaFile [] []
+testMediaFile = Mediafile "" 0 "No checksum"

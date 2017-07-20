@@ -9,7 +9,8 @@ import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
 import Models.BaseModel exposing (Model, Mediafile)
-import Models.Msg exposing (Msg)
+import Models.Msg exposing (Msg(FetchStuffFromRemoteServer))
+import Models.Msg exposing (..)
 import DvlSpecifics.Msg as SpecificsMsg exposing (Msg(EditMediaFile, SaveMediaFile, DeleteMediaFile, FetchAndLoadMediaFile))
 
 editSpecifics : Model -> Html SpecificsMsg.Msg
@@ -41,10 +42,14 @@ showMediaFileList mediaFile =
 showSingleMediaFile : Models.BaseModel.Mediafile -> Html Models.Msg.Msg
 showSingleMediaFile mf =
     Grid.row []
-        [ Grid.col [] [ Html.map Models.Msg.DvlSpecificsMsg(Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile mf.fileName) ] [ text mf.fileName ]) ]
+        [ Grid.col [] [ Html.map Models.Msg.DvlSpecificsMsg(
+                Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile mf.fileName) ] [ text mf.fileName ]) ]
         , Grid.col [] [ text <| toString mf.startingOffset ]
         , Grid.col [] [ text <| mf.checksum ]
-        , Grid.col [] [ Html.map Models.Msg.DvlSpecificsMsg(Button.button [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile mf.fileName) ] [ text "Fetch" ]) ]
+        , Grid.col [] [ Html.map Models.Msg.DvlSpecificsMsg(Button.button
+                [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile mf.fileName) ] [ text "Fetch" ]) ]
+        , Grid.col [] [ (Button.button
+                [ Button.small, Button.onClick (FetchStuffFromRemoteServer mf.fileName)] [ text "Evaluate Checksum" ]) ]
         ]
 
 wrapping identifier funk =
