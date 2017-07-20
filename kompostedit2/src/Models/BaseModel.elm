@@ -22,7 +22,6 @@ type alias Komposition =
     , bpm : Float
 
     --, config: Config
-    , mediaFile : Mediafile
     , segments : List Segment
     , sources : List Mediafile
     }

@@ -25,10 +25,10 @@ init location =
     ( { listings = RemoteData.Loading
       , kompost = emptyKompostion
       , statusMessage = []
-      , activePage = KompostUI
+      , activePage = ListingsUI
       , editableSegment = False
       , segment = Segment "" -1 -1
-      , editingMediaFile = testMediaFile
+      , editingMediaFile = Mediafile "" 0 ""
       , subSegmentList = Set.empty
       }
     , Cmd.batch [ getListings ]
@@ -165,5 +165,4 @@ main =
 
 -- Offline testdata
 
-emptyKompostion = Komposition "" "" 0 testMediaFile [] []
-testMediaFile = Mediafile "" 0 "No checksum"
+emptyKompostion = Komposition "" "" 0  [] []

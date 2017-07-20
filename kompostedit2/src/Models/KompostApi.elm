@@ -75,7 +75,6 @@ kompositionDecoder =
     |> required "_id" JsonD.string
     |> required "_rev" JsonD.string
     |> required "bpm" JsonD.float
-    |> required "mediaFile" mediaFileDecoder
     |> required "segments" (JsonD.list segmentDecoder)
     |> optional "sources" (JsonD.list mediaFileDecoder) []
 
@@ -116,7 +115,6 @@ encodeKomposition kompo =
        JsonE.encode 0 <| JsonE.object (
             [ ( "_id", JsonE.string kompo.name )
             , ( "bpm", JsonE.float kompo.bpm)
-            , ( "mediaFile", encodeMediaFile kompo.mediaFile )
             , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
             ]   ++ revision ++ sources
         )

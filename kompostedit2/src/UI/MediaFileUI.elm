@@ -16,9 +16,9 @@ import DvlSpecifics.Msg as SpecificsMsg exposing (Msg(EditMediaFile, SaveMediaFi
 editSpecifics : Model -> Html SpecificsMsg.Msg
 editSpecifics model =
         let mediaFile = model.editingMediaFile
-        in div [] [ h1 [] [ text "Editing Media File" ]
+        in div [] [ h1 [] [ text "Editing Source" ]
         , Form.form [ class "container" ]
-            [ (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.fileName, Input.onInput SpecificsMsg.SetFileName]))
+            [ (wrapping "ID" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.fileName, Input.onInput SpecificsMsg.SetFileName]))
             , (wrapping "Starting Offset" (Input.text [ Input.id "Starting Offset", Input.defaultValue (toString mediaFile.startingOffset), Input.onInput SpecificsMsg.SetOffset ]))
             , (wrapping "Checksum" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput SpecificsMsg.SetChecksum ]))
             , Form.row []
