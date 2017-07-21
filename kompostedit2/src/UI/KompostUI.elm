@@ -18,7 +18,7 @@ kompost : Model -> Html Models.Msg.Msg
 kompost model =
     div []
         [ Grid.row [] [ Grid.col [] [] , Grid.col [] [], Grid.col [] [Button.button [ Button.secondary, Button.onClick (NavigateTo ListingsUI) ] [ text "List Komposti" ]]]
-        , div [] [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ] ]
+        , div [] [ h4 [ style [ ( "flex", "1" ) ] ] [ text model.kompost.dvlType ] ]
         , Specifics.showSpecifics model.kompost
         , h4 []  [ text "Segments:" ]
         , Html.map SegmentMsg(Segment.SegmentUI.showSegmentList model.kompost.segments)

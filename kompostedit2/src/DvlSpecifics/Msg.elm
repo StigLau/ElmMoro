@@ -7,6 +7,7 @@ type Msg
     | SetId String
     | SetURL String
     | SetBpm String
+    | SetDvlType String
     | SetChecksum String
     | SetOffset String
     | InternalNavigateTo Page

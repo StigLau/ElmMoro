@@ -82,8 +82,9 @@ kompositionDecoder =
   Json.Decode.Pipeline.decode Komposition
     |> required "_id" JsonD.string
     |> required "_rev" JsonD.string
-    |> required "bpm" JsonD.float
-    |> required "segments" (JsonD.list segmentDecoder)
+    |> optional "dvltype" JsonD.string ""
+    |> optional "bpm" JsonD.float -1
+    |> optional "segments" (JsonD.list segmentDecoder) []
     |> optional "sources" (JsonD.list mediaFileDecoder) []
 
 
@@ -122,6 +123,7 @@ encodeKomposition kompo =
      in
        JsonE.encode 0 <| JsonE.object (
             [ ( "_id", JsonE.string kompo.name )
+            , ( "dvltype", JsonE.string kompo.dvlType )
             , ( "bpm", JsonE.float kompo.bpm)
             , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
             ]   ++ revision ++ sources

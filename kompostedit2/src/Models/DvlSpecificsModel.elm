@@ -18,12 +18,6 @@ extractFromOutmessage childMsg =
 update : DvlSpecifics.Msg.Msg -> Model -> ( Model, Cmd Models.Msg.Msg, Maybe OutMsg )
 update msg model =
     case msg of
-        SetBpm bpm ->
-            let
-                kompost = model.kompost
-                nuBpm = Result.withDefault 0 (String.toFloat bpm)
-            in ({ model | kompost = {kompost | bpm = nuBpm}}, Cmd.none, Nothing)
-
         SetKompositionName name ->
             let kompost = model.kompost
             in ({model | kompost = {kompost | name = name }}, Cmd.none, Nothing)
@@ -37,6 +31,17 @@ update msg model =
             let
                 mediaFile = model.editingMediaFile
             in ({model | editingMediaFile = { mediaFile | url = url }}, Cmd.none, Nothing)
+
+        SetDvlType dvlType ->
+            let
+                kompost = model.kompost
+            in ({ model | kompost = {kompost | dvlType = dvlType}}, Cmd.none, Nothing)
+
+        SetBpm bpm ->
+            let
+                kompost = model.kompost
+                nuBpm = Result.withDefault 0 (String.toFloat bpm)
+            in ({ model | kompost = {kompost | bpm = nuBpm}}, Cmd.none, Nothing)
 
         SetChecksum checksum ->
             let

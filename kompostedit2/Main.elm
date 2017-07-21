@@ -156,7 +156,7 @@ main =
 
 -- Offline testdata
 emptyKomposition = { listings = RemoteData.Loading
-                         , kompost = Komposition "" "" 0  [] []
+                         , kompost = Komposition "" "" "" 0  [] []
                          , statusMessage = []
                          , activePage = ListingsUI
                          , editableSegment = False

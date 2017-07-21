@@ -13,6 +13,7 @@ import Bootstrap.Form.Select as Select
 import Segment.Model exposing (Msg(..))
 import Navigation.AppRouting exposing (Page(KompostUI))
 import Models.Msg exposing (Msg)
+import Common.UIFunctions exposing (selectItems)
 import Set exposing (Set)
 
 segmentForm : Model -> Bool -> Html Segment.Model.Msg
@@ -22,7 +23,7 @@ segmentForm model editableSegmentId =
         , Form.form [ class "container" ]
             [ Form.label [ for "segmentId" ] [ text "Segment ID" ]
                 , Select.select [ Select.id "segmentId", Select.onInput SetSegmentId ]
-                (selectItems ([model.segment.id] ++ Set.toList model.subSegmentList))
+                (selectItems model.segment.id (Set.toList model.subSegmentList))
             , Form.row []
                 [ Form.colLabelSm [ Col.xs4 ]
                     [ text "Start and end" ]
@@ -43,9 +44,6 @@ segmentForm model editableSegmentId =
                 ]
             ]
         ]
-
-selectItems: List String -> List (Select.Item msg)
-selectItems segIds = List.map (\id -> Select.item [] [ text id]) segIds
 
 showSegmentList : List Segment -> Html Segment.Model.Msg
 showSegmentList segs =
