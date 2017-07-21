@@ -4,7 +4,8 @@ import Navigation.AppRouting exposing (Page)
 
 type Msg
     = SetKompositionName String
-    | SetFileName String
+    | SetId String
+    | SetURL String
     | SetBpm String
     | SetChecksum String
     | SetOffset String

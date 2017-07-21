@@ -28,7 +28,8 @@ type alias Komposition =
 
 
 type alias Mediafile =
-    { fileName : String
+    { id: String
+    , url : String
     , startingOffset : Float
     , checksum : String
     }

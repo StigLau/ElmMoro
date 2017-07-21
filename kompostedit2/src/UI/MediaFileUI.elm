@@ -18,7 +18,8 @@ editSpecifics model =
         let mediaFile = model.editingMediaFile
         in div [] [ h1 [] [ text "Editing Source" ]
         , Form.form [ class "container" ]
-            [ (wrapping "ID" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.fileName, Input.onInput SpecificsMsg.SetFileName]))
+            [ (wrapping "ID" (Input.text [ Input.id "id", Input.defaultValue mediaFile.id, Input.onInput SpecificsMsg.SetId]))
+            , (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.url, Input.onInput SpecificsMsg.SetURL]))
             , (wrapping "Starting Offset" (Input.text [ Input.id "Starting Offset", Input.defaultValue (toString mediaFile.startingOffset), Input.onInput SpecificsMsg.SetOffset ]))
             , (wrapping "Checksum" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput SpecificsMsg.SetChecksum ]))
             , Form.row []
@@ -29,7 +30,7 @@ editSpecifics model =
                 , Form.col []
                     [  ]
                 , Form.col []
-                    [ Button.button [ Button.warning, Button.small, Button.onClick (DeleteMediaFile mediaFile.fileName)] [ text "Delete" ] ]
+                    [ Button.button [ Button.warning, Button.small, Button.onClick (DeleteMediaFile mediaFile.id)] [ text "Delete" ] ]
                 ]
             ]
         ]
@@ -43,13 +44,11 @@ showSingleMediaFile : Models.BaseModel.Mediafile -> Html Models.Msg.Msg
 showSingleMediaFile mf =
     Grid.row []
         [ Grid.col [] [ Html.map Models.Msg.DvlSpecificsMsg(
-                Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile mf.fileName) ] [ text mf.fileName ]) ]
-        , Grid.col [] [ text <| toString mf.startingOffset ]
-        , Grid.col [] [ text <| mf.checksum ]
+                Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile mf.id) ] [ text mf.id ]) ]
         , Grid.col [] [ Html.map Models.Msg.DvlSpecificsMsg(Button.button
-                [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile mf.fileName) ] [ text "Fetch" ]) ]
+                [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile mf.id) ] [ text "Fetch" ]) ]
         , Grid.col [] [ (Button.button
-                [ Button.small, Button.onClick (FetchStuffFromRemoteServer mf.fileName)] [ text "Evaluate Checksum" ]) ]
+                [ Button.small, Button.onClick (FetchStuffFromRemoteServer mf.id)] [ text "Evaluate Checksum" ]) ]
         ]
 
 wrapping identifier funk =

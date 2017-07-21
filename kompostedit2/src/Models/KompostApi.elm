@@ -1,4 +1,4 @@
-module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, getDvlSegmentList, fetchETagHeader)
+module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, processKomposition, getDvlSegmentList, fetchETagHeader)
 
 import Json.Decode as JsonD
 import Json.Encode as JsonE
@@ -15,6 +15,7 @@ kompoUrl : String
 kompoUrl =
     "http://heap.kompo.st/"
 
+kvaernUrl = "http://localhost:4567/"
 
 base =
     { method = ""
@@ -25,9 +26,6 @@ base =
     , timeout = Nothing
     , withCredentials = False
     }
-
---getKompo : String -> (Result Http.Error Komposition -> msg) -> Cmd msg
---getKompo id msg = Http.get (kompoUrl ++ id) kompositionDecoder |> Http.send msg
 
 getKomposition : String -> Cmd Msg
 getKomposition id =
@@ -45,6 +43,15 @@ getDvlSegmentList id =
 createKompo : Komposition -> Cmd Msg
 createKompo komposition =
     Http.post kompoUrl (Http.stringBody "application/json" <| encodeKomposition komposition) couchServerStatusDecoder
+        |> RemoteData.sendRequest
+        |> Cmd.map CouchServerStatus
+
+processKomposition : Komposition -> Cmd Msg
+processKomposition komposition =
+    Http.request
+        { base | method = "PUT"
+        , url = kompoUrl ++ komposition.name
+        , body = Http.stringBody "application/json" <| encodeKomposition komposition
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
 
@@ -93,13 +100,13 @@ segmentDecoder =
         (JsonD.field "start" JsonD.int)
         (JsonD.field "end" JsonD.int)
 
-
 mediaFileDecoder : JsonD.Decoder Mediafile
 mediaFileDecoder =
-    JsonD.map3 Mediafile
-        (JsonD.field "fileName" JsonD.string)
-        (JsonD.field "startingOffset" JsonD.float)
-        (JsonD.field "checksum" JsonD.string)
+  Json.Decode.Pipeline.decode Mediafile
+    |> required "id" JsonD.string
+    |> optional "url" JsonD.string ""
+    |> optional "startingOffset" JsonD.float 0
+    |> optional "checksum" JsonD.string ""
 
 
 encodeKomposition : Komposition -> String
@@ -122,8 +129,12 @@ encodeKomposition kompo =
 
 encodeMediaFile : Mediafile -> JsonE.Value
 encodeMediaFile mediaFile =
-    JsonE.object
-        [ ( "fileName", JsonE.string mediaFile.fileName )
+    let url = case mediaFile.url of
+            "" -> (kompoUrl ++ mediaFile.id)
+            url -> url
+    in JsonE.object
+        [ ( "id", JsonE.string mediaFile.id )
+        , ( "url", JsonE.string url )
         , ( "startingOffset", JsonE.float mediaFile.startingOffset )
         , ( "checksum", JsonE.string mediaFile.checksum )
         ]

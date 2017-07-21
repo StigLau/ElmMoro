@@ -28,10 +28,15 @@ update msg model =
             let kompost = model.kompost
             in ({model | kompost = {kompost | name = name }}, Cmd.none, Nothing)
 
-        SetFileName fileName ->
+        SetId id ->
             let
                 mediaFile = model.editingMediaFile
-            in ({model | editingMediaFile = { mediaFile | fileName = fileName }}, Cmd.none, Nothing)
+            in ({model | editingMediaFile = { mediaFile | id = id }}, Cmd.none, Nothing)
+
+        SetURL url ->
+            let
+                mediaFile = model.editingMediaFile
+            in ({model | editingMediaFile = { mediaFile | url = url }}, Cmd.none, Nothing)
 
         SetChecksum checksum ->
             let
@@ -65,7 +70,7 @@ update msg model =
                 ( model, getDvlSegmentList id, Nothing)
 
         SaveMediaFile  ->
-            case (containsMediaFile model.editingMediaFile.fileName model.kompost) of
+            case (containsMediaFile model.editingMediaFile.id model.kompost) of
                 [] ->
                     Debug.log "Adding MediaFile []: " (performMediaFileOnModel model.editingMediaFile addMediaFileToKomposition model, Cmd.none, Just (OutNavigateTo KompostUI))
 
@@ -86,7 +91,7 @@ update msg model =
 
 containsMediaFile : String -> Komposition -> List Mediafile
 containsMediaFile id komposition =
-    List.filter (\mediaFile -> mediaFile.fileName == id) komposition.sources
+    List.filter (\mediaFile -> mediaFile.id == id) komposition.sources
 
 performMediaFileOnModel mf function model  =
     { model | kompost = (function mf model.kompost) }
@@ -98,4 +103,4 @@ addMediaFileToKomposition mediaFile komposition =
 
 deleteMediaFileFromKomposition : Mediafile -> Komposition -> Komposition
 deleteMediaFileFromKomposition mediaFile komposition =
-    { komposition | sources = List.filter (\n -> n.fileName /= mediaFile.fileName) komposition.sources }
+    { komposition | sources = List.filter (\n -> n.id /= mediaFile.id) komposition.sources }

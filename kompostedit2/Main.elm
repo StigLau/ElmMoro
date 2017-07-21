@@ -6,7 +6,7 @@ import Navigation exposing (Location)
 import Models.Msg exposing (Msg(..))
 import Models.BaseModel exposing (..)
 import Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
-import Models.KompostApi exposing (getKomposition,getDvlSegmentList, updateKompo, createKompo, deleteKompo, fetchETagHeader)
+import Models.KompostApi exposing (..)
 import Segment.SegmentUI exposing (segmentForm)
 import Segment.Model exposing (update)
 import UI.KompostUI exposing (..)
@@ -28,7 +28,7 @@ init location =
       , activePage = ListingsUI
       , editableSegment = False
       , segment = Segment "" -1 -1
-      , editingMediaFile = Mediafile "" 0 ""
+      , editingMediaFile = Mediafile "" "" 0 ""
       , subSegmentList = Set.empty
       }
     , Cmd.batch [ getListings ]
@@ -46,6 +46,7 @@ update msg model =
 
         NavigateTo page ->
             model ! [ navigateTo page ]
+            --TODO If page navigation is listings - set kompost++ to empty
 
         ChooseDvl id ->
             { model | activePage = KompostUI } ! [ getKomposition id ]
@@ -107,6 +108,9 @@ update msg model =
             in
                 newModel ! cmds
 
+        OrderKompositionProcessing ->
+            model ! [processKomposition model.kompost]
+
         FetchStuffFromRemoteServer id ->
             (model, fetchETagHeader id)
 
@@ -164,5 +168,4 @@ main =
 
 
 -- Offline testdata
-
 emptyKompostion = Komposition "" "" 0  [] []
