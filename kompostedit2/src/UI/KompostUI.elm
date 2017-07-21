@@ -29,5 +29,4 @@ kompost model =
             , Grid.col [] [Button.button [ Button.danger, Button.small, Button.onClick DeleteKomposition ] [ text "Delete Komposition" ]]
             ]
         , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick OrderKompositionProcessing ] [ text "Create Video" ]]]
-        , Grid.simpleRow [Grid.col [] [text ("Status: " ++ toString model.statusMessage)]]
         ]

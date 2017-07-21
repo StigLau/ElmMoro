@@ -15,3 +15,4 @@ type Msg
     | FetchAndLoadMediaFile String
     | SaveMediaFile
     | DeleteMediaFile String
+    | FetchStuffFromRemoteServer String

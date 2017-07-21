@@ -30,7 +30,7 @@ editSpecifics kompo =
             [(wrapping "Name" (Input.text [ Input.id "Name", Input.defaultValue kompo.name, Input.onInput SpecificsMsg.SetKompositionName, Input.disabled editable]))
             , (wrapping "Revision" (Input.text [ Input.id "Revision", Input.defaultValue kompo.revision, Input.disabled True]))
             , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.defaultValue (toString kompo.bpm), Input.onInput SpecificsMsg.SetBpm ]))
-            , (wrapping "Type" (Select.select [ Select.onInput SpecificsMsg.SetDvlType ] (selectItems kompo.dvlType Common.StaticVariables.komposionTypes) ))
+            , (wrapping "Type" (Select.select [ Select.onChange SpecificsMsg.SetDvlType ] (selectItems kompo.dvlType Common.StaticVariables.komposionTypes) ))
             , Button.button [ Button.secondary, Button.onClick (SpecificsMsg.InternalNavigateTo KompostUI) ] [ text "<- Back" ]
             ]
         ]
@@ -41,12 +41,11 @@ showSpecifics kompo =
         [ addRow "Name" (text kompo.name)
         , addRow "Revision" (text kompo.revision)
         , addRow "BPM" (text (toString kompo.bpm))
+        , Grid.row [] [ Grid.col [] [], Grid.col [] [], Grid.col [] [ Button.button [ Button.secondary, Button.onClick Models.Msg.EditSpecifics ] [ text "Edit Specifics" ] ]]
         , h4 []  [ text "Sources:" ]
         , showMediaFileList kompo.sources
-        , Grid.row [] [ Grid.col [] [ ] , Grid.col [] [  ],
-            Grid.col []
-            [ Button.button [ Button.secondary, Button.onClick Models.Msg.EditSpecifics ] [ text "Edit Specifics" ]
-            , Html.map Models.Msg.DvlSpecificsMsg(Button.button [ Button.secondary, Button.onClick (SpecificsMsg.EditMediaFile "") ] [ text "New Source" ])
+        , Grid.row [] [ Grid.col [] [ ] , Grid.col [] [], Grid.col []
+            [ Html.map Models.Msg.DvlSpecificsMsg(Button.button [ Button.secondary, Button.onClick (SpecificsMsg.EditMediaFile "") ] [ text "New Source" ])
             ] ]
         ]
 

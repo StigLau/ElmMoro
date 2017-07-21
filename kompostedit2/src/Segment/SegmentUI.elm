@@ -9,7 +9,7 @@ import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
 import Bootstrap.Grid as Grid
-import Bootstrap.Form.Select as Select
+import Bootstrap.Form.Select as Select exposing (onChange)
 import Segment.Model exposing (Msg(..))
 import Navigation.AppRouting exposing (Page(KompostUI))
 import Models.Msg exposing (Msg)
@@ -18,12 +18,15 @@ import Set exposing (Set)
 
 segmentForm : Model -> Bool -> Html Segment.Model.Msg
 segmentForm model editableSegmentId =
-    div []
+    let subSegments = case Set.toList model.subSegmentList of
+            [] -> ["Fetch Sources if Segment list is unpopulated"]
+            other -> other
+    in div []
         [ h1 [] [ text "Editing Segment" ]
         , Form.form [ class "container" ]
             [ Form.label [ for "segmentId" ] [ text "Segment ID" ]
-                , Select.select [ Select.id "segmentId", Select.onInput SetSegmentId ]
-                (selectItems model.segment.id (Set.toList model.subSegmentList))
+                , Select.select [ Select.id "segmentId", Select.onChange SetSegmentId ]
+                (selectItems model.segment.id subSegments)
             , Form.row []
                 [ Form.colLabelSm [ Col.xs4 ]
                     [ text "Start and end" ]

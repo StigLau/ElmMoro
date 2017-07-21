@@ -18,7 +18,6 @@ type Msg
     | NewKomposition
     | StoreKomposition
     | DeleteKomposition
-    | FetchStuffFromRemoteServer String
     | KompositionUpdated (WebData Komposition)
     | SegmentListUpdated (WebData Komposition)
     | CreateSegment

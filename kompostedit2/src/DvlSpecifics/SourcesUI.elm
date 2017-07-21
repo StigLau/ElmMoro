@@ -9,9 +9,8 @@ import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
 import Models.BaseModel exposing (Model, Mediafile)
-import Models.Msg exposing (Msg(FetchStuffFromRemoteServer))
-import Models.Msg exposing (..)
-import DvlSpecifics.Msg as SpecificsMsg exposing (Msg(EditMediaFile, SaveMediaFile, DeleteMediaFile, FetchAndLoadMediaFile))
+import Models.Msg exposing (Msg(DvlSpecificsMsg))
+import DvlSpecifics.Msg as SpecificsMsg exposing (Msg(EditMediaFile, SaveMediaFile, DeleteMediaFile, FetchAndLoadMediaFile, FetchStuffFromRemoteServer))
 
 editSpecifics : Model -> Html SpecificsMsg.Msg
 editSpecifics model =
@@ -20,7 +19,8 @@ editSpecifics model =
         , Form.form [ class "container" ]
             [ (wrapping "ID" (Input.text [ Input.id "id", Input.defaultValue mediaFile.id, Input.onInput SpecificsMsg.SetId]))
             , (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.url, Input.onInput SpecificsMsg.SetURL]))
-            , (wrapping "Starting Offset" (Input.text [ Input.id "Starting Offset", Input.defaultValue (toString mediaFile.startingOffset), Input.onInput SpecificsMsg.SetOffset ]))
+            , (wrapping "Starting Offset" (Input.text [ Input.id "Starting Offset", Input.defaultValue (toString mediaFile.startingOffset),
+                Input.onInput SpecificsMsg.SetOffset ]))
             , (wrapping "Checksum" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput SpecificsMsg.SetChecksum ]))
             , Form.row []
                 [ Form.colLabel [ Col.xs4 ]
@@ -31,7 +31,10 @@ editSpecifics model =
                     [  ]
                 , Form.col []
                     [ Button.button [ Button.warning, Button.small, Button.onClick (DeleteMediaFile mediaFile.id)] [ text "Delete" ] ]
+                , Form.col []
+                    [ ( Button.button [ Button.small, Button.onClick (FetchStuffFromRemoteServer mediaFile.id)] [ text "Evaluate Checksum" ] ) ]
                 ]
+            , Grid.simpleRow [Grid.col [] [text ("Status: " ++ toString model.statusMessage)]]
             ]
         ]
 
@@ -47,8 +50,6 @@ showSingleMediaFile mf =
                 Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile mf.id) ] [ text mf.id ]) ]
         , Grid.col [] [ Html.map Models.Msg.DvlSpecificsMsg(Button.button
                 [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile mf.id) ] [ text "Fetch" ]) ]
-        , Grid.col [] [ (Button.button
-                [ Button.small, Button.onClick (FetchStuffFromRemoteServer mf.id)] [ text "Evaluate Checksum" ]) ]
         ]
 
 wrapping identifier funk =

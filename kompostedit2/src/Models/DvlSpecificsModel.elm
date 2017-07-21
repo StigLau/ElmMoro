@@ -3,7 +3,7 @@ module Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
 import Navigation.AppRouting exposing (Page)
 import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo), Komposition, Mediafile)
 import Navigation.AppRouting exposing (navigateTo, Page(MediaFileUI, KompostUI))
-import Models.KompostApi exposing (getDvlSegmentList)
+import Models.KompostApi exposing (getDvlSegmentList, fetchETagHeader)
 import DvlSpecifics.Msg exposing (Msg(..))
 import Models.Msg exposing (Msg)
 
@@ -77,8 +77,8 @@ update msg model =
         SaveMediaFile  ->
             case (containsMediaFile model.editingMediaFile.id model.kompost) of
                 [] ->
-                    Debug.log "Adding MediaFile []: " (performMediaFileOnModel model.editingMediaFile addMediaFileToKomposition model, Cmd.none, Just (OutNavigateTo KompostUI))
-
+                    Debug.log "Adding MediaFile []: "
+                        (performMediaFileOnModel model.editingMediaFile addMediaFileToKomposition model, Cmd.none, Just (OutNavigateTo KompostUI))
                 [ x ] ->
                     let
                         deleted = performMediaFileOnModel model.editingMediaFile deleteMediaFileFromKomposition model
@@ -93,6 +93,8 @@ update msg model =
             let modifiedModel = performMediaFileOnModel model.editingMediaFile deleteMediaFileFromKomposition model
             in (modifiedModel, Cmd.none, Just (OutNavigateTo KompostUI))
 
+        FetchStuffFromRemoteServer id ->
+            (model, fetchETagHeader id, Nothing)
 
 containsMediaFile : String -> Komposition -> List Mediafile
 containsMediaFile id komposition =

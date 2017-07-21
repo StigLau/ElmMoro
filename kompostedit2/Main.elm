@@ -98,9 +98,6 @@ update msg model =
         OrderKompositionProcessing ->
             model ! [processKomposition model.kompost]
 
-        FetchStuffFromRemoteServer id ->
-            (model, fetchETagHeader id)
-
         ETagResponse (Ok value) ->
              ( { model | statusMessage = [String.dropLeft 1 (String.dropRight 1 value)]} , Cmd.none )
 
