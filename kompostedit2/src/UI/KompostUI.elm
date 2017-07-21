@@ -8,7 +8,7 @@ import Bootstrap.Button as Button
 import Bootstrap.Button exposing (onClick)
 import RemoteData exposing (RemoteData(..))
 import Segment.SegmentUI exposing (showSegmentList)
-import UI.DvlSpecificsUI exposing (showSpecifics)
+import DvlSpecifics.DvlSpecificsUI as Specifics exposing (showSpecifics)
 import Models.BaseModel exposing (Model)
 import Models.Msg exposing (Msg(..))
 import Navigation.AppRouting exposing (Page(ListingsUI))
@@ -19,7 +19,7 @@ kompost model =
     div []
         [ Grid.row [] [ Grid.col [] [] , Grid.col [] [], Grid.col [] [Button.button [ Button.secondary, Button.onClick (NavigateTo ListingsUI) ] [ text "List Komposti" ]]]
         , div [] [ h4 [ style [ ( "flex", "1" ) ] ] [ text "Kompost:" ] ]
-        , UI.DvlSpecificsUI.showSpecifics model.kompost
+        , Specifics.showSpecifics model.kompost
         , h4 []  [ text "Segments:" ]
         , Html.map SegmentMsg(Segment.SegmentUI.showSegmentList model.kompost.segments)
         , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick CreateSegment ] [ text "New Segment" ]]]

@@ -1,4 +1,4 @@
-module UI.DvlSpecificsUI exposing (showSpecifics, editSpecifics)
+module DvlSpecifics.DvlSpecificsUI exposing (showSpecifics, editSpecifics)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
@@ -14,7 +14,7 @@ import RemoteData exposing (WebData)
 import Models.BaseModel exposing (..)
 import Models.Msg exposing(Msg(EditSpecifics, DvlSpecificsMsg))
 import DvlSpecifics.Msg as SpecificsMsg exposing (Msg)
-import UI.MediaFileUI exposing (showMediaFileList)
+import DvlSpecifics.SourcesUI exposing (showMediaFileList)
 import Navigation.AppRouting exposing (Page(KompostUI))
 
 editSpecifics : Komposition -> Html SpecificsMsg.Msg

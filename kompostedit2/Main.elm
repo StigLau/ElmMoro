@@ -11,8 +11,8 @@ import Segment.SegmentUI exposing (segmentForm)
 import Segment.Model exposing (update)
 import UI.KompostUI exposing (..)
 import UI.KompostListingsUI exposing (..)
-import UI.DvlSpecificsUI exposing (..)
-import UI.MediaFileUI exposing (editSpecifics)
+import DvlSpecifics.DvlSpecificsUI as Specifics exposing (..)
+import DvlSpecifics.SourcesUI as Sources exposing (editSpecifics)
 import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(..))
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
@@ -21,19 +21,7 @@ import Set
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
-    ( { listings = RemoteData.Loading
-      , kompost = emptyKompostion
-      , statusMessage = []
-      , activePage = ListingsUI
-      , editableSegment = False
-      , segment = Segment "" -1 -1
-      , editingMediaFile = Mediafile "" "" 0 ""
-      , subSegmentList = Set.empty
-      }
-    , Cmd.batch [ getListings ]
-    )
-
+init location = ( emptyKomposition , Cmd.batch [ getListings ] )
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -46,12 +34,11 @@ update msg model =
 
         NavigateTo page ->
             model ! [ navigateTo page ]
-            --TODO If page navigation is listings - set kompost++ to empty
 
         ChooseDvl id ->
-            { model | activePage = KompostUI } ! [ getKomposition id ]
+            { emptyKomposition | activePage = KompostUI, listings = model.listings } ! [ getKomposition id ]
 
-        NewKomposition -> { model | kompost = emptyKompostion } ! [ navigateTo AppRouting.DvlSpecificsUI ]
+        NewKomposition -> { model | kompost = emptyKomposition.kompost } ! [ navigateTo AppRouting.DvlSpecificsUI ]
 
         KompositionUpdated webKomposition ->
             let newModel = case RemoteData.toMaybe webKomposition of
@@ -135,10 +122,10 @@ view model =
                 Html.map SegmentMsg(pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)
 
             DvlSpecificsUI ->
-                Html.map DvlSpecificsMsg(pageWrapper <| UI.DvlSpecificsUI.editSpecifics model.kompost)
+                Html.map DvlSpecificsMsg(pageWrapper <| Specifics.editSpecifics model.kompost)
 
             MediaFileUI ->
-                Html.map DvlSpecificsMsg(pageWrapper <| UI.MediaFileUI.editSpecifics model)
+                Html.map DvlSpecificsMsg(pageWrapper <| Sources.editSpecifics model)
 
             NotFound ->
                 div [] [ text "Sorry, nothing< here :(" ]
@@ -168,4 +155,12 @@ main =
 
 
 -- Offline testdata
-emptyKompostion = Komposition "" "" 0  [] []
+emptyKomposition = { listings = RemoteData.Loading
+                         , kompost = Komposition "" "" 0  [] []
+                         , statusMessage = []
+                         , activePage = ListingsUI
+                         , editableSegment = False
+                         , segment = Segment "" 0 0
+                         , editingMediaFile = Mediafile "" "" 0 ""
+                         , subSegmentList = Set.empty
+                         }

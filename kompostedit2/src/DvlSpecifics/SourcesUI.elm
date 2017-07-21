@@ -1,4 +1,4 @@
-module UI.MediaFileUI exposing (showMediaFileList, editSpecifics)
+module DvlSpecifics.SourcesUI exposing (showMediaFileList, editSpecifics)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, href, src, style, type_, placeholder)

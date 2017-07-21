@@ -52,8 +52,9 @@ processKomposition komposition =
         { base | method = "PUT"
         , url = kompoUrl ++ komposition.name
         , body = Http.stringBody "application/json" <| encodeKomposition komposition
-        |> RemoteData.sendRequest
-        |> Cmd.map CouchServerStatus
+        }
+      |> RemoteData.sendRequest
+      |> Cmd.map CouchServerStatus
 
 updateKompo : Komposition -> Cmd Msg
 updateKompo komposition =
