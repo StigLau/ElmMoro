@@ -23,14 +23,12 @@ update msg model =
             in ({model | kompost = {kompost | name = name }}, Cmd.none, Nothing)
 
         SetId id ->
-            let
-                mediaFile = model.editingMediaFile
-            in ({model | editingMediaFile = { mediaFile | id = id }}, Cmd.none, Nothing)
+            let source = model.editingMediaFile
+            in setSource  {source | id = id } model
 
         SetURL url ->
-            let
-                mediaFile = model.editingMediaFile
-            in ({model | editingMediaFile = { mediaFile | url = url }}, Cmd.none, Nothing)
+            let source = model.editingMediaFile
+            in setSource  {source | url = url } model
 
         SetDvlType dvlType ->
             let
@@ -44,14 +42,12 @@ update msg model =
             in ({ model | kompost = {kompost | bpm = nuBpm}}, Cmd.none, Nothing)
 
         SetChecksum checksum ->
-            let
-                mediaFile = model.editingMediaFile
-            in ({ model | editingMediaFile = {mediaFile | checksum = checksum }} , Cmd.none, Nothing)
+            let source = model.editingMediaFile
+            in setSource  {source | checksum = checksum } model
 
         SetOffset value ->
-            let
-                mediaFile = model.editingMediaFile
-            in ({ model | editingMediaFile = {mediaFile | startingOffset = Result.withDefault 0 (String.toFloat value) }} , Cmd.none, Nothing)
+            let source = model.editingMediaFile
+            in setSource  {source | startingOffset = Result.withDefault 0 (String.toFloat value) } model
 
         --Config
         SetWidth value ->
@@ -132,6 +128,13 @@ deleteMediaFileFromKomposition mediaFile komposition =
 setConfig funk model =
     let
         kompost = model.kompost
-    in ({ model | kompost = { kompost | config = funk}} , Cmd.none, Nothing)
+    in
+        ({ model | kompost = { kompost | config = funk}} , Cmd.none, Nothing)
+
+setSource funk model =
+    let
+        mediaFile = model.editingMediaFile
+    in
+        ({model | editingMediaFile = funk}, Cmd.none, Nothing)
 
 standardInt value = Result.withDefault 0 (String.toInt value)
