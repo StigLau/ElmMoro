@@ -10,7 +10,7 @@ import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
 import Models.BaseModel exposing (Model, Source)
 import Models.Msg exposing (Msg(DvlSpecificsMsg))
-import DvlSpecifics.Msg as SpecificsMsg exposing (Msg(EditMediaFile, SaveMediaFile, DeleteMediaFile, FetchAndLoadMediaFile, FetchStuffFromRemoteServer))
+import DvlSpecifics.Msg as SpecificsMsg exposing (Msg(EditMediaFile, SaveSource, DeleteSource, FetchAndLoadMediaFile, OrderChecksumEvalutation))
 
 editSpecifics : Model -> Html SpecificsMsg.Msg
 editSpecifics model =
@@ -26,13 +26,13 @@ editSpecifics model =
                 [ Form.colLabel [ Col.xs4 ]
                     []
                 , Form.col []
-                    [ Button.button [ Button.primary, Button.small, Button.onClick SaveMediaFile ] [ text "Save" ] ]
+                    [ Button.button [ Button.primary, Button.small, Button.onClick SaveSource ] [ text "Save" ] ]
                 , Form.col []
                     [  ]
                 , Form.col []
-                    [ Button.button [ Button.warning, Button.small, Button.onClick (DeleteMediaFile mediaFile.id)] [ text "Delete" ] ]
+                    [ Button.button [ Button.warning, Button.small, Button.onClick (DeleteSource mediaFile.id)] [ text "Delete" ] ]
                 , Form.col []
-                    [ ( Button.button [ Button.small, Button.onClick (FetchStuffFromRemoteServer mediaFile.id)] [ text "Evaluate Checksum" ] ) ]
+                    [ ( Button.button [ Button.small, Button.onClick (OrderChecksumEvalutation mediaFile.id)] [ text "Evaluate Checksum" ] ) ]
                 ]
             , Grid.simpleRow [Grid.col [] [text ("Status: " ++ toString model.statusMessage)]]
             ]

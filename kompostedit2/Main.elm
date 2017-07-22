@@ -152,12 +152,13 @@ main =
 
 
 -- Offline testdata
-emptyKomposition = { listings = RemoteData.Loading
-                         , kompost = Komposition "" "" "" 0  [] []
-                         , statusMessage = []
-                         , activePage = ListingsUI
-                         , editableSegment = False
-                         , segment = Segment "" 0 0
-                         , editingMediaFile = Source "" "" 0 ""
-                         , subSegmentList = Set.empty
-                         }
+emptyKomposition =
+    { listings = RemoteData.Loading
+    , kompost = Komposition "" "" "" 0  [] [] (VideoConfig 0 0 0 "")
+    , statusMessage = []
+    , activePage = ListingsUI
+    , editableSegment = False
+    , segment = Segment "" 0 0
+    , editingMediaFile = Source "" "" 0 ""
+    , subSegmentList = Set.empty
+    }

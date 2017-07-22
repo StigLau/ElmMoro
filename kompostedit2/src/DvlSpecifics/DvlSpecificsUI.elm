@@ -21,18 +21,31 @@ import Common.StaticVariables
 
 editSpecifics : Komposition -> Html SpecificsMsg.Msg
 editSpecifics kompo =
-    let editable = case kompo.revision of
-            "" -> False
-            _ -> True
+    let
+        specificsUI =
+            Form.form [ class "container" ]
+                [ h1 [] [ text "Editing Specifics" ]
+                , (wrapping "Name" (Input.text [ Input.id "Name", Input.defaultValue kompo.name, Input.onInput SpecificsMsg.SetKompositionName, Input.disabled (kompo.revision /= "")]))
+                , (wrapping "Revision" (Input.text [ Input.id "Revision", Input.defaultValue kompo.revision, Input.disabled True]))
+                , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.defaultValue (toString kompo.bpm), Input.onInput SpecificsMsg.SetBpm ]))
+                , (wrapping "Type" (Select.select [ Select.onChange SpecificsMsg.SetDvlType ] (selectItems kompo.dvlType Common.StaticVariables.komposionTypes) ))
+                ]
+        configUI = case kompo.dvlType of
+               "Komposition" ->
+                    Form.form [ class "container" ]
+                        [ h3 [] [ text "Video Config" ]
+                        , (wrapping "Width" (Input.number [ Input.id "width", Input.defaultValue (toString kompo.config.width), Input.onInput SpecificsMsg.SetWidth ]))
+                        , (wrapping "Height" (Input.number [ Input.id "height", Input.defaultValue (toString kompo.config.height), Input.onInput SpecificsMsg.SetHeight ]))
+                        , (wrapping "Framerate" (Input.number [ Input.id "framerate", Input.defaultValue (toString kompo.config.framerate), Input.onInput SpecificsMsg.SetFramerate ]))
+                        , (wrapping "Extension Type" (Select.select [ Select.id "segmentId", Select.onChange SpecificsMsg.SetExtensionType ]
+                            (selectItems kompo.config.extensionType ["mp3", "mp4", "aac", "webm", "flac", "dvl.xml", "kompo.xml", "htmlImagelist", "jpg", "png" ])))
+                        ]
+               _ -> div [] []
     in
-        div [] [ h1 [] [ text "Editing Specifics" ]
-        , Form.form [ class "container" ]
-            [(wrapping "Name" (Input.text [ Input.id "Name", Input.defaultValue kompo.name, Input.onInput SpecificsMsg.SetKompositionName, Input.disabled editable]))
-            , (wrapping "Revision" (Input.text [ Input.id "Revision", Input.defaultValue kompo.revision, Input.disabled True]))
-            , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.defaultValue (toString kompo.bpm), Input.onInput SpecificsMsg.SetBpm ]))
-            , (wrapping "Type" (Select.select [ Select.onChange SpecificsMsg.SetDvlType ] (selectItems kompo.dvlType Common.StaticVariables.komposionTypes) ))
-            , Button.button [ Button.secondary, Button.onClick (SpecificsMsg.InternalNavigateTo KompostUI) ] [ text "<- Back" ]
-            ]
+        div []
+        [ specificsUI
+        , configUI
+        , Button.button [ Button.primary, Button.onClick (SpecificsMsg.InternalNavigateTo KompostUI) ] [ text "<- Back" ]
         ]
 
 showSpecifics : Komposition -> Html Models.Msg.Msg

@@ -21,9 +21,9 @@ type alias Komposition =
     , revision : String
     , dvlType: String
     , bpm : Float
-    --, config: Config
     , segments : List Segment
     , sources : List Source
+    , config: VideoConfig
     }
 
 
@@ -41,14 +41,19 @@ type alias Segment =
     , end : Int
     }
 
+type alias VideoConfig =
+    { width: Int
+    , height: Int
+    , framerate: Int
+    , extensionType: String
+    }
+
 {-- Status from Couch server --}
 type alias CouchStatusMessage =
     { id: String
     , ok: Bool
     , rev: String
     }
-
-
 
 {-- Listings --}
 

@@ -53,6 +53,23 @@ update msg model =
                 mediaFile = model.editingMediaFile
             in ({ model | editingMediaFile = {mediaFile | startingOffset = Result.withDefault 0 (String.toFloat value) }} , Cmd.none, Nothing)
 
+        --Config
+        SetWidth value ->
+            let config = model.kompost.config
+            in setConfig ({config | width = standardInt value }) model
+
+        SetHeight value ->
+            let config = model.kompost.config
+            in setConfig ({config | height = standardInt value }) model
+
+        SetFramerate value ->
+            let config = model.kompost.config
+            in setConfig ({config | framerate = standardInt value }) model
+
+        SetExtensionType value ->
+            let config = model.kompost.config
+            in setConfig ({config | extensionType = value }) model
+
         InternalNavigateTo page ->
             let _ = Debug.log "Navigating to" page
                 _ = Debug.log "BPM is" model.kompost.bpm
@@ -74,7 +91,7 @@ update msg model =
             in
                 ( model, getDvlSegmentList id, Nothing)
 
-        SaveMediaFile  ->
+        SaveSource  ->
             case (containsMediaFile model.editingMediaFile.id model.kompost) of
                 [] ->
                     Debug.log "Adding MediaFile []: "
@@ -89,11 +106,11 @@ update msg model =
                 head :: tail ->
                     Debug.log "Seggie heads tails: " (model, Cmd.none, Just (OutNavigateTo KompostUI))
 
-        DeleteMediaFile id ->
+        DeleteSource id ->
             let modifiedModel = performMediaFileOnModel model.editingMediaFile deleteMediaFileFromKomposition model
             in (modifiedModel, Cmd.none, Just (OutNavigateTo KompostUI))
 
-        FetchStuffFromRemoteServer id ->
+        OrderChecksumEvalutation id ->
             (model, fetchETagHeader id, Nothing)
 
 containsMediaFile : String -> Komposition -> List Source
@@ -111,3 +128,10 @@ addMediaFileToKomposition mediaFile komposition =
 deleteMediaFileFromKomposition : Source -> Komposition -> Komposition
 deleteMediaFileFromKomposition mediaFile komposition =
     { komposition | sources = List.filter (\n -> n.id /= mediaFile.id) komposition.sources }
+
+setConfig funk model =
+    let
+        kompost = model.kompost
+    in ({ model | kompost = { kompost | config = funk}} , Cmd.none, Nothing)
+
+standardInt value = Result.withDefault 0 (String.toInt value)

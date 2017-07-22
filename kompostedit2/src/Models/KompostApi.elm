@@ -1,13 +1,10 @@
 module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, processKomposition, getDvlSegmentList, fetchETagHeader)
 
-import Json.Decode as JsonD
-import Json.Encode as JsonE
-import Json.Decode.Pipeline as JsonDPipe
-import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
 import Http exposing (emptyBody, expectJson)
+import Models.JsonCoding exposing (..)
 import RemoteData exposing (RemoteData(..))
 import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, SegmentListUpdated, ETagResponse))
-import Models.BaseModel exposing (Komposition, Segment, Source, CouchStatusMessage)
+import Models.BaseModel exposing (Komposition)
 import Dict
 
 
@@ -42,7 +39,7 @@ getDvlSegmentList id =
 
 createKompo : Komposition -> Cmd Msg
 createKompo komposition =
-    Http.post kompoUrl (Http.stringBody "application/json" <| encodeKomposition komposition) couchServerStatusDecoder
+    Http.post kompoUrl (Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl) couchServerStatusDecoder
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
 
@@ -51,7 +48,7 @@ processKomposition komposition =
     Http.request
         { base | method = "PUT"
         , url = kompoUrl ++ komposition.name
-        , body = Http.stringBody "application/json" <| encodeKomposition komposition
+        , body = Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl
         }
       |> RemoteData.sendRequest
       |> Cmd.map CouchServerStatus
@@ -61,7 +58,7 @@ updateKompo komposition =
     Http.request
         { base | method = "PUT"
         , url = kompoUrl ++ komposition.name
-        , body = Http.stringBody "application/json" <| encodeKomposition komposition
+        , body = Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
@@ -76,94 +73,6 @@ deleteKompo komposition =
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
-
-kompositionDecoder : JsonD.Decoder Komposition
-kompositionDecoder =
-  Json.Decode.Pipeline.decode Komposition
-    |> required "_id" JsonD.string
-    |> required "_rev" JsonD.string
-    |> optional "dvltype" JsonD.string ""
-    |> optional "bpm" JsonD.float -1
-    |> optional "segments" (JsonD.list segmentDecoder) []
-    |> optional "sources" (JsonD.list mediaFileDecoder) []
-
-
-couchServerStatusDecoder : JsonD.Decoder CouchStatusMessage
-couchServerStatusDecoder =
-    JsonD.map3 CouchStatusMessage
-        (JsonD.field "id" JsonD.string)
-        (JsonD.field "ok" JsonD.bool)
-        (JsonD.field "rev" JsonD.string)
-
-segmentDecoder : JsonD.Decoder Segment
-segmentDecoder =
-    JsonD.map3 Segment
-        (JsonD.field "id" JsonD.string)
-        (JsonD.field "start" JsonD.int)
-        (JsonD.field "end" JsonD.int)
-
-mediaFileDecoder : JsonD.Decoder Source
-mediaFileDecoder =
-  Json.Decode.Pipeline.decode Source
-    |> required "id" JsonD.string
-    |> optional "url" JsonD.string ""
-    |> optional "startingOffset" JsonD.float 0
-    |> optional "checksum" JsonD.string ""
-
-
-encodeKomposition : Komposition -> String
-encodeKomposition kompo =
-    let
-        revision = case kompo.revision of
-               "" -> []
-               revision -> [( "_rev", JsonE.string revision )]
-        sources = case kompo.sources of
-             [] -> [( "sources", JsonE.list <| List.map encodeMediaFile kompo.sources)]
-             _ -> [( "sources", JsonE.list <| List.map encodeMediaFile kompo.sources)]
-     in
-       JsonE.encode 0 <| JsonE.object (
-            [ ( "_id", JsonE.string kompo.name )
-            , ( "dvltype", JsonE.string kompo.dvlType )
-            , ( "bpm", JsonE.float kompo.bpm)
-            , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
-            ]   ++ revision ++ sources
-        )
-
-
-encodeMediaFile : Source -> JsonE.Value
-encodeMediaFile mediaFile =
-    let url = case mediaFile.url of
-            "" -> (kompoUrl ++ mediaFile.id)
-            url -> url
-    in JsonE.object
-        [ ( "id", JsonE.string mediaFile.id )
-        , ( "url", JsonE.string url )
-        , ( "startingOffset", JsonE.float mediaFile.startingOffset )
-        , ( "checksum", JsonE.string mediaFile.checksum )
-        ]
-
-
-encodeSegment : Segment -> JsonE.Value
-encodeSegment segment =
-    JsonE.object
-        [ ( "id", JsonE.string segment.id )
-        , ( "start", JsonE.int segment.start )
-        , ( "end", JsonE.int segment.end )
-        ]
-
-encodeSources : List String -> JsonE.Value
-encodeSources sources =
-    JsonE.object
-    [
-    ( "source", JsonE.list <| List.map encodeSource sources )
-    ]
-
-encodeSource : String -> JsonE.Value
-encodeSource source =
-    JsonE.object
-        [ ( "source", JsonE.string source )
-        ]
-
 
 fetchETagHeader : String -> Cmd Msg
 fetchETagHeader id =
