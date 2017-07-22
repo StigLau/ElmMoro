@@ -14,20 +14,17 @@ import Segment.Model exposing (Msg(..))
 import Navigation.AppRouting exposing (Page(KompostUI))
 import Models.Msg exposing (Msg)
 import Common.UIFunctions exposing (selectItems)
+import Common.StaticVariables exposing (isKomposition)
 import Set exposing (Set)
 
 segmentForm : Model -> Bool -> Html Segment.Model.Msg
 segmentForm model editableSegmentId =
-    let subSegments = case Set.toList model.subSegmentList of
-            [] -> ["Fetch Sources if Segment list is unpopulated"]
-            other -> other
-    in div []
+    div []
         [ h1 [] [ text "Editing Segment" ]
         , Form.form [ class "container" ]
             [ Form.label [ for "segmentId" ] [ text "Segment ID" ]
-                , Select.select [ Select.id "segmentId", Select.onChange SetSegmentId ]
-                (selectItems model.segment.id subSegments)
-            , Form.row []
+                , idSelection model
+                , Form.row []
                 [ Form.colLabelSm [ Col.xs4 ]
                     [ text "Start and end" ]
                 , Form.col [ Col.xs4 ]
@@ -61,3 +58,14 @@ showSingleSegment segment =
         , Grid.col [] [ text <| toString segment.end ]
         ]
 
+
+idSelection: Model -> Html Segment.Model.Msg
+idSelection model =
+    if Common.StaticVariables.isKomposition model.kompost then
+        Select.select [ Select.id "segmentId", Select.onChange SetSegmentId ]
+            (selectItems model.segment.id
+                ( case Set.toList model.subSegmentList of
+                       [] -> ["Fetch Sources if Segment list is unpopulated"]
+                       subSegmentList -> subSegmentList))
+    else
+        Input.text [ Input.small, Input.defaultValue model.segment.id, Input.onInput SetSegmentId, Input.attrs [ placeholder "Id" ] ]
