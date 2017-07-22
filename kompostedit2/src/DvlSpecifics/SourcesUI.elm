@@ -8,7 +8,7 @@ import Bootstrap.Grid.Col as Col
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
-import Models.BaseModel exposing (Model, Mediafile)
+import Models.BaseModel exposing (Model, Source)
 import Models.Msg exposing (Msg(DvlSpecificsMsg))
 import DvlSpecifics.Msg as SpecificsMsg exposing (Msg(EditMediaFile, SaveMediaFile, DeleteMediaFile, FetchAndLoadMediaFile, FetchStuffFromRemoteServer))
 
@@ -38,12 +38,12 @@ editSpecifics model =
             ]
         ]
 
-showMediaFileList : List Models.BaseModel.Mediafile -> Html Models.Msg.Msg
+showMediaFileList : List Models.BaseModel.Source -> Html Models.Msg.Msg
 showMediaFileList mediaFile =
     div [] (mediaFile |> List.map showSingleMediaFile)
 
 
-showSingleMediaFile : Models.BaseModel.Mediafile -> Html Models.Msg.Msg
+showSingleMediaFile : Models.BaseModel.Source -> Html Models.Msg.Msg
 showSingleMediaFile mf =
     Grid.row []
         [ Grid.col [] [ Html.map Models.Msg.DvlSpecificsMsg(

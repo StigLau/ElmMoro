@@ -158,6 +158,6 @@ emptyKomposition = { listings = RemoteData.Loading
                          , activePage = ListingsUI
                          , editableSegment = False
                          , segment = Segment "" 0 0
-                         , editingMediaFile = Mediafile "" "" 0 ""
+                         , editingMediaFile = Source "" "" 0 ""
                          , subSegmentList = Set.empty
                          }

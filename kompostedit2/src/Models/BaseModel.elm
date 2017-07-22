@@ -12,7 +12,7 @@ type alias Model =
     , activePage : Page
     , editableSegment : Bool
     , segment : Segment
-    , editingMediaFile: Mediafile
+    , editingMediaFile: Source
     , subSegmentList: (Set.Set String)
     }
 
@@ -23,11 +23,11 @@ type alias Komposition =
     , bpm : Float
     --, config: Config
     , segments : List Segment
-    , sources : List Mediafile
+    , sources : List Source
     }
 
 
-type alias Mediafile =
+type alias Source =
     { id: String
     , url : String
     , startingOffset : Float

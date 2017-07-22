@@ -7,7 +7,7 @@ import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
 import Http exposing (emptyBody, expectJson)
 import RemoteData exposing (RemoteData(..))
 import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, SegmentListUpdated, ETagResponse))
-import Models.BaseModel exposing (Komposition, Segment, Mediafile, CouchStatusMessage)
+import Models.BaseModel exposing (Komposition, Segment, Source, CouchStatusMessage)
 import Dict
 
 
@@ -102,9 +102,9 @@ segmentDecoder =
         (JsonD.field "start" JsonD.int)
         (JsonD.field "end" JsonD.int)
 
-mediaFileDecoder : JsonD.Decoder Mediafile
+mediaFileDecoder : JsonD.Decoder Source
 mediaFileDecoder =
-  Json.Decode.Pipeline.decode Mediafile
+  Json.Decode.Pipeline.decode Source
     |> required "id" JsonD.string
     |> optional "url" JsonD.string ""
     |> optional "startingOffset" JsonD.float 0
@@ -130,7 +130,7 @@ encodeKomposition kompo =
         )
 
 
-encodeMediaFile : Mediafile -> JsonE.Value
+encodeMediaFile : Source -> JsonE.Value
 encodeMediaFile mediaFile =
     let url = case mediaFile.url of
             "" -> (kompoUrl ++ mediaFile.id)

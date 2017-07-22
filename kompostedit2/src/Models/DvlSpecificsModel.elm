@@ -1,7 +1,7 @@
 module Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
 
 import Navigation.AppRouting exposing (Page)
-import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo), Komposition, Mediafile)
+import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo), Komposition, Source)
 import Navigation.AppRouting exposing (navigateTo, Page(MediaFileUI, KompostUI))
 import Models.KompostApi exposing (getDvlSegmentList, fetchETagHeader)
 import DvlSpecifics.Msg exposing (Msg(..))
@@ -96,18 +96,18 @@ update msg model =
         FetchStuffFromRemoteServer id ->
             (model, fetchETagHeader id, Nothing)
 
-containsMediaFile : String -> Komposition -> List Mediafile
+containsMediaFile : String -> Komposition -> List Source
 containsMediaFile id komposition =
     List.filter (\mediaFile -> mediaFile.id == id) komposition.sources
 
 performMediaFileOnModel mf function model  =
     { model | kompost = (function mf model.kompost) }
 
-addMediaFileToKomposition : Mediafile -> Komposition -> Komposition
+addMediaFileToKomposition : Source -> Komposition -> Komposition
 addMediaFileToKomposition mediaFile komposition =
     { komposition | sources = [mediaFile] ++ komposition.sources }
 
 
-deleteMediaFileFromKomposition : Mediafile -> Komposition -> Komposition
+deleteMediaFileFromKomposition : Source -> Komposition -> Komposition
 deleteMediaFileFromKomposition mediaFile komposition =
     { komposition | sources = List.filter (\n -> n.id /= mediaFile.id) komposition.sources }
