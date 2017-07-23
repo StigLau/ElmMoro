@@ -24,6 +24,7 @@ type alias Komposition =
     , segments : List Segment
     , sources : List Source
     , config: VideoConfig
+    , beatpattern: Maybe BeatPattern --Only used by komposition
     }
 
 
@@ -46,6 +47,12 @@ type alias VideoConfig =
     , height: Int
     , framerate: Int
     , extensionType: String
+    }
+
+type alias BeatPattern =
+    { fromBeat: Int
+    , toBeat: Int
+    , masterBPM: Float
     }
 
 {-- Status from Couch server --}

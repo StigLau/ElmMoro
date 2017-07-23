@@ -16,6 +16,10 @@ type Msg
     | SetHeight String
     | SetFramerate String
     | SetExtensionType String
+-- Beat Pattern
+    | SetFromBpm String
+    | SetToBpm String
+    | SetMasterBpm String
 --Other
     | InternalNavigateTo Page
     | EditMediaFile String

@@ -4,7 +4,7 @@ import Json.Decode as JsonD
 import Json.Encode as JsonE
 import Json.Decode.Pipeline as JsonDPipe
 import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
-import Models.BaseModel exposing (Komposition, Segment, Source, VideoConfig, CouchStatusMessage)
+import Models.BaseModel exposing (Komposition, Segment, Source, VideoConfig, BeatPattern, CouchStatusMessage)
 
 
 kompositionDecoder : JsonD.Decoder Komposition
@@ -12,11 +12,12 @@ kompositionDecoder =
   Json.Decode.Pipeline.decode Komposition
     |> required "_id" JsonD.string
     |> required "_rev" JsonD.string
-    |> optional "dvltype" JsonD.string ""
+    |> optional "type" JsonD.string ""
     |> optional "bpm" JsonD.float -1
     |> optional "segments" (JsonD.list segmentDecoder) []
     |> optional "sources" (JsonD.list mediaFileDecoder) []
     |> optional "config" configDecoder (VideoConfig 0 0 0 "")
+    |> optional "beatpattern" (JsonD.map Just beatpatternDecoder) Nothing
 
 kompositionEncoder : Komposition -> String -> String
 kompositionEncoder kompo kompoUrl =
@@ -27,15 +28,18 @@ kompositionEncoder kompo kompoUrl =
         sources = [( "sources", JsonE.list <| (List.map (\n -> encodeMediaFile kompoUrl n) kompo.sources ))]
         config = case kompo.dvlType of
             "Komposition" ->
-                [( "config", encodeConfig kompo.config)]
+                [ ( "config", encodeConfig kompo.config) ]
             _ -> []
+        beatpattern = case kompo.beatpattern of
+            (Just bpm) -> [ ("beatpattern", encodeBeatPattern bpm)]
+            _ -> []
+        segments = [ ( "segments", JsonE.list <| List.map encodeSegment kompo.segments ) ]
      in Debug.log "Persisting"
         JsonE.encode 0 <| JsonE.object (
             [ ( "_id", JsonE.string kompo.name )
-            , ( "dvltype", JsonE.string kompo.dvlType )
+            , ( "type", JsonE.string kompo.dvlType )
             , ( "bpm", JsonE.float kompo.bpm)
-            , ( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
-            ]   ++ revision ++ sources ++ config
+            ]   ++ revision ++  config ++ beatpattern ++ segments ++ sources
         )
 
 couchServerStatusDecoder : JsonD.Decoder CouchStatusMessage
@@ -68,6 +72,19 @@ configDecoder =
         |> optional "framerate" JsonD.int 0
         |> optional "extensiontype" JsonD.string ""
 
+beatpatternDecoder: JsonD.Decoder BeatPattern
+beatpatternDecoder =
+    Json.Decode.Pipeline.decode BeatPattern
+        |> optional "frombeat" JsonD.int 0
+        |> optional "tobeat" JsonD.int 0
+        |> optional "masterbpm" JsonD.float 0
+
+encodeBeatPattern : BeatPattern -> JsonE.Value
+encodeBeatPattern beatpattern = JsonE.object
+    [ ( "frombeat", JsonE.int beatpattern.fromBeat )
+    , ( "tobeat", JsonE.int beatpattern.toBeat )
+    , ( "masterbpm", JsonE.float beatpattern.masterBPM )
+    ]
 
 encodeMediaFile : String -> Source -> JsonE.Value
 encodeMediaFile kompoUrl mediaFile =

@@ -30,6 +30,11 @@ editSpecifics kompo =
                 , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.defaultValue (toString kompo.bpm), Input.onInput SpecificsMsg.SetBpm ]))
                 , (wrapping "Type" (Select.select [ Select.onChange SpecificsMsg.SetDvlType ] (selectItems kompo.dvlType Common.StaticVariables.komposionTypes) ))
                 ]
+
+        bpm = case kompo.beatpattern of
+            (Just bpm) -> bpm
+            Nothing -> BeatPattern 0 0 0
+
         configUI = case kompo.dvlType of
                "Komposition" ->
                     Form.form [ class "container" ]
@@ -39,6 +44,10 @@ editSpecifics kompo =
                         , (wrapping "Framerate" (Input.number [ Input.id "framerate", Input.defaultValue (toString kompo.config.framerate), Input.onInput SpecificsMsg.SetFramerate ]))
                         , (wrapping "Extension Type" (Select.select [ Select.id "segmentId", Select.onChange SpecificsMsg.SetExtensionType ]
                             (selectItems kompo.config.extensionType ["mp3", "mp4", "aac", "webm", "flac", "dvl.xml", "kompo.xml", "htmlImagelist", "jpg", "png" ])))
+                        , h3 [] [ text "Beat Pattern" ]
+                        , (wrapping "From BPM" (Input.number [ Input.id "frombpm", Input.defaultValue (toString bpm.fromBeat), Input.onInput SpecificsMsg.SetFromBpm ]))
+                        , (wrapping "To BPM" (Input.number [ Input.id "tobpm", Input.defaultValue (toString bpm.toBeat), Input.onInput SpecificsMsg.SetToBpm ]))
+                        , (wrapping "Master BPM" (Input.number [ Input.id "masterbpm", Input.defaultValue (toString bpm.masterBPM), Input.onInput SpecificsMsg.SetMasterBpm ]))
                         ]
                _ -> div [] []
     in

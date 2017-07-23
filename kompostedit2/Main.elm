@@ -21,7 +21,7 @@ import Set
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
-init location = ( emptyKomposition , Cmd.batch [ getListings ] )
+init location = ( emptyModel , Cmd.batch [ getListings ] )
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -36,9 +36,9 @@ update msg model =
             model ! [ navigateTo page ]
 
         ChooseDvl id ->
-            { emptyKomposition | activePage = KompostUI, listings = model.listings } ! [ getKomposition id ]
+            { emptyModel | activePage = KompostUI, listings = model.listings } ! [ getKomposition id ]
 
-        NewKomposition -> { model | kompost = emptyKomposition.kompost } ! [ navigateTo AppRouting.DvlSpecificsUI ]
+        NewKomposition -> { model | kompost = emptyModel.kompost } ! [ navigateTo AppRouting.DvlSpecificsUI ]
 
         KompositionUpdated webKomposition ->
             let newModel = case RemoteData.toMaybe webKomposition of
@@ -152,9 +152,9 @@ main =
 
 
 -- Offline testdata
-emptyKomposition =
+emptyModel =
     { listings = RemoteData.Loading
-    , kompost = Komposition "" "" "" 0  [] [] (VideoConfig 0 0 0 "")
+    , kompost = Komposition "" "" "" 0  [] [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
     , statusMessage = []
     , activePage = ListingsUI
     , editableSegment = False

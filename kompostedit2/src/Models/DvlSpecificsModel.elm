@@ -1,7 +1,7 @@
 module Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
 
 import Navigation.AppRouting exposing (Page)
-import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo), Komposition, Source)
+import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo), Komposition, Source, BeatPattern)
 import Navigation.AppRouting exposing (navigateTo, Page(MediaFileUI, KompostUI))
 import Models.KompostApi exposing (getDvlSegmentList, fetchETagHeader)
 import DvlSpecifics.Msg exposing (Msg(..))
@@ -35,11 +35,10 @@ update msg model =
                 kompost = model.kompost
             in ({ model | kompost = {kompost | dvlType = dvlType}}, Cmd.none, Nothing)
 
-        SetBpm bpm ->
+        SetBpm value ->
             let
                 kompost = model.kompost
-                nuBpm = Result.withDefault 0 (String.toFloat bpm)
-            in ({ model | kompost = {kompost | bpm = nuBpm}}, Cmd.none, Nothing)
+            in ({ model | kompost = {kompost | bpm = standardFloat value}}, Cmd.none, Nothing)
 
         SetChecksum checksum ->
             let source = model.editingMediaFile
@@ -47,7 +46,7 @@ update msg model =
 
         SetOffset value ->
             let source = model.editingMediaFile
-            in setSource  {source | startingOffset = Result.withDefault 0 (String.toFloat value) } model
+            in setSource  {source | startingOffset = standardFloat value } model
 
         --Config
         SetWidth value ->
@@ -66,6 +65,20 @@ update msg model =
             let config = model.kompost.config
             in setConfig ({config | extensionType = value }) model
 
+-- Beat Pattern
+        SetFromBpm value ->
+            let beatpattern = extractBeatPattern model
+            in setBeatPattern ({beatpattern | fromBeat = standardInt value }) model
+
+        SetToBpm value ->
+            let beatpattern = extractBeatPattern model
+            in setBeatPattern ({beatpattern | toBeat = standardInt value }) model
+
+        SetMasterBpm value ->
+            let beatpattern = extractBeatPattern model
+            in setBeatPattern ({beatpattern | masterBPM = standardFloat value }) model
+
+--Other stuff
         InternalNavigateTo page ->
             let _ = Debug.log "Navigating to" page
                 _ = Debug.log "BPM is" model.kompost.bpm
@@ -137,4 +150,21 @@ setSource funk model =
     in
         ({model | editingMediaFile = funk}, Cmd.none, Nothing)
 
+setBeatPattern funk model =
+    let
+        kompost = model.kompost
+        beatpattern = case kompost.beatpattern of
+                (Just bpm) -> bpm
+                Nothing -> BeatPattern 0 0 0
+    in
+        ({model | kompost = {kompost | beatpattern = (Just funk)}}, Cmd.none, Nothing)
+
 standardInt value = Result.withDefault 0 (String.toInt value)
+
+standardFloat value = Result.withDefault 0 (String.toFloat value)
+
+extractBeatPattern: Model -> BeatPattern
+extractBeatPattern model =
+    case model.kompost.beatpattern of
+        (Just bpm) -> bpm
+        Nothing -> BeatPattern 0 0 0
