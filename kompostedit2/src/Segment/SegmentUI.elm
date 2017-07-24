@@ -25,12 +25,20 @@ segmentForm model editableSegmentId =
             [ Form.label [ for "segmentId" ] [ text "Segment ID" ]
                 , idSelection model
                 , Form.row []
+                [ Form.colLabelSm [ Col.xs4 ] [ text "Start" ]
+                , Form.colLabelSm [ Col.xs4 ] [ text "Duration" ]
+                , Form.colLabelSm [ Col.xs4 ] [ text "End" ]
+                ]
+                , Form.row []
                 [ Form.colLabelSm [ Col.xs4 ]
-                    [ text "Start and end" ]
-                , Form.col [ Col.xs4 ]
-                    [ Input.number [ Input.small, Input.defaultValue (toString model.segment.start), Input.onInput SetSegmentStart, Input.attrs [ placeholder "Start" ] ] ]
-                , Form.col [ Col.xs4 ]
-                    [ Input.number [ Input.small, Input.defaultValue (toString model.segment.end), Input.onInput SetSegmentEnd, Input.attrs [ placeholder "End" ] ] ]
+                    [ Input.number [ Input.small, Input.defaultValue (toString model.segment.start),
+                        Input.onInput SetSegmentStart, Input.attrs [ placeholder "Start" ] ] ]
+                , Form.col [ ]
+                    [ Input.number [ Input.small, Input.defaultValue (toString model.segment.duration),
+                        Input.onInput SetSegmentDuration, Input.attrs [ placeholder "Duration" ] ] ]
+                , Form.col [ ]
+                    [ Input.number [ Input.small, Input.defaultValue (toString model.segment.end),
+                        Input.onInput SetSegmentEnd, Input.attrs [ placeholder "End" ] ] ]
                 ]
             , Form.row []
                 [ Form.colLabel [ Col.xs4 ]

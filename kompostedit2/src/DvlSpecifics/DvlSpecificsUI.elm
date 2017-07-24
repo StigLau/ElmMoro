@@ -43,7 +43,7 @@ editSpecifics kompo =
                         , (wrapping "Height" (Input.number [ Input.id "height", Input.defaultValue (toString kompo.config.height), Input.onInput SpecificsMsg.SetHeight ]))
                         , (wrapping "Framerate" (Input.number [ Input.id "framerate", Input.defaultValue (toString kompo.config.framerate), Input.onInput SpecificsMsg.SetFramerate ]))
                         , (wrapping "Extension Type" (Select.select [ Select.id "segmentId", Select.onChange SpecificsMsg.SetExtensionType ]
-                            (selectItems kompo.config.extensionType ["mp3", "mp4", "aac", "webm", "flac", "dvl.xml", "kompo.xml", "htmlImagelist", "jpg", "png" ])))
+                            (selectItems kompo.config.extensionType Common.StaticVariables.extensionTypes)))
                         , h3 [] [ text "Beat Pattern" ]
                         , (wrapping "From BPM" (Input.number [ Input.id "frombpm", Input.defaultValue (toString bpm.fromBeat), Input.onInput SpecificsMsg.SetFromBpm ]))
                         , (wrapping "To BPM" (Input.number [ Input.id "tobpm", Input.defaultValue (toString bpm.toBeat), Input.onInput SpecificsMsg.SetToBpm ]))

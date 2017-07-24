@@ -158,7 +158,7 @@ emptyModel =
     , statusMessage = []
     , activePage = ListingsUI
     , editableSegment = False
-    , segment = Segment "" 0 0
+    , segment = Segment "" 0 0 0
     , editingMediaFile = Source "" "" 0 ""
     , subSegmentList = Set.empty
     }

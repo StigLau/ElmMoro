@@ -8,6 +8,7 @@ type Msg
     = SetSegmentId String
     | SetSegmentStart String
     | SetSegmentEnd String
+    | SetSegmentDuration String
     | EditSegment String
     | UpdateSegment
     | DeleteSegment
@@ -42,6 +43,15 @@ update msg model =
                 newModel =
                     end
                         |> asEndIn model.segment
+                        |> asCurrentSegmentIn model
+            in
+                (newModel, [Cmd.none], Nothing)
+
+        SetSegmentDuration value ->
+            let
+                newModel =
+                    value
+                        |> asDurationIn model.segment
                         |> asCurrentSegmentIn model
             in
                 (newModel, [Cmd.none], Nothing)
@@ -88,6 +98,9 @@ asStartIn =
 asEndIn =
     flip setEnd
 
+asDurationIn =
+    flip setDuration
+
 
 asIdIn =
     flip setId
@@ -99,7 +112,12 @@ setStart newStart segment =
 
 
 setEnd newEnd segment =
-    { segment | end = Result.withDefault 0 (String.toInt newEnd) }
+    let end = Result.withDefault 0 (String.toInt newEnd)
+    in { segment | end = end, duration = end - segment.start }
+
+setDuration duration segment =
+    let dur = Result.withDefault 0 (String.toInt duration)
+    in { segment | duration = dur, end = segment.start + dur }
 
 
 setId newId segment =
@@ -126,7 +144,7 @@ performSegmentOnModel segment function model  =
 
 addSegmentToKomposition : Segment -> Komposition -> Komposition
 addSegmentToKomposition segment komposition =
-    { komposition | segments = (Segment segment.id segment.start segment.end) :: komposition.segments }
+    { komposition | segments = segment :: komposition.segments }
 
 
 deleteSegmentFromKomposition : Segment -> Komposition -> Komposition

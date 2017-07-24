@@ -51,10 +51,11 @@ couchServerStatusDecoder =
 
 segmentDecoder : JsonD.Decoder Segment
 segmentDecoder =
-    JsonD.map3 Segment
-        (JsonD.field "id" JsonD.string)
-        (JsonD.field "start" JsonD.int)
-        (JsonD.field "end" JsonD.int)
+      Json.Decode.Pipeline.decode Segment
+        |> required "id" JsonD.string
+        |> required "start" JsonD.int
+        |> optional "end" JsonD.int 0
+        |> optional "duration" JsonD.int 0
 
 mediaFileDecoder : JsonD.Decoder Source
 mediaFileDecoder =
@@ -104,6 +105,7 @@ encodeSegment segment =
     JsonE.object
         [ ( "id", JsonE.string segment.id )
         , ( "start", JsonE.int segment.start )
+        , ( "duration", JsonE.int segment.duration )
         , ( "end", JsonE.int segment.end )
         ]
 

@@ -48,7 +48,7 @@ update msg model =
             let source = model.editingMediaFile
             in setSource  {source | startingOffset = standardFloat value } model
 
-        --Config
+--Config
         SetWidth value ->
             let config = model.kompost.config
             in setConfig ({config | width = standardInt value }) model

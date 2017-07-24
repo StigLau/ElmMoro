@@ -10,6 +10,8 @@ import Bootstrap.Form.Input as Input
 import Bootstrap.Button as Button
 import Models.BaseModel exposing (Model, Source)
 import Models.Msg exposing (Msg(DvlSpecificsMsg))
+import Bootstrap.Form.Select as Select exposing (onChange)
+import Common.UIFunctions exposing (selectItems)
 import DvlSpecifics.Msg as SpecificsMsg exposing (Msg(EditMediaFile, SaveSource, DeleteSource, FetchAndLoadMediaFile, OrderChecksumEvalutation))
 
 editSpecifics : Model -> Html SpecificsMsg.Msg
