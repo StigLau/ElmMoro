@@ -5,7 +5,7 @@ import RemoteData exposing (succeed, RemoteData(..))
 import Navigation exposing (Location)
 import Models.Msg exposing (Msg(..))
 import Models.BaseModel exposing (..)
-import DvlSpecifics.DvlSpecificsModel exposing (update, extractFromOutmessage)
+import DvlSpecifics.DvlSpecificsModel exposing (update, extractFromOutmessage, setSource)
 import Models.KompostApi exposing (..)
 import Segment.SegmentUI exposing (segmentForm)
 import Segment.Model exposing (update)
@@ -98,8 +98,13 @@ update msg model =
         OrderKompositionProcessing ->
             model ! [processKomposition model.kompost]
 
-        ETagResponse (Ok value) -> --Removing "content"
-             ( { model | statusMessage = [String.dropLeft 1 (String.dropRight 1 value)]} , Cmd.none )
+        ETagResponse (Ok value) -> --Stripping surrounding ampersands
+         let source = model.editingMediaFile
+             checksum =
+                value
+                |> String.dropRight 1
+                |> String.dropLeft 1
+         in (setSource  {source | checksum = checksum } model, Cmd.none)
 
         ETagResponse (Err err) ->
             ( { model | statusMessage = [toString err] }, Cmd.none )

@@ -42,7 +42,6 @@ editSpecifics model =
                 , Form.col []
                     [ ( Button.button [ Button.small, Button.onClick (OrderChecksumEvalutation mediaFile.id)] [ text "Evaluate Checksum" ] ) ]
                 ]
-            , Grid.simpleRow [Grid.col [] [text ("Status: " ++ toString model.statusMessage)]]
             ]
         ]
 

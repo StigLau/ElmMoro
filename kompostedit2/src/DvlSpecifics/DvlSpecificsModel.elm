@@ -1,4 +1,4 @@
-module DvlSpecifics.DvlSpecificsModel exposing (update, extractFromOutmessage)
+module DvlSpecifics.DvlSpecificsModel exposing (update, extractFromOutmessage, setSource)
 
 import Navigation.AppRouting exposing (Page)
 import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo), Komposition, Source, BeatPattern)
@@ -24,11 +24,11 @@ update msg model =
 
         SetId id ->
             let source = model.editingMediaFile
-            in setSource  {source | id = id } model
+            in (setSource  {source | id = id } model, Cmd.none, Nothing)
 
         SetURL url ->
             let source = model.editingMediaFile
-            in setSource  {source | url = url } model
+            in (setSource  {source | url = url } model, Cmd.none, Nothing)
 
         SetDvlType dvlType ->
             let
@@ -42,32 +42,32 @@ update msg model =
 
         SetChecksum checksum ->
             let source = model.editingMediaFile
-            in setSource  {source | checksum = checksum } model
+            in (setSource  {source | checksum = checksum } model, Cmd.none, Nothing)
 
         SetOffset value ->
             let source = model.editingMediaFile
-            in setSource  {source | startingOffset = standardFloat value } model
+            in (setSource  {source | startingOffset = standardFloat value } model, Cmd.none, Nothing)
 
         SetSourceExtensionType value ->
             let source = model.editingMediaFile
-            in setSource  {source | extensionType = value } model
+            in (setSource  {source | extensionType = value } model, Cmd.none, Nothing)
 
 --Config
         SetWidth value ->
             let config = model.kompost.config
-            in setConfig ({config | width = standardInt value }) model
+            in (setConfig ({config | width = standardInt value }) model, Cmd.none, Nothing)
 
         SetHeight value ->
             let config = model.kompost.config
-            in setConfig ({config | height = standardInt value }) model
+            in (setConfig ({config | height = standardInt value }) model, Cmd.none, Nothing)
 
         SetFramerate value ->
             let config = model.kompost.config
-            in setConfig ({config | framerate = standardInt value }) model
+            in (setConfig ({config | framerate = standardInt value }) model, Cmd.none, Nothing)
 
         SetExtensionType value ->
             let config = model.kompost.config
-            in setConfig ({config | extensionType = value }) model
+            in (setConfig ({config | extensionType = value }) model, Cmd.none, Nothing)
 
 -- Beat Pattern
         SetFromBpm value ->
@@ -146,13 +146,13 @@ setConfig funk model =
     let
         kompost = model.kompost
     in
-        ({ model | kompost = { kompost | config = funk}} , Cmd.none, Nothing)
+        { model | kompost = { kompost | config = funk}}
 
 setSource funk model =
     let
         mediaFile = model.editingMediaFile
     in
-        ({model | editingMediaFile = funk}, Cmd.none, Nothing)
+        {model | editingMediaFile = funk}
 
 setBeatPattern funk model =
     let
