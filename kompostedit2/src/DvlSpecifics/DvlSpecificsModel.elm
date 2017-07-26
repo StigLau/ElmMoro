@@ -1,4 +1,4 @@
-module Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
+module DvlSpecifics.DvlSpecificsModel exposing (update, extractFromOutmessage)
 
 import Navigation.AppRouting exposing (Page)
 import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo), Komposition, Source, BeatPattern)

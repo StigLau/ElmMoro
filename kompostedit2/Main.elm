@@ -5,7 +5,7 @@ import RemoteData exposing (succeed, RemoteData(..))
 import Navigation exposing (Location)
 import Models.Msg exposing (Msg(..))
 import Models.BaseModel exposing (..)
-import Models.DvlSpecificsModel exposing (update, extractFromOutmessage)
+import DvlSpecifics.DvlSpecificsModel exposing (update, extractFromOutmessage)
 import Models.KompostApi exposing (..)
 import Segment.SegmentUI exposing (segmentForm)
 import Segment.Model exposing (update)
@@ -79,8 +79,8 @@ update msg model =
 
         DvlSpecificsMsg msg ->
             let
-                (newModel, cmd, childMsg) = Models.DvlSpecificsModel.update msg model
-                cmds = case Models.DvlSpecificsModel.extractFromOutmessage childMsg of
+                (newModel, cmd, childMsg) = DvlSpecifics.DvlSpecificsModel.update msg model
+                cmds = case DvlSpecifics.DvlSpecificsModel.extractFromOutmessage childMsg of
                         Just page -> [navigateTo page]
                         Nothing ->  [cmd]
             in
@@ -98,7 +98,7 @@ update msg model =
         OrderKompositionProcessing ->
             model ! [processKomposition model.kompost]
 
-        ETagResponse (Ok value) ->
+        ETagResponse (Ok value) -> --Removing "content"
              ( { model | statusMessage = [String.dropLeft 1 (String.dropRight 1 value)]} , Cmd.none )
 
         ETagResponse (Err err) ->
