@@ -12,6 +12,7 @@ import Models.BaseModel exposing (Model, Source)
 import Models.Msg exposing (Msg(DvlSpecificsMsg))
 import Bootstrap.Form.Select as Select exposing (onChange)
 import Common.UIFunctions exposing (selectItems)
+import Common.StaticVariables exposing (extensionTypes)
 import DvlSpecifics.Msg as SpecificsMsg exposing (Msg(EditMediaFile, SaveSource, DeleteSource, FetchAndLoadMediaFile, OrderChecksumEvalutation))
 
 editSpecifics : Model -> Html SpecificsMsg.Msg
@@ -24,6 +25,11 @@ editSpecifics model =
             , (wrapping "Starting Offset" (Input.text [ Input.id "Starting Offset", Input.defaultValue (toString mediaFile.startingOffset),
                 Input.onInput SpecificsMsg.SetOffset ]))
             , (wrapping "Checksum" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput SpecificsMsg.SetChecksum ]))
+            , if model.kompost.dvlType /= "Komposition" then
+                    (wrapping "Extension Type" (Select.select [ Select.id "segmentId", Select.onChange SpecificsMsg.SetSourceExtensionType ]
+                                        (selectItems mediaFile.extensionType Common.StaticVariables.extensionTypes)))
+                else
+                    text ""
             , Form.row []
                 [ Form.colLabel [ Col.xs4 ]
                     []

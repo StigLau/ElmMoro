@@ -33,6 +33,7 @@ type alias Source =
     , url : String
     , startingOffset : Float
     , checksum : String
+    , extensionType: String
     }
 
 

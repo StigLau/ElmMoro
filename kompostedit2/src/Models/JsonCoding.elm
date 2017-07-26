@@ -64,6 +64,7 @@ mediaFileDecoder =
     |> optional "url" JsonD.string ""
     |> optional "startingOffset" JsonD.float 0
     |> optional "checksum" JsonD.string ""
+    |> optional "extensiontype" JsonD.string ""
 
 configDecoder: JsonD.Decoder VideoConfig
 configDecoder =
@@ -88,15 +89,16 @@ encodeBeatPattern beatpattern = JsonE.object
     ]
 
 encodeMediaFile : String -> Source -> JsonE.Value
-encodeMediaFile kompoUrl mediaFile =
-    let url = case mediaFile.url of
-            "" -> (kompoUrl ++ mediaFile.id)
+encodeMediaFile kompoUrl source =
+    let url = case source.url of
+            "" -> (kompoUrl ++ source.id)
             url -> url
     in JsonE.object
-        [ ( "id", JsonE.string mediaFile.id )
+        [ ( "id", JsonE.string source.id )
         , ( "url", JsonE.string url )
-        , ( "startingOffset", JsonE.float mediaFile.startingOffset )
-        , ( "checksum", JsonE.string mediaFile.checksum )
+        , ( "startingOffset", JsonE.float source.startingOffset )
+        , ( "checksum", JsonE.string source.checksum )
+        , ( "extension", JsonE.string source.extensionType )
         ]
 
 
@@ -115,7 +117,7 @@ encodeConfig config =
         [ ( "width", JsonE.int config.width )
         , ( "height", JsonE.int config.height )
         , ( "framerate", JsonE.int config.framerate )
-        , ( "extensiontype", JsonE.string config.extensionType )
+        , ( "extension", JsonE.string config.extensionType )
         ]
 
 encodeSources : List String -> JsonE.Value

@@ -11,6 +11,7 @@ type Msg
     | SetURL String
     | SetBpm String
     | SetOffset String
+    | SetSourceExtensionType String
 --Config
     | SetWidth String
     | SetHeight String
