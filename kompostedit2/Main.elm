@@ -98,6 +98,9 @@ update msg model =
         OrderKompositionProcessing ->
             model ! [processKomposition model.kompost]
 
+        ShowKompositionJson ->
+            model ! [navigateTo KompositionJsonUI]
+
         ETagResponse (Ok value) -> --Stripping surrounding ampersands
          let source = model.editingMediaFile
              checksum =
@@ -119,6 +122,9 @@ view model =
 
             KompostUI ->
                 pageWrapper <| UI.KompostUI.kompost model
+
+            KompositionJsonUI ->
+                UI.KompostUI.kompostJson <| model
 
             SegmentUI ->
                 Html.map SegmentMsg(pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)

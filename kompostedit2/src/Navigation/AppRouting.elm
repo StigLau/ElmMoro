@@ -10,6 +10,7 @@ import Route exposing ((:=), match)
 type Page
     = ListingsUI
     | KompostUI
+    | KompositionJsonUI
     | SegmentUI
     | DvlSpecificsUI
     | MediaFileUI
@@ -19,6 +20,7 @@ type Page
 routeParsers =
     { listings = ListingsUI := Route.static "Main.elm#listings"
     , kompost = KompostUI := Route.static "Main.elm#kompost"
+    , kompositionJson = KompositionJsonUI := Route.static "Main.elm#kompostjson"
     , segment = SegmentUI := Route.static "Main.elm#segment"
     , dvlSpecificsUI = DvlSpecificsUI := Route.static "Main.elm#dvlSpecificsUI"
     , mediaFileUI = MediaFileUI := Route.static "Main.elm#mediaFileUI"
@@ -30,6 +32,7 @@ router =
     Route.router
         [ routeParsers.listings
         , routeParsers.kompost
+        , routeParsers.kompositionJson
         , routeParsers.segment
         , routeParsers.dvlSpecificsUI
         , routeParsers.mediaFileUI
@@ -51,6 +54,9 @@ navigateTo page =
 
         KompostUI ->
             Route.reverse routeParsers.kompost []
+
+        KompositionJsonUI ->
+            Route.reverse routeParsers.kompositionJson []
 
         SegmentUI ->
             Route.reverse routeParsers.segment []

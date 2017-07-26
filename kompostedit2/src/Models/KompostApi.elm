@@ -1,4 +1,4 @@
-module Models.KompostApi exposing (getKomposition, updateKompo, createKompo, deleteKompo, processKomposition, getDvlSegmentList, fetchETagHeader)
+module Models.KompostApi exposing (kompoUrl, getKomposition, updateKompo, createKompo, deleteKompo, processKomposition, getDvlSegmentList, fetchETagHeader)
 
 import Http exposing (emptyBody, expectJson)
 import Models.JsonCoding exposing (..)

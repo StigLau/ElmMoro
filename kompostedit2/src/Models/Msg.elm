@@ -26,3 +26,4 @@ type Msg
     | SegmentMsg Segment.Model.Msg
     | ETagResponse (Result Http.Error String)
     | OrderKompositionProcessing
+    | ShowKompositionJson

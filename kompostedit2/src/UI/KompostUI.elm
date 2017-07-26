@@ -11,6 +11,8 @@ import Segment.SegmentUI exposing (showSegmentList)
 import DvlSpecifics.DvlSpecificsUI as Specifics exposing (showSpecifics)
 import Models.BaseModel exposing (Model)
 import Models.Msg exposing (Msg(..))
+import Models.KompostApi exposing (kompoUrl)
+import Models.JsonCoding exposing (kompositionEncoder)
 import Navigation.AppRouting exposing (Page(ListingsUI))
 
 
@@ -29,4 +31,9 @@ kompost model =
             , Grid.col [] [Button.button [ Button.danger, Button.small, Button.onClick DeleteKomposition ] [ text "Delete Komposition" ]]
             ]
         , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick OrderKompositionProcessing ] [ text "Create Video" ]]]
+        , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick ShowKompositionJson ] [ text "Show JSON" ]]]
         ]
+
+
+kompostJson: Model -> Html Models.Msg.Msg
+kompostJson model = text (Models.JsonCoding.kompositionEncoder model.kompost Models.KompostApi.kompoUrl)
