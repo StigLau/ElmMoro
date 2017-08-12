@@ -40,9 +40,10 @@ update msg model =
                 kompost = model.kompost
             in ({ model | kompost = {kompost | bpm = standardFloat value}}, Cmd.none, Nothing)
 
-        SetChecksum checksum ->
+        SetChecksum originalValue  newValue->
             let source = model.editingMediaFile
-            in (setSource  {source | checksum = checksum } model, Cmd.none, Nothing)
+                newChecks = filterList originalValue newValue model.editingMediaFile.checksum
+            in (setSource  {source | checksum = newChecks } model, Cmd.none, Nothing)
 
         SetOffset value ->
             let source = model.editingMediaFile
@@ -172,3 +173,22 @@ extractBeatPattern model =
     case model.kompost.beatpattern of
         (Just bpm) -> bpm
         Nothing -> BeatPattern 0 0 0
+
+filterList originalValue newValue listOfChecksums =
+    let
+        newz =
+            if String.isEmpty newValue then listOfChecksums
+            else [newValue]
+        newList = replaceifPresent originalValue newValue listOfChecksums
+
+    in Debug.log "What happens in replace" newz ++ newList
+
+replaceifPresent originalValue newValue listOfChecksums =
+    let
+        _ = Debug.log "What we gots" (originalValue,newValue,listOfChecksums)
+    in Debug.log "Resulting in " List.map (\orig ->
+            if orig == originalValue then Debug.log "gots new value" newValue
+            else Debug.log "old value" orig
+            ) listOfChecksums
+
+

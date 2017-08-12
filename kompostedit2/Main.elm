@@ -107,7 +107,7 @@ update msg model =
                 value
                 |> String.dropRight 1
                 |> String.dropLeft 1
-         in (setSource  {source | checksum = checksum } model, Cmd.none)
+         in (setSource  {source | checksum = checksum::source.checksum  } model, Cmd.none)
 
         ETagResponse (Err err) ->
             ( { model | statusMessage = [toString err] }, Cmd.none )
@@ -170,6 +170,6 @@ emptyModel =
     , activePage = ListingsUI
     , editableSegment = False
     , segment = Segment "" 0 0 0
-    , editingMediaFile = Source "" "" 0 "" ""
+    , editingMediaFile = Source "" "" 0 [] ""
     , subSegmentList = Set.empty
     }

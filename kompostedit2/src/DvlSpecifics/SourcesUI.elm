@@ -24,7 +24,7 @@ editSpecifics model =
             , (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.url, Input.onInput SpecificsMsg.SetURL]))
             , (wrapping "Starting Offset" (Input.text [ Input.id "Starting Offset", Input.defaultValue (toString mediaFile.startingOffset),
                 Input.onInput SpecificsMsg.SetOffset ]))
-            , (wrapping "Checksum" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput SpecificsMsg.SetChecksum ]))
+            , div [] (checksumView model)
             , if model.kompost.dvlType /= "Komposition" then
                     (wrapping "Extension Type" (Select.select [ Select.id "segmentId", Select.onChange SpecificsMsg.SetSourceExtensionType ]
                                         (selectItems mediaFile.extensionType Common.StaticVariables.extensionTypes)))
@@ -58,6 +58,12 @@ showSingleMediaFile mf =
         , Grid.col [] [ Html.map Models.Msg.DvlSpecificsMsg(Button.button
                 [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile mf.id) ] [ text "Fetch" ]) ]
         ]
+
+checksumView model = -- Creates an empty checksum in case it is to be used
+    (singleChecksumWrapping "") :: List.map (\check ->  singleChecksumWrapping check) model.editingMediaFile.checksum
+
+singleChecksumWrapping originalValue =
+    (wrapping "Checksum" (Input.text [ Input.id "Checksumz", Input.defaultValue originalValue, Input.onInput (SpecificsMsg.SetChecksum originalValue )]))
 
 wrapping identifier funk =
     Form.row [  ]

@@ -63,7 +63,7 @@ mediaFileDecoder =
     |> required "id" JsonD.string
     |> optional "url" JsonD.string ""
     |> optional "startingOffset" JsonD.float 0
-    |> optional "checksum" JsonD.string ""
+    |> optional "checksums" (JsonD.list JsonD.string) []
     |> optional "extensiontype" JsonD.string ""
 
 configDecoder: JsonD.Decoder VideoConfig
@@ -97,7 +97,8 @@ encodeMediaFile kompoUrl source =
         [ ( "id", JsonE.string source.id )
         , ( "url", JsonE.string url )
         , ( "startingOffset", JsonE.float source.startingOffset )
-        , ( "checksum", JsonE.string source.checksum )
+--        , ( "checksum", JsonE.list <| (List.map (\n -> n) source.checksum ))
+        --, encodeSources source.checksum
         , ( "extension", JsonE.string source.extensionType )
         ]
 
@@ -120,6 +121,7 @@ encodeConfig config =
         , ( "extension", JsonE.string config.extensionType )
         ]
 
+--TODO kan denne fjernes?
 encodeSources : List String -> JsonE.Value
 encodeSources sources =
     JsonE.object

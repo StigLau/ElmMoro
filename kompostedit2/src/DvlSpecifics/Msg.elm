@@ -5,7 +5,7 @@ import Navigation.AppRouting exposing (Page)
 type Msg
     = SetKompositionName String
     | SetDvlType String
-    | SetChecksum String
+    | SetChecksum String String
 --Source
     | SetId String
     | SetURL String

@@ -32,7 +32,7 @@ type alias Source =
     { id: String
     , url : String
     , startingOffset : Float
-    , checksum : String
+    , checksum : List String
     , extensionType: String
     }
 
