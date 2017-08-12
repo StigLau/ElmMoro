@@ -15,7 +15,7 @@ kompositionDecoder =
     |> optional "type" JsonD.string ""
     |> optional "bpm" JsonD.float -1
     |> optional "segments" (JsonD.list segmentDecoder) []
-    |> optional "sources" (JsonD.list mediaFileDecoder) []
+    |> optional "sources" (JsonD.list sourceDecoder) []
     |> optional "config" configDecoder (VideoConfig 0 0 0 "")
     |> optional "beatpattern" (JsonD.map Just beatpatternDecoder) Nothing
 
@@ -25,7 +25,7 @@ kompositionEncoder kompo kompoUrl =
         revision = case kompo.revision of
                "" -> []
                revision -> [( "_rev", JsonE.string revision )]
-        sources = [( "sources", JsonE.list <| (List.map (\n -> encodeMediaFile kompoUrl n) kompo.sources ))]
+        sources = [( "sources", JsonE.list <| (List.map (\n -> encodeSource kompoUrl n) kompo.sources ))]
         config = case kompo.dvlType of
             "Komposition" ->
                 [ ( "config", encodeConfig kompo.config) ]
@@ -57,13 +57,13 @@ segmentDecoder =
         |> optional "end" JsonD.int 0
         |> optional "duration" JsonD.int 0
 
-mediaFileDecoder : JsonD.Decoder Source
-mediaFileDecoder =
+sourceDecoder : JsonD.Decoder Source
+sourceDecoder =
   Json.Decode.Pipeline.decode Source
     |> required "id" JsonD.string
     |> optional "url" JsonD.string ""
     |> optional "startingOffset" JsonD.float 0
-    |> optional "checksum" JsonD.string ""
+    |> optional "checksums" JsonD.string ""
     |> optional "extensiontype" JsonD.string ""
 
 configDecoder: JsonD.Decoder VideoConfig
@@ -88,8 +88,8 @@ encodeBeatPattern beatpattern = JsonE.object
     , ( "masterbpm", JsonE.float beatpattern.masterBPM )
     ]
 
-encodeMediaFile : String -> Source -> JsonE.Value
-encodeMediaFile kompoUrl source =
+encodeSource : String -> Source -> JsonE.Value
+encodeSource kompoUrl source =
     let url = case source.url of
             "" -> (kompoUrl ++ source.id)
             url -> url
@@ -97,7 +97,7 @@ encodeMediaFile kompoUrl source =
         [ ( "id", JsonE.string source.id )
         , ( "url", JsonE.string url )
         , ( "startingOffset", JsonE.float source.startingOffset )
-        , ( "checksum", JsonE.string source.checksum )
+        , ( "checksums", JsonE.string source.checksum)
         , ( "extension", JsonE.string source.extensionType )
         ]
 
@@ -118,17 +118,4 @@ encodeConfig config =
         , ( "height", JsonE.int config.height )
         , ( "framerate", JsonE.int config.framerate )
         , ( "extension", JsonE.string config.extensionType )
-        ]
-
-encodeSources : List String -> JsonE.Value
-encodeSources sources =
-    JsonE.object
-    [
-    ( "source", JsonE.list <| List.map encodeSource sources )
-    ]
-
-encodeSource : String -> JsonE.Value
-encodeSource source =
-    JsonE.object
-        [ ( "source", JsonE.string source )
         ]
