@@ -61,10 +61,10 @@ sourceDecoder : JsonD.Decoder Source
 sourceDecoder =
   Json.Decode.Pipeline.decode Source
     |> required "id" JsonD.string
-    |> optional "url" JsonD.string ""
-    |> optional "startingOffset" JsonD.float 0
-    |> optional "checksums" JsonD.string ""
-    |> optional "extensiontype" JsonD.string ""
+    |> required "url" JsonD.string
+    |> required "startingOffset" JsonD.float
+    |> required "checksums" JsonD.string
+    |> required "extension" JsonD.string
 
 configDecoder: JsonD.Decoder VideoConfig
 configDecoder =
@@ -72,7 +72,7 @@ configDecoder =
         |> optional "width" JsonD.int 0
         |> optional "height" JsonD.int 0
         |> optional "framerate" JsonD.int 0
-        |> optional "extensiontype" JsonD.string ""
+        |> optional "extension" JsonD.string ""
 
 beatpatternDecoder: JsonD.Decoder BeatPattern
 beatpatternDecoder =

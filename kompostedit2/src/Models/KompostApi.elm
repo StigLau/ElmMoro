@@ -76,7 +76,7 @@ deleteKompo komposition =
 
 fetchETagHeader : String -> Cmd Msg
 fetchETagHeader id =
-        Http.send ETagResponse (getHeader "ETag" (kompoUrl ++ id))
+        Http.send ETagResponse (getHeader "etag" (kompoUrl ++ id))
 
 
 getHeader : String -> String -> Http.Request String
