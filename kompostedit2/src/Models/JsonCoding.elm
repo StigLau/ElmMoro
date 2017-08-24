@@ -99,8 +99,23 @@ encodeSource kompoUrl source =
         , ( "startingOffset", JsonE.float source.startingOffset )
         , ( "checksums", JsonE.string source.checksum)
         , ( "extension", JsonE.string source.extensionType )
+        , ( "mediatype", JsonE.string (evaluateMediaType source.extensionType) )
         ]
 
+evaluateMediaType: String -> String
+evaluateMediaType extensionType =
+    case extensionType of
+        "mp4" -> "video"
+        "webm" -> "video"
+        "mp3" -> "audio"
+        "flac" -> "audio"
+        "aac" -> "audio"
+        "jpg" -> "image"
+        "png" -> "image"
+        "dvl.xml" -> "metadata"
+        "kompo.xml" -> "metadata"
+        "htmlImagelist" -> "metadata"
+        _ -> "Unrecognized media type"
 
 encodeSegment : Segment -> JsonE.Value
 encodeSegment segment =

@@ -6,6 +6,7 @@ import RemoteData exposing (RemoteData(..))
 import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, SegmentListUpdated, ETagResponse))
 import Models.BaseModel exposing (Komposition)
 import Dict
+import MD5 exposing (hex)
 
 
 kompoUrl : String
@@ -86,13 +87,19 @@ getHeader name url =
         , headers = []
         , url = url
         , body = Http.emptyBody
-        , expect = Http.expectStringResponse (extractHeader name)
+        , expect = Http.expectStringResponse (extractEtagAndChecksum name)
         , timeout = Nothing
         , withCredentials = False
         }
 
 
-extractHeader : String -> Http.Response String -> Result String String
-extractHeader name resp =
-    Dict.get name resp.headers
-        |> Result.fromMaybe ("header " ++ name ++ " not found")
+extractEtagAndChecksum : String -> Http.Response String -> Result String String
+extractEtagAndChecksum name resp =
+        case Result.fromMaybe ("header " ++ name ++ " not found") (Dict.get name resp.headers) of
+                Result.Ok etag -> Result.Ok (stripHyphens etag ++ "," ++ (MD5.hex resp.body))
+                Result.Err error -> Result.Err error
+
+stripHyphens input =
+    input
+        |> String.dropRight 1
+        |> String.dropLeft 1

@@ -101,12 +101,8 @@ update msg model =
         ShowKompositionJson ->
             model ! [navigateTo KompositionJsonUI]
 
-        ETagResponse (Ok value) -> --Stripping surrounding ampersands
+        ETagResponse (Ok checksum) -> --Stripping surrounding ampersands
          let source = model.editingMediaFile
-             checksum =
-                value
-                |> String.dropRight 1
-                |> String.dropLeft 1
          in (setSource  {source | checksum = checksum } model, Cmd.none)
 
         ETagResponse (Err err) ->
