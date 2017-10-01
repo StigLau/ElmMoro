@@ -54,8 +54,8 @@ segmentDecoder =
       Json.Decode.Pipeline.decode Segment
         |> required "id" JsonD.string
         |> required "start" JsonD.int
-        |> optional "end" JsonD.int 0
         |> optional "duration" JsonD.int 0
+        |> optional "end" JsonD.int 0
 
 sourceDecoder : JsonD.Decoder Source
 sourceDecoder =
