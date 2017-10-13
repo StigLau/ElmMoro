@@ -6,6 +6,7 @@ import Navigation.AppRouting exposing (navigateTo, Page(MediaFileUI, KompostUI))
 import Models.KompostApi exposing (getDvlSegmentList, fetchETagHeader)
 import DvlSpecifics.Msg exposing (Msg(..))
 import Models.Msg exposing (Msg)
+import Common.StaticVariables exposing (evaluateMediaType)
 
 
 extractFromOutmessage: Maybe OutMsg -> Maybe Page
@@ -50,7 +51,11 @@ update msg model =
 
         SetSourceExtensionType value ->
             let source = model.editingMediaFile
-            in (setSource  {source | extensionType = value } model, Cmd.none, Nothing)
+            in (setSource  {source | extensionType = value, mediaType = evaluateMediaType value } model, Cmd.none, Nothing)
+
+        SetSourceMediaType value ->
+            let source = model.editingMediaFile
+            in (setSource  {source | mediaType = value } model, Cmd.none, Nothing)
 
 --Config
         SetWidth value ->

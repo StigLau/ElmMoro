@@ -34,6 +34,7 @@ type alias Source =
     , startingOffset : Float
     , checksum : String
     , extensionType: String
+    , mediaType: String
     }
 
 

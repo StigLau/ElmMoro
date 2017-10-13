@@ -25,11 +25,14 @@ editSpecifics model =
             , (wrapping "Starting Offset" (Input.text [ Input.id "Starting Offset", Input.defaultValue (toString mediaFile.startingOffset),
                 Input.onInput SpecificsMsg.SetOffset ]))
             , (wrapping "Checksums" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput SpecificsMsg.SetChecksum ]))
-            , if model.kompost.dvlType /= "Komposition" then
-                    (wrapping "Extension Type" (Select.select [ Select.id "segmentId", Select.onChange SpecificsMsg.SetSourceExtensionType ]
+--            , if model.kompost.dvlType /= "Komposition" then
+                    ,(wrapping "Extension Type" (Select.select [ Select.id "segmentId", Select.onChange SpecificsMsg.SetSourceExtensionType ]
                                         (selectItems mediaFile.extensionType Common.StaticVariables.extensionTypes)))
-                else
-                    text ""
+--                else
+--                    text ""
+            , (wrapping "Media type" (Select.select [ Select.id "Media type", Select.onChange SpecificsMsg.SetSourceMediaType ]
+                                                    (selectItems mediaFile.extensionType Common.StaticVariables.mediaTypes)))
+
             , Form.row []
                 [ Form.colLabel [ Col.xs4 ]
                     []

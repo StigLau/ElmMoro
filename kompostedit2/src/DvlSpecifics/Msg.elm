@@ -12,6 +12,7 @@ type Msg
     | SetBpm String
     | SetOffset String
     | SetSourceExtensionType String
+    | SetSourceMediaType String
 --Config
     | SetWidth String
     | SetHeight String
