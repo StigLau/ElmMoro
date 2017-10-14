@@ -66,6 +66,7 @@ sourceDecoder =
     |> required "checksums" JsonD.string
     |> required "extension" JsonD.string
     |> required "mediatype" JsonD.string
+    |> optional "snippet" JsonD.bool False
 
 configDecoder: JsonD.Decoder VideoConfig
 configDecoder =
@@ -101,6 +102,7 @@ encodeSource kompoUrl source =
         , ( "checksums", JsonE.string source.checksum)
         , ( "extension", JsonE.string source.extensionType )
         , ( "mediatype", JsonE.string (source.mediaType) )
+        , ( "snippet", JsonE.bool (source.isSnippet) )
         ]
 
 encodeSegment : Segment -> JsonE.Value

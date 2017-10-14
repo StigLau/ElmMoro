@@ -35,6 +35,7 @@ type alias Source =
     , checksum : String
     , extensionType: String
     , mediaType: String
+    , isSnippet: Bool
     }
 
 
