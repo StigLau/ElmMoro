@@ -35,5 +35,11 @@ kompost model =
         ]
 
 
-kompostJson: Model -> Html Models.Msg.Msg
-kompostJson model = text (Models.JsonCoding.kompositionEncoder model.kompost Models.KompostApi.kompoUrl)
+kompostJson: Model -> Bool -> Html Models.Msg.Msg
+kompostJson model showSnippets =
+    let
+        kompost = model.kompost
+        filterdSourcies = List.filter (\source -> source.isSnippet == showSnippets) kompost.sources
+        json = Models.JsonCoding.kompositionEncoder {kompost | sources = filterdSourcies } Models.KompostApi.kompoUrl
+    in
+        text json
