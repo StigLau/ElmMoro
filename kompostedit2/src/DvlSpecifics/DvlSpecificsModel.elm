@@ -31,12 +31,8 @@ update msg model =
             let source = model.editingMediaFile
             in (setSource  {source | url = url } model, Cmd.none, Nothing)
 
-        SetSnippet isSnippetString ->
-            let
-                source = model.editingMediaFile
-                isSnippet = case isSnippetString of
-                        "True" -> True
-                        _ -> False
+        SetSnippet isSnippet ->
+            let source = model.editingMediaFile
             in (setSource  {source | isSnippet = isSnippet } model, Cmd.none, Nothing)
 
         SetDvlType dvlType ->

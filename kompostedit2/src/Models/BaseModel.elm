@@ -14,6 +14,7 @@ type alias Model =
     , segment : Segment
     , editingMediaFile: Source
     , subSegmentList: (Set.Set String)
+    , showSnippets: Bool
     }
 
 type alias Komposition =

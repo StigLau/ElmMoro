@@ -6,6 +6,7 @@ import Html.Attributes exposing (style)
 import Bootstrap.Grid as Grid
 import Bootstrap.Button as Button
 import Bootstrap.Button exposing (onClick)
+import Bootstrap.Form.Checkbox as Checkbox
 import RemoteData exposing (RemoteData(..))
 import Segment.SegmentUI exposing (showSegmentList)
 import DvlSpecifics.DvlSpecificsUI as Specifics exposing (showSpecifics)
@@ -31,7 +32,10 @@ kompost model =
             , Grid.col [] [Button.button [ Button.danger, Button.small, Button.onClick DeleteKomposition ] [ text "Delete Komposition" ]]
             ]
         , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick OrderKompositionProcessing ] [ text "Create Video" ]]]
-        , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick ShowKompositionJson ] [ text "Show JSON" ]]]
+        , Grid.simpleRow [ Grid.col []
+            [Button.button[ Button.primary, Button.small, Button.onClick ShowKompositionJson] [ text "Show JSON" ]
+            , Checkbox.checkbox [ Checkbox.onCheck FlipSnippetShowing, Checkbox.checked model.showSnippets] "Show Snippets or Sources in JSON"]
+            ]
         ]
 
 

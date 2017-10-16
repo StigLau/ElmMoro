@@ -13,7 +13,7 @@ type Msg
     | SetOffset String
     | SetSourceExtensionType String
     | SetSourceMediaType String
-    | SetSnippet String
+    | SetSnippet Bool
 --Config
     | SetWidth String
     | SetHeight String

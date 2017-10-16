@@ -27,3 +27,4 @@ type Msg
     | ETagResponse (Result Http.Error String)
     | OrderKompositionProcessing
     | ShowKompositionJson
+    | FlipSnippetShowing Bool

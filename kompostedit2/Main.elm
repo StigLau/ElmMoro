@@ -101,6 +101,9 @@ update msg model =
         ShowKompositionJson ->
             model ! [navigateTo KompositionJsonUI]
 
+        FlipSnippetShowing showSnippets ->
+            {model | showSnippets = showSnippets } ! []
+
         ETagResponse (Ok checksum) -> --Stripping surrounding ampersands
          let source = model.editingMediaFile
          in (setSource  {source | checksum = checksum } model, Cmd.none)
@@ -120,7 +123,7 @@ view model =
                 pageWrapper <| UI.KompostUI.kompost model
 
             KompositionJsonUI ->
-                UI.KompostUI.kompostJson <| model
+                UI.KompostUI.kompostJson model False
 
             SegmentUI ->
                 Html.map SegmentMsg(pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)
@@ -168,4 +171,5 @@ emptyModel =
     , segment = Segment "" 0 0 0
     , editingMediaFile = Source "" "" 0 "" "" "" False
     , subSegmentList = Set.empty
+    , showSnippets = False
     }

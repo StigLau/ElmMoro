@@ -7,6 +7,7 @@ import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
+import Bootstrap.Form.Checkbox as Checkbox
 import Bootstrap.Button as Button
 import Models.BaseModel exposing (Model, Source)
 import Models.Msg exposing (Msg(DvlSpecificsMsg))
@@ -22,6 +23,7 @@ editSpecifics model =
         , Form.form [ class "container" ]
             [ (wrapping "ID" (Input.text [ Input.id "id", Input.defaultValue mediaFile.id, Input.onInput SpecificsMsg.SetId]))
             , (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.url, Input.onInput SpecificsMsg.SetURL]))
+            , (wrapping "Snippet" ( Checkbox.checkbox [ Checkbox.onCheck SpecificsMsg.SetSnippet, Checkbox.checked mediaFile.isSnippet] "Source or Snippet" ))
             , (wrapping "Starting Offset" (Input.text [ Input.id "Starting Offset", Input.defaultValue (toString mediaFile.startingOffset),
                 Input.onInput SpecificsMsg.SetOffset ]))
             , (wrapping "Checksums" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput SpecificsMsg.SetChecksum ]))
