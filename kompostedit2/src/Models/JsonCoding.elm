@@ -101,8 +101,8 @@ encodeSource kompoUrl source =
         , ( "startingOffset", JsonE.float source.startingOffset )
         , ( "checksums", JsonE.string source.checksum)
         , ( "extension", JsonE.string source.extensionType )
-        , ( "mediatype", JsonE.string (source.mediaType) )
-        , ( "snippet", JsonE.bool (source.isSnippet) )
+        , ( "mediatype", JsonE.string source.mediaType )
+        , ( "snippet", JsonE.bool source.isSnippet )
         ]
 
 encodeSegment : Segment -> JsonE.Value

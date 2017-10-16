@@ -1,6 +1,5 @@
 module UI.KompostUI exposing (..)
 
-import Http exposing (emptyBody, expectJson)
 import Html exposing (..)
 import Html.Attributes exposing (style)
 import Bootstrap.Grid as Grid
@@ -19,7 +18,11 @@ import Navigation.AppRouting exposing (Page(ListingsUI))
 
 kompost : Model -> Html Models.Msg.Msg
 kompost model =
-    div []
+    let snippetText = case model.showSnippets of
+            True ->  "Show Snippets JSON"
+            False -> "Show Original JSON"
+    in
+        div []
         [ Grid.row [] [ Grid.col [] [] , Grid.col [] [], Grid.col [] [Button.button [ Button.secondary, Button.onClick (NavigateTo ListingsUI) ] [ text "List Komposti" ]]]
         , div [] [ h4 [ style [ ( "flex", "1" ) ] ] [ text model.kompost.dvlType ] ]
         , Specifics.showSpecifics model.kompost
@@ -33,17 +36,17 @@ kompost model =
             ]
         , Grid.simpleRow [ Grid.col [] [Button.button [ Button.primary, Button.small, Button.onClick OrderKompositionProcessing ] [ text "Create Video" ]]]
         , Grid.simpleRow [ Grid.col []
-            [Button.button[ Button.primary, Button.small, Button.onClick ShowKompositionJson] [ text "Show JSON" ]
-            , Checkbox.checkbox [ Checkbox.onCheck FlipSnippetShowing, Checkbox.checked model.showSnippets] "Show Snippets or Sources in JSON"]
+            [Checkbox.checkbox [ Checkbox.onCheck FlipSnippetShowing, Checkbox.checked model.showSnippets] ""
+            , Button.button[ Button.primary, Button.small, Button.onClick ShowKompositionJson] [ text snippetText ]]
             ]
         ]
 
 
-kompostJson: Model -> Bool -> Html Models.Msg.Msg
-kompostJson model showSnippets =
+kompostJson: Model -> Html Models.Msg.Msg
+kompostJson model =
     let
         kompost = model.kompost
-        filterdSourcies = List.filter (\source -> source.isSnippet == showSnippets) kompost.sources
+        filterdSourcies = List.filter (\source -> model.showSnippets == source.isSnippet || source.mediaType == "audio") kompost.sources
         json = Models.JsonCoding.kompositionEncoder {kompost | sources = filterdSourcies } Models.KompostApi.kompoUrl
     in
         text json

@@ -36,30 +36,28 @@ update msg model =
             in (setSource  {source | isSnippet = isSnippet } model, Cmd.none, Nothing)
 
         SetDvlType dvlType ->
-            let
-                kompost = model.kompost
+            let kompost = model.kompost
             in ({ model | kompost = {kompost | dvlType = dvlType}}, Cmd.none, Nothing)
 
         SetBpm value ->
-            let
-                kompost = model.kompost
+            let kompost = model.kompost
             in ({ model | kompost = {kompost | bpm = standardFloat value}}, Cmd.none, Nothing)
 
         SetChecksum checksum ->
             let source = model.editingMediaFile
-            in (setSource  {source | checksum = checksum } model, Cmd.none, Nothing)
+            in (setSource {source | checksum = checksum } model, Cmd.none, Nothing)
 
         SetOffset value ->
             let source = model.editingMediaFile
-            in (setSource  {source | startingOffset = standardFloat value } model, Cmd.none, Nothing)
+            in (setSource {source | startingOffset = standardFloat value } model, Cmd.none, Nothing)
 
         SetSourceExtensionType value ->
             let source = model.editingMediaFile
-            in (setSource  {source | extensionType = value, mediaType = evaluateMediaType value } model, Cmd.none, Nothing)
+            in (setSource {source | extensionType = value, mediaType = evaluateMediaType value } model, Cmd.none, Nothing)
 
         SetSourceMediaType value ->
             let source = model.editingMediaFile
-            in (setSource  {source | mediaType = value } model, Cmd.none, Nothing)
+            in (setSource {source | mediaType = value } model, Cmd.none, Nothing)
 
 --Config
         SetWidth value ->
@@ -158,9 +156,6 @@ setConfig funk model =
         { model | kompost = { kompost | config = funk}}
 
 setSource funk model =
-    let
-        mediaFile = model.editingMediaFile
-    in
         {model | editingMediaFile = funk}
 
 setBeatPattern funk model =

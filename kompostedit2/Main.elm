@@ -123,7 +123,7 @@ view model =
                 pageWrapper <| UI.KompostUI.kompost model
 
             KompositionJsonUI ->
-                UI.KompostUI.kompostJson model False
+                UI.KompostUI.kompostJson model
 
             SegmentUI ->
                 Html.map SegmentMsg(pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)

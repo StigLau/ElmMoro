@@ -27,23 +27,20 @@ editSpecifics model =
             , (wrapping "Starting Offset" (Input.text [ Input.id "Starting Offset", Input.defaultValue (toString mediaFile.startingOffset),
                 Input.onInput SpecificsMsg.SetOffset ]))
             , (wrapping "Checksums" (Input.text [ Input.id "Checksumz", Input.defaultValue mediaFile.checksum, Input.onInput SpecificsMsg.SetChecksum ]))
---            , if model.kompost.dvlType /= "Komposition" then
-                    ,(wrapping "Extension Type" (Select.select [ Select.id "segmentId", Select.onChange SpecificsMsg.SetSourceExtensionType ]
-                                        (selectItems mediaFile.extensionType Common.StaticVariables.extensionTypes)))
---                else
---                    text ""
+            , (wrapping "Extension Type" (Select.select [ Select.id "segmentId", Select.onChange SpecificsMsg.SetSourceExtensionType ]
+                    (selectItems mediaFile.extensionType Common.StaticVariables.extensionTypes)))
             , (wrapping "Media type" (Select.select [ Select.id "Media type", Select.onChange SpecificsMsg.SetSourceMediaType ]
-                                                    (selectItems mediaFile.extensionType Common.StaticVariables.mediaTypes)))
+                    (selectItems mediaFile.mediaType Common.StaticVariables.mediaTypes)))
 
             , Form.row []
                 [ Form.colLabel [ Col.xs4 ]
                     []
                 , Form.col []
-                    [ Button.button [ Button.primary, Button.small, Button.onClick SaveSource ] [ text "Save" ] ]
+                    [ Button.button [ Button.primary, Button.small, Button.onClick SaveSource ] [ text "Back" ] ]
                 , Form.col []
                     [  ]
                 , Form.col []
-                    [ Button.button [ Button.warning, Button.small, Button.onClick (DeleteSource mediaFile.id)] [ text "Delete" ] ]
+                    [ Button.button [ Button.warning, Button.small, Button.onClick (DeleteSource mediaFile.id)] [ text "Remove" ] ]
                 , Form.col []
                     [ ( Button.button [ Button.small, Button.onClick (OrderChecksumEvalutation mediaFile.id)] [ text "Evaluate Checksum" ] ) ]
                 ]
