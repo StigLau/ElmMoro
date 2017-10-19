@@ -1,5 +1,7 @@
-var Elm = require("../Main.elm");
+require('./main.css');
+var logoPath = require('./logo.svg');
+var Elm = require('./Main.elm');
 
-var root = document.getElementById("root");
+var root = document.getElementById('root');
 
-Elm.App.embed(root);
+Elm.Main.embed(root);
