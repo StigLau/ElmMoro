@@ -11,8 +11,8 @@ import Segment.SegmentUI exposing (segmentForm)
 import Segment.Model exposing (update)
 import UI.KompostUI exposing (..)
 import UI.KompostListingsUI exposing (..)
-import DvlSpecifics.DvlSpecificsUI as Specifics exposing (..)
-import DvlSpecifics.SourcesUI as Sources exposing (editSpecifics)
+import DvlSpecifics.DvlSpecificsUI as SpecificsUI exposing (..)
+import DvlSpecifics.SourcesUI as SourcesUI exposing (editSpecifics)
 import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(..))
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
@@ -179,10 +179,10 @@ view model =
                 Html.map SegmentMsg (pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)
 
             DvlSpecificsUI ->
-                Html.map DvlSpecificsMsg (pageWrapper <| Specifics.editSpecifics model.kompost)
+                Html.map DvlSpecificsMsg (pageWrapper <| SpecificsUI.editSpecifics model.kompost)
 
             MediaFileUI ->
-                Html.map DvlSpecificsMsg (pageWrapper <| Sources.editSpecifics model)
+                Html.map DvlSpecificsMsg (pageWrapper <| SourcesUI.editSpecifics model)
 
             NotFound ->
                 div [] [ text "Sorry, nothing< here :(" ]
