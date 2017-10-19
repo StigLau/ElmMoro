@@ -21,7 +21,9 @@ import Set
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
-init location = ( emptyModel , Cmd.batch [ getListings ] )
+init location =
+    ( emptyModel, Cmd.batch [ getListings ] )
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -38,80 +40,128 @@ update msg model =
         ChooseDvl id ->
             { emptyModel | activePage = KompostUI, listings = model.listings } ! [ getKomposition id ]
 
-        NewKomposition -> { model | kompost = emptyModel.kompost } ! [ navigateTo AppRouting.DvlSpecificsUI ]
+        NewKomposition ->
+            { model | kompost = emptyModel.kompost } ! [ navigateTo AppRouting.DvlSpecificsUI ]
 
         KompositionUpdated webKomposition ->
-            let newModel = case RemoteData.toMaybe webKomposition of
-                    Just kompost -> { model | kompost = kompost}
-                    _ -> model
-            in newModel ! [ navigateTo KompostUI ]
+            let
+                newModel =
+                    case RemoteData.toMaybe webKomposition of
+                        Just kompost ->
+                            { model | kompost = kompost }
+
+                        _ ->
+                            model
+            in
+                newModel ! [ navigateTo KompostUI ]
 
         SegmentListUpdated webKomposition ->
-            let newModel = case RemoteData.toMaybe webKomposition of
-                    Just kompost -> { model | kompost = kompost}
-                    _ -> model
-                segmentNames = Debug.log "SegmentListUpdated" List.map (\segment -> segment.id) newModel.kompost.segments
-            in { model | subSegmentList = Set.fromList segmentNames } ! [ ]
+            let
+                newModel =
+                    case RemoteData.toMaybe webKomposition of
+                        Just kompost ->
+                            { model | kompost = kompost }
+
+                        _ ->
+                            model
+
+                segmentNames =
+                    Debug.log "SegmentListUpdated" List.map (\segment -> segment.id) newModel.kompost.segments
+            in
+                { model | subSegmentList = Set.fromList segmentNames } ! []
 
         StoreKomposition ->
             let
-                command = case model.kompost.revision of
-                    "" -> createKompo model.kompost
-                    _  -> updateKompo model.kompost
-            in
-                model ! [command]
+                command =
+                    case model.kompost.revision of
+                        "" ->
+                            createKompo model.kompost
 
-        DeleteKomposition -> model ! [deleteKompo model.kompost]
+                        _ ->
+                            updateKompo model.kompost
+            in
+                model ! [ command ]
+
+        DeleteKomposition ->
+            model ! [ deleteKompo model.kompost ]
 
         EditSpecifics ->
             model ! [ navigateTo AppRouting.DvlSpecificsUI ]
 
         CreateSegment ->
-            {model | editableSegment = True } ! [ navigateTo SegmentUI ]
+            { model | editableSegment = True } ! [ navigateTo SegmentUI ]
 
         CouchServerStatus serverstatus ->
-            let (newModel, navigation) = case RemoteData.toMaybe serverstatus of
-                    Just status ->
-                        let kompost = model.kompost
-                        in ({ model | kompost = { kompost | revision = status.rev} }, KompostUI)
-                    _ -> (model, KompostUI)
-            in newModel ! [ navigateTo navigation ]
+            let
+                ( newModel, navigation ) =
+                    case RemoteData.toMaybe serverstatus of
+                        Just status ->
+                            let
+                                kompost =
+                                    model.kompost
+                            in
+                                ( { model | kompost = { kompost | revision = status.rev } }, KompostUI )
+
+                        _ ->
+                            ( model, KompostUI )
+            in
+                newModel ! [ navigateTo navigation ]
 
         DvlSpecificsMsg msg ->
             let
-                (newModel, cmd, childMsg) = DvlSpecifics.DvlSpecificsModel.update msg model
-                cmds = case DvlSpecifics.DvlSpecificsModel.extractFromOutmessage childMsg of
-                        Just page -> [navigateTo page]
-                        Nothing ->  [cmd]
+                ( newModel, cmd, childMsg ) =
+                    DvlSpecifics.DvlSpecificsModel.update msg model
+
+                cmds =
+                    case DvlSpecifics.DvlSpecificsModel.extractFromOutmessage childMsg of
+                        Just page ->
+                            [ navigateTo page ]
+
+                        Nothing ->
+                            [ cmd ]
             in
                 newModel ! cmds
 
         SegmentMsg msg ->
             let
-                ( newModel, _, childMsg ) = Segment.Model.update msg model
-                cmds = case Segment.Model.extractFromOutmessage childMsg of
-                       Just (page)  -> [navigateTo page]
-                       Nothing ->  []
+                ( newModel, _, childMsg ) =
+                    Segment.Model.update msg model
+
+                cmds =
+                    case Segment.Model.extractFromOutmessage childMsg of
+                        Just page ->
+                            [ navigateTo page ]
+
+                        Nothing ->
+                            []
             in
                 newModel ! cmds
 
         OrderKompositionProcessing ->
-            model ! [processKomposition model.kompost]
+            model ! [ processKomposition model.kompost ]
 
         ShowKompositionJson ->
-            model ! [navigateTo KompositionJsonUI]
+            model ! [ navigateTo KompositionJsonUI ]
 
         FlipSnippetShowing showSnippets ->
-            {model | showSnippets = showSnippets } ! []
+            { model | showSnippets = showSnippets } ! []
 
-        ETagResponse (Ok checksum) -> --Stripping surrounding ampersands
-         let source = model.editingMediaFile
-         in (setSource  {source | checksum = checksum } model, Cmd.none)
+        ETagResponse (Ok checksum) ->
+            --Stripping surrounding ampersands
+            let
+                source =
+                    model.editingMediaFile
+            in
+                ( setSource { source | checksum = checksum } model, Cmd.none )
 
         ETagResponse (Err err) ->
-            ( { model | statusMessage = [toString err] }, Cmd.none )
+            ( { model | statusMessage = [ toString err ] }, Cmd.none )
+
+
 
 ---- VIEW Base ----
+
+
 view : Model -> Html Msg
 view model =
     div []
@@ -126,13 +176,13 @@ view model =
                 UI.KompostUI.kompostJson model
 
             SegmentUI ->
-                Html.map SegmentMsg(pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)
+                Html.map SegmentMsg (pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)
 
             DvlSpecificsUI ->
-                Html.map DvlSpecificsMsg(pageWrapper <| Specifics.editSpecifics model.kompost)
+                Html.map DvlSpecificsMsg (pageWrapper <| Specifics.editSpecifics model.kompost)
 
             MediaFileUI ->
-                Html.map DvlSpecificsMsg(pageWrapper <| Sources.editSpecifics model)
+                Html.map DvlSpecificsMsg (pageWrapper <| Sources.editSpecifics model)
 
             NotFound ->
                 div [] [ text "Sorry, nothing< here :(" ]
@@ -150,6 +200,8 @@ pageWrapper forwaredPage =
 
 
 ---- PROGRAM ----
+
+
 main : Program Never Model Msg
 main =
     Navigation.program LocationChanged
@@ -162,9 +214,11 @@ main =
 
 
 -- Offline testdata
+
+
 emptyModel =
     { listings = RemoteData.Loading
-    , kompost = Komposition "" "" "" 0  [] [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
+    , kompost = Komposition "" "" "" 0 [] [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
     , statusMessage = []
     , activePage = ListingsUI
     , editableSegment = False
