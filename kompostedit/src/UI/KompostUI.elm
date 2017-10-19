@@ -19,21 +19,27 @@ import Navigation.AppRouting exposing (Page(ListingsUI))
 kompost : Model -> Html Models.Msg.Msg
 kompost model =
     let
-        snippetText =
+        sourceText =
             case model.showSnippets of
-                True ->
-                    "Show Snippets JSON"
-
                 False ->
-                    "Show Original JSON"
+                    "Sources"
+
+                True ->
+                    "Snippets"
     in
         div []
-            [ Grid.row [] [ Grid.col [] [], Grid.col [] [], Grid.col [] [ Button.button [ Button.secondary, Button.onClick (NavigateTo ListingsUI) ] [ text "List Komposti" ] ] ]
+            [ Grid.row []
+                [ Grid.col [] [ Checkbox.checkbox [ Checkbox.onCheck FlipSnippetShowing, Checkbox.checked model.showSnippets ] sourceText ]
+                , Grid.col [] []
+                , Grid.col [] [ Button.button [ Button.secondary, Button.onClick (NavigateTo ListingsUI) ] [ text "List Komposti" ] ]
+                ]
             , div [] [ h4 [ style [ ( "flex", "1" ) ] ] [ text model.kompost.dvlType ] ]
-            , Specifics.showSpecifics model.kompost
             , h4 [] [ text "Segments:" ]
             , Html.map SegmentMsg (Segment.SegmentUI.showSegmentList model.kompost.segments)
             , Grid.simpleRow [ Grid.col [] [ Button.button [ Button.primary, Button.small, Button.onClick CreateSegment ] [ text "New Segment" ] ] ]
+            , Grid.simpleRow [ Grid.col [] [] ]
+            , Specifics.showSpecifics model
+            , Grid.simpleRow [ Grid.col [] [] ]
             , Grid.simpleRow
                 [ Grid.col [] []
                 , Grid.col [] [ Button.button [ Button.success, Button.small, Button.onClick StoreKomposition ] [ text "Store Komposition" ] ]
@@ -42,9 +48,7 @@ kompost model =
             , Grid.simpleRow [ Grid.col [] [ Button.button [ Button.primary, Button.small, Button.onClick OrderKompositionProcessing ] [ text "Create Video" ] ] ]
             , Grid.simpleRow
                 [ Grid.col []
-                    [ Checkbox.checkbox [ Checkbox.onCheck FlipSnippetShowing, Checkbox.checked model.showSnippets ] ""
-                    , Button.button [ Button.primary, Button.small, Button.onClick ShowKompositionJson ] [ text snippetText ]
-                    ]
+                    [ Button.button [ Button.primary, Button.small, Button.onClick ShowKompositionJson ] [ text "Show JSON" ] ]
                 ]
             ]
 

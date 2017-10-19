@@ -69,23 +69,32 @@ editSpecifics kompo =
             ]
 
 
-showSpecifics : Komposition -> Html Models.Msg.Msg
-showSpecifics kompo =
-    Grid.container []
-        [ addRow "Name" (text kompo.name)
-        , addRow "Revision" (text kompo.revision)
-        , addRow "BPM" (text (toString kompo.bpm))
-        , Grid.row [] [ Grid.col [] [], Grid.col [] [], Grid.col [] [ Button.button [ Button.secondary, Button.onClick Models.Msg.EditSpecifics ] [ text "Edit Specifics" ] ] ]
-        , h4 [] [ text "Sources:" ]
-        , showMediaFileList kompo.sources
-        , Grid.row []
-            [ Grid.col [] []
-            , Grid.col [] []
-            , Grid.col []
-                [ Html.map Models.Msg.DvlSpecificsMsg (Button.button [ Button.secondary, Button.onClick (SpecificsMsg.EditMediaFile "") ] [ text "New Source" ])
+showSpecifics : Model -> Html Models.Msg.Msg
+showSpecifics model =
+    let
+        sourcesText =
+            case model.showSnippets of
+                False ->
+                    "Original Sources:"
+
+                True ->
+                    "Snippets:"
+    in
+        Grid.container []
+            [ addRow "Name" (text model.kompost.name)
+            , addRow "Revision" (text model.kompost.revision)
+            , addRow "BPM" (text (toString model.kompost.bpm))
+            , Grid.row [] [ Grid.col [] [], Grid.col [] [], Grid.col [] [ Button.button [ Button.secondary, Button.onClick Models.Msg.EditSpecifics ] [ text "Edit Specifics" ] ] ]
+            , h4 [] [ text sourcesText ]
+            , showMediaFileList model.kompost.sources model.showSnippets
+            , Grid.row []
+                [ Grid.col [] []
+                , Grid.col [] []
+                , Grid.col []
+                    [ Html.map Models.Msg.DvlSpecificsMsg (Button.button [ Button.secondary, Button.onClick (SpecificsMsg.EditMediaFile "") ] [ text "New Source" ])
+                    ]
                 ]
             ]
-        ]
 
 
 addRow title htmlIsh =
