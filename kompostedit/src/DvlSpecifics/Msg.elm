@@ -2,11 +2,12 @@ module DvlSpecifics.Msg exposing (..)
 
 import Navigation.AppRouting exposing (Page)
 
+
 type Msg
     = SetKompositionName String
     | SetDvlType String
     | SetChecksum String
---Source
+      --Source
     | SetId String
     | SetURL String
     | SetBpm String
@@ -14,16 +15,16 @@ type Msg
     | SetSourceExtensionType String
     | SetSourceMediaType String
     | SetSnippet Bool
---Config
+      --Config
     | SetWidth String
     | SetHeight String
     | SetFramerate String
     | SetExtensionType String
--- Beat Pattern
+      -- Beat Pattern
     | SetFromBpm String
     | SetToBpm String
     | SetMasterBpm String
---Other
+      --Other
     | InternalNavigateTo Page
     | EditMediaFile String
     | FetchAndLoadMediaFile String

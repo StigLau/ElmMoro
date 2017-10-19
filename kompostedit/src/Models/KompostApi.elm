@@ -13,7 +13,10 @@ kompoUrl : String
 kompoUrl =
     "http://heap.kompo.st/"
 
-kvaernUrl = "http://localhost:4567/"
+
+kvaernUrl =
+    "http://localhost:4567/"
+
 
 base =
     { method = ""
@@ -25,18 +28,24 @@ base =
     , withCredentials = False
     }
 
+
 getKomposition : String -> Cmd Msg
 getKomposition id =
     Http.get (kompoUrl ++ id) kompositionDecoder
         |> RemoteData.sendRequest
         |> Cmd.map KompositionUpdated
 
+
 getDvlSegmentList : String -> Cmd Msg
 getDvlSegmentList id =
-    let _ = Debug.log "In getDvlSegmentList " (kompoUrl ++ id)
-    in Http.get (kompoUrl ++ id) kompositionDecoder
-        |> RemoteData.sendRequest
-        |> Cmd.map SegmentListUpdated
+    let
+        _ =
+            Debug.log "In getDvlSegmentList " (kompoUrl ++ id)
+    in
+        Http.get (kompoUrl ++ id) kompositionDecoder
+            |> RemoteData.sendRequest
+            |> Cmd.map SegmentListUpdated
+
 
 createKompo : Komposition -> Cmd Msg
 createKompo komposition =
@@ -44,22 +53,26 @@ createKompo komposition =
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
 
+
 processKomposition : Komposition -> Cmd Msg
 processKomposition komposition =
     Http.request
-        { base | method = "PUT"
-        , url = kompoUrl ++ komposition.name
-        , body = Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl
+        { base
+            | method = "PUT"
+            , url = kompoUrl ++ komposition.name
+            , body = Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl
         }
-      |> RemoteData.sendRequest
-      |> Cmd.map CouchServerStatus
+        |> RemoteData.sendRequest
+        |> Cmd.map CouchServerStatus
+
 
 updateKompo : Komposition -> Cmd Msg
 updateKompo komposition =
     Http.request
-        { base | method = "PUT"
-        , url = kompoUrl ++ komposition.name
-        , body = Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl
+        { base
+            | method = "PUT"
+            , url = kompoUrl ++ komposition.name
+            , body = Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
@@ -69,15 +82,16 @@ deleteKompo : Komposition -> Cmd Msg
 deleteKompo komposition =
     Http.request
         { base
-        | method = "DELETE"
-        , url = kompoUrl ++ komposition.name ++ "?rev=" ++ komposition.revision
+            | method = "DELETE"
+            , url = kompoUrl ++ komposition.name ++ "?rev=" ++ komposition.revision
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
 
+
 fetchETagHeader : String -> Cmd Msg
 fetchETagHeader id =
-        Http.send ETagResponse (getHeader "etag" (kompoUrl ++ id))
+    Http.send ETagResponse (getHeader "etag" (kompoUrl ++ id))
 
 
 getHeader : String -> String -> Http.Request String
@@ -95,9 +109,13 @@ getHeader name url =
 
 extractEtagAndChecksum : String -> Http.Response String -> Result String String
 extractEtagAndChecksum name resp =
-        case Result.fromMaybe ("header " ++ name ++ " not found") (Dict.get name resp.headers) of
-                Result.Ok etag -> Result.Ok (stripHyphens etag ++ "," ++ (MD5.hex resp.body))
-                Result.Err error -> Result.Err error
+    case Result.fromMaybe ("header " ++ name ++ " not found") (Dict.get name resp.headers) of
+        Result.Ok etag ->
+            Result.Ok (stripHyphens etag ++ "," ++ (MD5.hex resp.body))
+
+        Result.Err error ->
+            Result.Err error
+
 
 stripHyphens input =
     input
