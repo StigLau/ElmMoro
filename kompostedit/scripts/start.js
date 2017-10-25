@@ -153,11 +153,21 @@ function addMiddleware(devServer) {
 }
 
 const devServer = new WebpackDevServer(compiler, {
-  hot: true,
-  inline: true,
-  publicPath: '/',
-  quiet: true,
-  historyApiFallback: true
+    hot: true,
+    inline: true,
+    publicPath: '/',
+    quiet: true,
+    historyApiFallback: true,
+    proxy: {
+        '/snippet': {
+            target: 'http://localhost:4567/',
+            secure: false
+        },
+        '/video': {
+            target: 'http://localhost:4567/',
+            secure: false
+        }
+    }
 });
 
 addMiddleware(devServer);

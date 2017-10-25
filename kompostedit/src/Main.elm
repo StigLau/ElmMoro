@@ -137,8 +137,11 @@ update msg model =
             in
                 newModel ! cmds
 
-        OrderKompositionProcessing ->
-            model ! [ processKomposition model.kompost ]
+        SplitUpToSnippets ->
+            model ! [ splitUpSnippets model.kompost ]
+
+        CreateVideo ->
+            model ! [ createVideo model.kompost ]
 
         ShowKompositionJson ->
             model ! [ navigateTo KompositionJsonUI ]

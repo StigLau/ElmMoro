@@ -1,4 +1,4 @@
-module Models.KompostApi exposing (kompoUrl, getKomposition, updateKompo, createKompo, deleteKompo, processKomposition, getDvlSegmentList, fetchETagHeader)
+module Models.KompostApi exposing (kompoUrl, getKomposition, updateKompo, createKompo, deleteKompo, splitUpSnippets, createVideo, getDvlSegmentList, fetchETagHeader)
 
 import Http exposing (emptyBody, expectJson)
 import Models.JsonCoding exposing (..)
@@ -54,12 +54,23 @@ createKompo komposition =
         |> Cmd.map CouchServerStatus
 
 
-processKomposition : Komposition -> Cmd Msg
-processKomposition komposition =
+splitUpSnippets : Komposition -> Cmd Msg
+splitUpSnippets komposition =
     Http.request
         { base
-            | method = "PUT"
-            , url = kompoUrl ++ komposition.name
+            | method = "POST"
+            , url = "http://localhost:3000/snippet/splitter?" ++ komposition.name
+            , body = Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl
+        }
+        |> RemoteData.sendRequest
+        |> Cmd.map CouchServerStatus
+
+createVideo : Komposition -> Cmd Msg
+createVideo komposition =
+    Http.request
+        { base
+            | method = "POST"
+            , url = "http://localhost:3000/video/create?" ++ komposition.name
             , body = Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl
         }
         |> RemoteData.sendRequest

@@ -25,6 +25,7 @@ type Msg
     | DvlSpecificsMsg DvlSpecifics.Msg.Msg
     | SegmentMsg Segment.Model.Msg
     | ETagResponse (Result Http.Error String)
-    | OrderKompositionProcessing
+    | SplitUpToSnippets
+    | CreateVideo
     | ShowKompositionJson
     | FlipSnippetShowing Bool
