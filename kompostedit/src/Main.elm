@@ -6,7 +6,7 @@ import Navigation exposing (Location)
 import Models.Msg exposing (Msg(..))
 import Models.BaseModel exposing (..)
 import DvlSpecifics.DvlSpecificsModel exposing (update, extractFromOutmessage, setSource)
-import Models.KompostApi exposing (..)
+import Models.KompostApi as KompostApi exposing (..)
 import Segment.SegmentUI exposing (segmentForm)
 import Segment.Model exposing (update)
 import UI.KompostUI exposing (..)
@@ -38,7 +38,7 @@ update msg model =
             model ! [ navigateTo page ]
 
         ChooseDvl id ->
-            { emptyModel | activePage = KompostUI, listings = model.listings } ! [ getKomposition id ]
+            { emptyModel | activePage = KompostUI, listings = model.listings } ! [ KompostApi.getKomposition id ]
 
         NewKomposition ->
             { model | kompost = emptyModel.kompost } ! [ navigateTo AppRouting.DvlSpecificsUI ]
@@ -75,7 +75,7 @@ update msg model =
                 command =
                     case model.kompost.revision of
                         "" ->
-                            createKompo model.kompost
+                            KompostApi.createKompo model.kompost
 
                         _ ->
                             updateKompo model.kompost
@@ -176,7 +176,7 @@ view model =
                 pageWrapper <| UI.KompostUI.kompost model
 
             KompositionJsonUI ->
-                UI.KompostUI.kompostJson model
+                text (KompostApi.kompostJson model.kompost model.showSnippets)
 
             SegmentUI ->
                 Html.map SegmentMsg (pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)

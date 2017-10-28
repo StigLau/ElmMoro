@@ -159,11 +159,7 @@ const devServer = new WebpackDevServer(compiler, {
     quiet: true,
     historyApiFallback: true,
     proxy: {
-        '/snippet': {
-            target: 'http://localhost:4567/',
-            secure: false
-        },
-        '/video': {
+        '/kvaern': {
             target: 'http://localhost:4567/',
             secure: false
         }

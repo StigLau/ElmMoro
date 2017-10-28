@@ -23,11 +23,11 @@ kompost model =
             case model.showSnippets of
                 False ->
                     ("Sources",
-                        Button.button [ Button.primary, Button.small, Button.onClick CreateVideo ] [ text "Create Video" ])
+                        Button.button [ Button.primary, Button.small, Button.onClick SplitUpToSnippets ] [ text "Split up snippets" ])
 
                 True ->
                     ( "Snippets",
-                    Button.button [ Button.primary, Button.small, Button.onClick SplitUpToSnippets ] [ text "Split up snippets" ])
+                    Button.button [ Button.primary, Button.small, Button.onClick CreateVideo ] [ text "Create Video" ])
 
     in
         div []
@@ -54,18 +54,3 @@ kompost model =
                     [ Button.button [ Button.primary, Button.small, Button.onClick ShowKompositionJson ] [ text "Show JSON" ] ]
                 ]
             ]
-
-
-kompostJson : Model -> Html Models.Msg.Msg
-kompostJson model =
-    let
-        kompost =
-            model.kompost
-
-        filterdSourcies =
-            List.filter (\source -> model.showSnippets == source.isSnippet || source.mediaType == "audio") kompost.sources
-
-        json =
-            Models.JsonCoding.kompositionEncoder { kompost | sources = filterdSourcies } Models.KompostApi.kompoUrl
-    in
-        text json

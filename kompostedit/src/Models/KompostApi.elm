@@ -1,4 +1,4 @@
-module Models.KompostApi exposing (kompoUrl, getKomposition, updateKompo, createKompo, deleteKompo, splitUpSnippets, createVideo, getDvlSegmentList, fetchETagHeader)
+module Models.KompostApi exposing (kompoUrl, getKomposition, updateKompo, createKompo, deleteKompo, splitUpSnippets, createVideo, getDvlSegmentList, fetchETagHeader, kompostJson)
 
 import Http exposing (emptyBody, expectJson)
 import Models.JsonCoding exposing (..)
@@ -59,8 +59,8 @@ splitUpSnippets komposition =
     Http.request
         { base
             | method = "POST"
-            , url = "http://localhost:3000/snippet/splitter?" ++ komposition.name
-            , body = Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl
+            , url = "http://localhost:3000/kvaern/snippetsplitter?" ++ komposition.name
+            , body = Http.stringBody "application/json" <| kompostJson komposition False
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
@@ -70,8 +70,8 @@ createVideo komposition =
     Http.request
         { base
             | method = "POST"
-            , url = "http://localhost:3000/video/create?" ++ komposition.name
-            , body = Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl
+            , url = "http://localhost:3000/kvaern/createvideo?" ++ komposition.name
+            , body = Http.stringBody "application/json" <| kompostJson komposition True
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
@@ -132,3 +132,13 @@ stripHyphens input =
     input
         |> String.dropRight 1
         |> String.dropLeft 1
+
+
+kompostJson : Komposition -> Bool ->  String
+kompostJson kompost showSnippets =
+    let
+        filterdSourcies =
+            List.filter (\source -> showSnippets == source.isSnippet || source.mediaType == "audio") kompost.sources
+    in
+
+            kompositionEncoder { kompost | sources = filterdSourcies } kompoUrl
