@@ -89,7 +89,7 @@ update msg model =
             model ! [ navigateTo AppRouting.DvlSpecificsUI ]
 
         CreateSegment ->
-            { model | editableSegment = True } ! [ navigateTo SegmentUI ]
+            { model | editableSegment = True, segment = emptySegment } ! [ navigateTo SegmentUI ]
 
         CouchServerStatus serverstatus ->
             let
@@ -225,8 +225,10 @@ emptyModel =
     , statusMessage = []
     , activePage = ListingsUI
     , editableSegment = False
-    , segment = Segment "" 0 0 0
+    , segment = emptySegment
     , editingMediaFile = Source "" "" 0 "" "" "" False
     , subSegmentList = Set.empty
     , showSnippets = False
     }
+
+emptySegment = Segment "" 0 0 0
