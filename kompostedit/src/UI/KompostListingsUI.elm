@@ -15,7 +15,7 @@ import Models.BaseModel exposing (Model, DataRepresentation, Row)
 
 storeUrl : String
 storeUrl =
-    "http://heap.kompo.st/"
+    "https://heap.kompo.se/"
 
 
 jsonBaseDecoder : JsonD.Decoder DataRepresentation

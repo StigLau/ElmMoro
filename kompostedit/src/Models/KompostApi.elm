@@ -11,7 +11,7 @@ import MD5 exposing (hex)
 
 kompoUrl : String
 kompoUrl =
-    "http://heap.kompo.st/"
+    "https://heap.kompo.se/"
 
 
 kvaernUrl =
