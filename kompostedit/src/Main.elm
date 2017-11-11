@@ -231,4 +231,4 @@ emptyModel =
     , showSnippets = False
     }
 
-emptySegment = Segment "" 0 0 0
+emptySegment = Segment "" "" 0 0 0

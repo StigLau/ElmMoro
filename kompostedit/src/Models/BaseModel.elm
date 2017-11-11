@@ -43,6 +43,7 @@ type alias Source =
 
 type alias Segment =
     { id : String
+    , sourceId : String
     , start : Int
     , duration : Int
     , end : Int

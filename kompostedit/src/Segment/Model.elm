@@ -6,6 +6,7 @@ import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(KompostUI,
 
 type Msg
     = SetSegmentId String
+    | SetSourceId String
     | SetSegmentStart String
     | SetSegmentEnd String
     | SetSegmentDuration String
@@ -26,6 +27,15 @@ update msg model =
                 newModel =
                     id
                         |> asIdIn model.segment
+                        |> asCurrentSegmentIn model
+            in
+                ( newModel, [ Cmd.none ], Nothing )
+
+        SetSourceId id ->
+            let
+                newModel =
+                    id
+                        |> asSourceIdIn model.segment
                         |> asCurrentSegmentIn model
             in
                 ( newModel, [ Cmd.none ], Nothing )
@@ -116,6 +126,9 @@ asDurationIn =
 asIdIn =
     flip setId
 
+asSourceIdIn =
+    flip setSourceId
+
 
 setStart newStart segment =
     { segment | start = Result.withDefault 0 (String.toInt newStart) }
@@ -139,6 +152,9 @@ setDuration duration segment =
 
 setId newId segment =
     { segment | id = newId }
+
+setSourceId newSourceId segment =
+    { segment | sourceId = newSourceId }
 
 
 setCurrentSegment : Segment -> Model -> Model

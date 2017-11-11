@@ -24,7 +24,8 @@ segmentForm model editableSegmentId =
         [ h1 [] [ text "Editing Segment" ]
         , Form.form [ class "container" ]
             [ Form.label [ for "segmentId" ] [ text "Segment ID" ]
-            , idSelection model
+            , segmentIdSelection model
+            , sourceIdSelection model
             , Form.row []
                 [ Form.colLabelSm [ Col.xs4 ] [ text "Start" ]
                 , Form.colLabelSm [ Col.xs4 ] [ text "Duration" ]
@@ -84,8 +85,8 @@ showSingleSegment segment =
         ]
 
 
-idSelection : Model -> Html Segment.Model.Msg
-idSelection model =
+segmentIdSelection : Model -> Html Segment.Model.Msg
+segmentIdSelection model =
     if Common.StaticVariables.isKomposition model.kompost then
         Select.select [ Select.id "segmentId", Select.onChange SetSegmentId ]
             (selectItems model.segment.id
@@ -99,3 +100,14 @@ idSelection model =
             )
     else
         Input.text [ Input.small, Input.defaultValue model.segment.id, Input.onInput SetSegmentId, Input.attrs [ placeholder "Id" ] ]
+
+sourceIdSelection : Model -> Html Segment.Model.Msg
+sourceIdSelection model =
+        Select.select [ Select.id "sourceId", Select.onChange SetSourceId ] --setSourceId
+            (selectItems model.segment.sourceId (sourceList model))
+
+
+sourceList model =
+    List.map (\segment -> segment.id) model.kompost.sources
+
+                --{ model | subSegmentList = Set.fromList segmentNames } ! []

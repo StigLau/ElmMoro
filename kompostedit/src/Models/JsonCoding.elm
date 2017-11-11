@@ -82,6 +82,7 @@ segmentDecoder : JsonD.Decoder Segment
 segmentDecoder =
     Json.Decode.Pipeline.decode Segment
         |> required "id" JsonD.string
+        |> optional "sourceid" JsonD.string ""
         |> required "start" JsonD.int
         |> optional "duration" JsonD.int 0
         |> optional "end" JsonD.int 0
@@ -151,6 +152,7 @@ encodeSegment : Segment -> JsonE.Value
 encodeSegment segment =
     JsonE.object
         [ ( "id", JsonE.string segment.id )
+        , ( "sourceid", JsonE.string segment.sourceId )
         , ( "start", JsonE.int segment.start )
         , ( "duration", JsonE.int segment.duration )
         , ( "end", JsonE.int segment.end )
