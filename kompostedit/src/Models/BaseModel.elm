@@ -49,6 +49,13 @@ type alias Segment =
     , end : Int
     }
 
+type alias SegmentGap =
+    { id: String
+    , isGap: Bool
+    , start: Int
+    , end: Int
+    }
+
 
 type alias VideoConfig =
     { width : Int

@@ -1,6 +1,6 @@
 module Main exposing (main, init, update, view)
 
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, text, p)
 import RemoteData exposing (succeed, RemoteData(..))
 import Navigation exposing (Location)
 import Models.Msg exposing (Msg(..))
@@ -189,6 +189,7 @@ view model =
 
             NotFound ->
                 div [] [ text "Sorry, nothing< here :(" ]
+        , text (toString (calculateSegmentGaps model.kompost.segments))
         ]
 
 
@@ -221,7 +222,7 @@ main =
 
 emptyModel =
     { listings = RemoteData.Loading
-    , kompost = Komposition "" "" "" 0 [] [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
+    , kompost = Komposition "" "" "" 0 defaultSegments [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
     , statusMessage = []
     , activePage = ListingsUI
     , editableSegment = False
@@ -232,3 +233,29 @@ emptyModel =
     }
 
 emptySegment = Segment "" "" 0 0 0
+
+
+calculateSegmentGaps: List Segment -> List SegmentGap
+calculateSegmentGaps segmentlist =
+    case segmentlist of
+        head :: tail -> quarnUnknown head tail
+        alone -> [SegmentGap "Alone" False 0 0]
+
+quarnUnknown: Segment -> List Segment -> List SegmentGap
+quarnUnknown head tail =
+    case tail of
+        second :: rest -> (quarnTwo head second) :: (quarnUnknown second rest)
+        [] -> []
+
+quarnTwo: Segment -> Segment -> SegmentGap
+quarnTwo first second =
+     SegmentGap (toString first.id ++ " " ++ toString second.id) (first.end /= second.start || first.end < second.start) first.end second.start
+
+defaultSegments: List Segment
+defaultSegments = [
+                        Segment "First" "http://jalla1" 0 16 16
+                    , Segment "Second" "http://jalla2" 17 2 19
+                    , Segment "third" "http://jalla3" 18 4 22
+                    , Segment "Fourth" "http://jalla4" 22 4 26
+                    ]
+
