@@ -126,6 +126,7 @@ asDurationIn =
 asIdIn =
     flip setId
 
+
 asSourceIdIn =
     flip setSourceId
 
@@ -152,6 +153,7 @@ setDuration duration segment =
 
 setId newId segment =
     { segment | id = newId }
+
 
 setSourceId newSourceId segment =
     { segment | sourceId = newSourceId }

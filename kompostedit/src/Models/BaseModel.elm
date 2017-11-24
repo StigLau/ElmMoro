@@ -49,11 +49,11 @@ type alias Segment =
     , end : Int
     }
 
+
 type alias SegmentGap =
-    { id: String
-    , isGap: Bool
-    , start: Int
-    , end: Int
+    { id : String
+    , start : Int
+    , width : Int
     }
 
 

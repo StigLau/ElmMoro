@@ -101,13 +101,17 @@ segmentIdSelection model =
     else
         Input.text [ Input.small, Input.defaultValue model.segment.id, Input.onInput SetSegmentId, Input.attrs [ placeholder "Id" ] ]
 
+
 sourceIdSelection : Model -> Html Segment.Model.Msg
 sourceIdSelection model =
-        Select.select [ Select.id "sourceId", Select.onChange SetSourceId ] --setSourceId
-            (selectItems model.segment.sourceId (sourceList model))
+    Select.select [ Select.id "sourceId", Select.onChange SetSourceId ]
+        --setSourceId
+        (selectItems model.segment.sourceId (sourceList model))
 
 
 sourceList model =
     List.map (\segment -> segment.id) model.kompost.sources
 
-                --{ model | subSegmentList = Set.fromList segmentNames } ! []
+
+
+--{ model | subSegmentList = Set.fromList segmentNames } ! []

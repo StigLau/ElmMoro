@@ -65,6 +65,7 @@ splitUpSnippets komposition =
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
 
+
 createVideo : Komposition -> Cmd Msg
 createVideo komposition =
     Http.request
@@ -134,11 +135,10 @@ stripHyphens input =
         |> String.dropLeft 1
 
 
-kompostJson : Komposition -> Bool ->  String
+kompostJson : Komposition -> Bool -> String
 kompostJson kompost showSnippets =
     let
         filterdSourcies =
             List.filter (\source -> showSnippets == source.isSnippet || source.mediaType == "audio") kompost.sources
     in
-
-            kompositionEncoder { kompost | sources = filterdSourcies } kompoUrl
+        kompositionEncoder { kompost | sources = filterdSourcies } kompoUrl

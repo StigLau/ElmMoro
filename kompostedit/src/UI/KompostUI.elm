@@ -14,21 +14,23 @@ import Models.Msg exposing (Msg(..))
 import Models.KompostApi exposing (kompoUrl)
 import Models.JsonCoding exposing (kompositionEncoder)
 import Navigation.AppRouting exposing (Page(ListingsUI))
+import Segment.SegmentRendering exposing (gapVisualizer)
 
 
 kompost : Model -> Html Models.Msg.Msg
 kompost model =
     let
-        (sourceText,videoCreationButton) =
+        ( sourceText, videoCreationButton ) =
             case model.showSnippets of
                 False ->
-                    ("Sources",
-                        Button.button [ Button.primary, Button.small, Button.onClick SplitUpToSnippets ] [ text "Split up snippets" ])
+                    ( "Sources"
+                    , Button.button [ Button.primary, Button.small, Button.onClick SplitUpToSnippets ] [ text "Split up snippets" ]
+                    )
 
                 True ->
-                    ( "Snippets",
-                    Button.button [ Button.primary, Button.small, Button.onClick CreateVideo ] [ text "Create Video" ])
-
+                    ( "Snippets"
+                    , Button.button [ Button.primary, Button.small, Button.onClick CreateVideo ] [ text "Create Video" ]
+                    )
     in
         div []
             [ Grid.row []
@@ -53,4 +55,5 @@ kompost model =
                 [ Grid.col []
                     [ Button.button [ Button.primary, Button.small, Button.onClick ShowKompositionJson ] [ text "Show JSON" ] ]
                 ]
+            , gapVisualizer model
             ]

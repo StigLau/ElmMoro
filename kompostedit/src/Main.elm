@@ -189,7 +189,6 @@ view model =
 
             NotFound ->
                 div [] [ text "Sorry, nothing< here :(" ]
-        , text (toString (calculateSegmentGaps model.kompost.segments))
         ]
 
 
@@ -232,30 +231,15 @@ emptyModel =
     , showSnippets = False
     }
 
-emptySegment = Segment "" "" 0 0 0
+
+emptySegment =
+    Segment "" "" 0 0 0
 
 
-calculateSegmentGaps: List Segment -> List SegmentGap
-calculateSegmentGaps segmentlist =
-    case segmentlist of
-        head :: tail -> quarnUnknown head tail
-        alone -> [SegmentGap "Alone" False 0 0]
-
-quarnUnknown: Segment -> List Segment -> List SegmentGap
-quarnUnknown head tail =
-    case tail of
-        second :: rest -> (quarnTwo head second) :: (quarnUnknown second rest)
-        [] -> []
-
-quarnTwo: Segment -> Segment -> SegmentGap
-quarnTwo first second =
-     SegmentGap (toString first.id ++ " " ++ toString second.id) (first.end /= second.start || first.end < second.start) first.end second.start
-
-defaultSegments: List Segment
-defaultSegments = [
-                        Segment "First" "http://jalla1" 0 16 16
-                    , Segment "Second" "http://jalla2" 17 2 19
-                    , Segment "third" "http://jalla3" 18 4 22
-                    , Segment "Fourth" "http://jalla4" 22 4 26
-                    ]
-
+defaultSegments : List Segment
+defaultSegments =
+    [ Segment "First" "http://jalla1" 0 16 16
+    , Segment "Second" "http://jalla2" 17 2 19
+    , Segment "third" "http://jalla3" 18 4 22
+    , Segment "Fourth" "http://jalla4" 22 4 26
+    ]
