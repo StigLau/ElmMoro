@@ -143,7 +143,6 @@ update msg model =
             in
                 setBeatPattern ({ beatpattern | masterBPM = standardFloat value }) model
 
-        --Other stuff
         InternalNavigateTo page ->
             let
                 _ =
@@ -162,7 +161,7 @@ update msg model =
                             Debug.log "We found preexisting media file" mediaFile
 
                         _ ->
-                            Debug.log "Reusing Editing Media File" model.editingMediaFile
+                            Source "" "" 0 "" "" "" False -- Empty Source
             in
                 ( { model | editingMediaFile = mediaFile }, Cmd.none, Just (OutNavigateTo MediaFileUI) )
 
