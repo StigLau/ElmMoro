@@ -22,13 +22,15 @@ editSpecifics model =
     let
         mediaFile =
             model.editingMediaFile
+        sourceSnippetText = case mediaFile.isSnippet of
+            True -> "Snippet"
+            False -> "Source"
     in
         div []
-            [ h1 [] [ text "Editing Source" ]
+            [ h1 [] [ (Checkbox.checkbox [ Checkbox.onCheck SpecificsMsg.SetSnippet, Checkbox.checked mediaFile.isSnippet ] ("Editing " ++ sourceSnippetText)) ]
             , Form.form [ class "container" ]
                 [ (wrapping "ID" (Input.text [ Input.id "id", Input.defaultValue mediaFile.id, Input.onInput SpecificsMsg.SetId ]))
                 , (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.url, Input.onInput SpecificsMsg.SetURL ]))
-                , (wrapping "Snippet" (Checkbox.checkbox [ Checkbox.onCheck SpecificsMsg.SetSnippet, Checkbox.checked mediaFile.isSnippet ] "Source or Snippet"))
                 , (wrapping "Starting Offset"
                     (Input.text
                         [ Input.id "Starting Offset"
