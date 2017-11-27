@@ -43,8 +43,17 @@ quarnTwo first second =
 
 gapVisualizer : Model -> Html msg
 gapVisualizer model =
-    svg [ viewBox "0 0 100 200", Svg.Attributes.width "800px" ]
-        ((drawSegmentGaps model) ++ (drawSegmentGapsText model))
+    let
+        width =
+            case model.kompost.beatpattern of
+                Just bpm ->
+                    toString ( bpm.toBeat + bpm.toBeat)
+
+                _ ->
+                    "800"
+    in
+        svg [ viewBox "0 0 100 200", Svg.Attributes.width (width ++ "px") ]
+            ((drawSegmentGaps model) ++ (drawSegmentGapsText model))
 
 
 drawSegmentGaps : Model -> List (Svg msg)
