@@ -86,6 +86,7 @@ segmentDecoder =
         |> required "start" JsonD.int
         |> optional "duration" JsonD.int 0
         |> optional "end" JsonD.int 0
+        |> optional "snippetid" (JsonD.map Just JsonD.string) Nothing
 
 
 sourceDecoder : JsonD.Decoder Source

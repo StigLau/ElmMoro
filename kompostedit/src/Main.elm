@@ -107,6 +107,18 @@ update msg model =
             in
                 newModel ! [ navigateTo navigation ]
 
+        SnippetSplitterResponse serverResponse ->
+            let
+                _ = Debug.log "Splitting response" serverResponse
+                changedKomposition =
+                    case RemoteData.toMaybe serverResponse of
+                        Just returnedKomposition ->
+                                returnedKomposition
+                        _ ->
+                            model.kompost
+            in
+                ({model | kompost = changedKomposition}, Cmd.none)
+
         DvlSpecificsMsg msg ->
             let
                 ( newModel, cmd, childMsg ) =
@@ -233,13 +245,13 @@ emptyModel =
 
 
 emptySegment =
-    Segment "" "" 0 0 0
+    Segment "" "" 0 0 0 Nothing
 
 
 defaultSegments : List Segment
 defaultSegments =
-    [ Segment "First" "http://jalla1" 0 16 16
-    , Segment "Second" "http://jalla2" 17 2 19
-    , Segment "third" "http://jalla3" 18 4 22
-    , Segment "Fourth" "http://jalla4" 22 4 26
+    [ Segment "First" "http://jalla1" 0 16 16 (Just "A Segment")
+    , Segment "Second" "http://jalla2" 17 2 19 Nothing
+    , Segment "third" "http://jalla3" 18 4 22 Nothing
+    , Segment "Fourth" "http://jalla4" 22 4 26 Nothing
     ]

@@ -47,6 +47,7 @@ type alias Segment =
     , start : Int
     , duration : Int
     , end : Int
+    , snippetId : Maybe String
     }
 
 

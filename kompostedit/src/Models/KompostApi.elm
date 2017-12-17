@@ -3,7 +3,7 @@ module Models.KompostApi exposing (kompoUrl, getKomposition, updateKompo, create
 import Http exposing (emptyBody, expectJson)
 import Models.JsonCoding exposing (..)
 import RemoteData exposing (RemoteData(..))
-import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, SegmentListUpdated, ETagResponse))
+import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, SegmentListUpdated, SnippetSplitterResponse, ETagResponse))
 import Models.BaseModel exposing (Komposition)
 import Dict
 import MD5 exposing (hex)
@@ -24,6 +24,16 @@ base =
     , url = ""
     , body = Http.emptyBody
     , expect = Http.expectJson couchServerStatusDecoder
+    , timeout = Nothing
+    , withCredentials = False
+    }
+
+snuppet =
+    { method = ""
+    , headers = []
+    , url = ""
+    , body = Http.emptyBody
+    , expect = Http.expectJson kompositionDecoder
     , timeout = Nothing
     , withCredentials = False
     }
@@ -57,13 +67,13 @@ createKompo komposition =
 splitUpSnippets : Komposition -> Cmd Msg
 splitUpSnippets komposition =
     Http.request
-        { base
+        { snuppet
             | method = "POST"
             , url = "http://localhost:3000/kvaern/snippetsplitter?" ++ komposition.name
             , body = Http.stringBody "application/json" <| kompostJson komposition False
         }
         |> RemoteData.sendRequest
-        |> Cmd.map CouchServerStatus
+        |> Cmd.map SnippetSplitterResponse
 
 
 createVideo : Komposition -> Cmd Msg
