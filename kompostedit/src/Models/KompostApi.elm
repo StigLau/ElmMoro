@@ -1,9 +1,9 @@
-module Models.KompostApi exposing (kompoUrl, getKomposition, updateKompo, createKompo, deleteKompo, splitUpSnippets, createVideo, getDvlSegmentList, fetchETagHeader, kompostJson)
+module Models.KompostApi exposing (kompoUrl, getKomposition, updateKompo, createKompo, deleteKompo, splitUpSnippets, createVideo, getDvlSegmentList, fetchETagHeader, kompostJson, fetchKompositionList)
 
 import Http exposing (emptyBody, expectJson)
 import Models.JsonCoding exposing (..)
 import RemoteData exposing (RemoteData(..))
-import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, SegmentListUpdated, SnippetSplitterResponse, ETagResponse))
+import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, SegmentListUpdated, SnippetSplitterResponse, ETagResponse, ListingsUpdated))
 import Models.BaseModel exposing (Komposition)
 import Dict
 import MD5 exposing (hex)
@@ -38,6 +38,11 @@ snuppet =
     , withCredentials = False
     }
 
+fetchKompositionList : Cmd Msg
+fetchKompositionList =
+    Http.get (kompoUrl ++ "_all_docs") kompositionListDecoder
+        |> RemoteData.sendRequest
+        |> Cmd.map ListingsUpdated
 
 getKomposition : String -> Cmd Msg
 getKomposition id =

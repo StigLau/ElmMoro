@@ -1,10 +1,10 @@
-module Models.JsonCoding exposing (kompositionDecoder, kompositionEncoder, couchServerStatusDecoder)
+module Models.JsonCoding exposing (kompositionDecoder, kompositionEncoder, couchServerStatusDecoder, kompositionListDecoder)
 
 import Json.Decode as JsonD
 import Json.Encode as JsonE
 import Json.Decode.Pipeline as JsonDPipe
 import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
-import Models.BaseModel exposing (Komposition, Segment, Source, VideoConfig, BeatPattern, CouchStatusMessage)
+import Models.BaseModel exposing (Komposition, Segment, Source, VideoConfig, BeatPattern, CouchStatusMessage, DataRepresentation, Row)
 
 
 kompositionDecoder : JsonD.Decoder Komposition
@@ -168,3 +168,18 @@ encodeConfig config =
         , ( "framerate", JsonE.int config.framerate )
         , ( "extension", JsonE.string config.extensionType )
         ]
+
+
+kompositionListDecoder : JsonD.Decoder DataRepresentation
+kompositionListDecoder =
+    JsonD.map3 DataRepresentation
+        (JsonD.field "total_rows" JsonD.int)
+        (JsonD.field "offset" JsonD.int)
+        (JsonD.field "rows" <| JsonD.list rowDecoder)
+
+
+rowDecoder : JsonD.Decoder Row
+rowDecoder =
+    JsonD.map2 Row
+        (JsonD.field "id" JsonD.string)
+        (JsonD.field "key" JsonD.string)

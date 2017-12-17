@@ -22,7 +22,7 @@ import Set
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
-    ( emptyModel, Cmd.batch [ getListings ] )
+    ( emptyModel, Cmd.batch [ fetchKompositionList ] )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
