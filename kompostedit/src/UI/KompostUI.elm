@@ -14,7 +14,6 @@ import Models.Msg exposing (Msg(..))
 import Models.KompostApi exposing (kompoUrl)
 import Models.JsonCoding exposing (kompositionEncoder)
 import Navigation.AppRouting exposing (Page(ListingsUI))
-import Segment.SegmentRendering exposing (gapVisualizer)
 
 
 kompost : Model -> Html Models.Msg.Msg
@@ -55,5 +54,4 @@ kompost model =
                 [ Grid.col []
                     [ Button.button [ Button.primary, Button.small, Button.onClick ShowKompositionJson ] [ text "Show JSON" ] ]
                 ]
-            , gapVisualizer model
             ]

@@ -16,6 +16,7 @@ import Models.Msg exposing (Msg)
 import Common.UIFunctions exposing (selectItems)
 import Common.StaticVariables exposing (isKomposition)
 import Set exposing (Set)
+import Segment.SegmentRendering exposing (gapVisualizer)
 
 
 segmentForm : Model -> Bool -> Html Segment.Model.Msg
@@ -68,6 +69,7 @@ segmentForm model editableSegmentId =
                     [ Button.button [ Button.warning, Button.small, Button.onClick DeleteSegment ] [ text "Remove" ] ]
                 ]
             ]
+            , gapVisualizer model
         ]
 
 
