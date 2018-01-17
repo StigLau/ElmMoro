@@ -58,7 +58,7 @@ gapVisualizer model =
 
 drawSegmentGaps : Model -> List (Svg msg)
 drawSegmentGaps model =
-    List.map (\segment -> drawRect segment.id segment.start (segment.end - segment.start)) model.kompost.segments
+    List.map (\segment -> drawRect segment.id segment.start (segment.end - segment.start - 1)) model.kompost.segments
 
 
 drawSegmentGapsText : Model -> List (Svg msg)

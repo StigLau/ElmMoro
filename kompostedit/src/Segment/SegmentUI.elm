@@ -75,15 +75,17 @@ segmentForm model editableSegmentId =
 
 showSegmentList : List Segment -> Html Segment.Model.Msg
 showSegmentList segs =
-    div [] ((List.sortBy .start segs) |> List.map showSingleSegment)
-
+    div [] ( Grid.row []
+                   [ Grid.col [] [ text "Segment" ], Grid.col [] [ text "Start" ], Grid.col [] [ text "Duration" ] ]
+                   :: ((List.sortBy .start segs) |> List.map showSingleSegment)
+    )
 
 showSingleSegment : Segment -> Html Segment.Model.Msg
 showSingleSegment segment =
     Grid.row []
         [ Grid.col [] [ Button.button [ Button.secondary, Button.small, Button.onClick (EditSegment segment.id) ] [ text segment.id ] ]
         , Grid.col [] [ text <| toString segment.start ]
-        , Grid.col [] [ text <| toString segment.end ]
+        , Grid.col [] [ text <| toString segment.duration]
         ]
 
 

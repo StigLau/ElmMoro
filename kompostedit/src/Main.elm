@@ -250,8 +250,5 @@ emptySegment =
 
 defaultSegments : List Segment
 defaultSegments =
-    [ Segment "First" "http://jalla1" 0 16 16 (Just "A Segment")
-    , Segment "Second" "http://jalla2" 17 2 19 Nothing
-    , Segment "third" "http://jalla3" 18 4 22 Nothing
-    , Segment "Fourth" "http://jalla4" 22 4 26 Nothing
+    [ Segment "Empty" "http://jalla1" 0 16 16 (Just "A Segment")
     ]
