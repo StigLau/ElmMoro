@@ -14,7 +14,7 @@ isKomposition komposition =
 
 
 extensionTypes =
-    [ "mp3", "mp4", "aac", "webm", "flac", "dvl.xml", "kompo.xml", "htmlImagelist", "jpg", "png" ]
+    [ "mp3", "mp4", "aac", "webm", "flac", "dvl.json", "kompo.json", "htmlImagelist", "jpg", "png" ]
 
 
 mediaTypes =
