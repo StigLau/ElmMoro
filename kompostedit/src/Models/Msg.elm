@@ -16,6 +16,7 @@ type Msg
     | ChooseDvl String
     | EditSpecifics
     | NewKomposition
+    | ChangeKompositionType String
     | StoreKomposition
     | DeleteKomposition
     | KompositionUpdated (WebData Komposition)

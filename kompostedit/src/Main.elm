@@ -43,6 +43,9 @@ update msg model =
         NewKomposition ->
             { model | kompost = emptyModel.kompost } ! [ navigateTo AppRouting.DvlSpecificsUI ]
 
+        ChangeKompositionType searchType ->
+            model ! [fetchKompositionList searchType]
+
         KompositionUpdated webKomposition ->
             let
                 newModel =

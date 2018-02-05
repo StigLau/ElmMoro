@@ -7,9 +7,10 @@ import Json.Decode as JsonD
 import RemoteData exposing (WebData)
 import Bootstrap.Button as Button exposing (onClick)
 import Bootstrap.Grid as Grid
+import Bootstrap.ButtonGroup as ButtonGroup
 import Bootstrap.CDN
 import Html.Attributes exposing (style)
-import Models.Msg exposing (Msg(ChooseDvl, NewKomposition))
+import Models.Msg exposing (Msg(ChooseDvl, NewKomposition, ChangeKompositionType ))
 import Models.BaseModel exposing (Model, DataRepresentation, Row)
 
 
@@ -17,18 +18,23 @@ import Models.BaseModel exposing (Model, DataRepresentation, Row)
 listings : Model -> Html Msg
 listings model =
     div [ class "listings" ]
-        [ h1 [] [ text ("Dvls in ") ]
+        [ h1 [] [ text ("Kompositions") ]
         , table [ class "table table-striped" ]
             [ thead []
                 [ tr []
-                    [ th [] [ text "Id" ]
-                    , case RemoteData.toMaybe model.listings of
+                    [ case RemoteData.toMaybe model.listings of
                         Just listings ->
                             tbody [] (List.map (chooseDvlButton model) listings.docs)
 
                         Nothing ->
                             text "loading."
                     , Grid.simpleRow [ Grid.col [] [ Button.button [ Button.primary, Button.small, Button.onClick NewKomposition ] [ text "New Komposition" ] ] ]
+
+                    , ButtonGroup.radioButtonGroup []
+                                      [ ButtonGroup.radioButton True [ Button.secondary, Button.onClick (ChangeKompositionType "Komposition") ] [ Html.text "Komposition" ]
+                                      , ButtonGroup.radioButton False [ Button.warning, Button.onClick (ChangeKompositionType "Video") ] [ Html.text "Video" ]
+                                      , ButtonGroup.radioButton False [ Button.success, Button.onClick (ChangeKompositionType "Audio") ] [ Html.text "Audio" ]
+                                      ]
                     ]
                 ]
             ]
