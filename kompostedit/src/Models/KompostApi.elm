@@ -38,9 +38,16 @@ snuppet =
     , withCredentials = False
     }
 
-fetchKompositionList : Cmd Msg
-fetchKompositionList =
-    Http.get (kompoUrl ++ "_all_docs") kompositionListDecoder
+fetchKompositionList : String ->  Cmd Msg
+fetchKompositionList typeIdentifier =
+    Http.request
+            { base
+                | method = "POST"
+                , url = kompoUrl ++ "_find"
+                , body = Http.stringBody "application/json" (searchEncoder typeIdentifier)
+
+                , expect = Http.expectJson kompositionListDecoder
+            }
         |> RemoteData.sendRequest
         |> Cmd.map ListingsUpdated
 
@@ -144,7 +151,7 @@ extractEtagAndChecksum name resp =
             Result.Err error
 
 
-stripHyphens input =
+stripHyphens input = --Remove '/"' --> devowel = replace All (regex "[aeiou]") (\_ -> "")
     input
         |> String.dropRight 1
         |> String.dropLeft 1

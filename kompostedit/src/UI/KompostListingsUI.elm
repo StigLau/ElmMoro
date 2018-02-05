@@ -24,7 +24,7 @@ listings model =
                     [ th [] [ text "Id" ]
                     , case RemoteData.toMaybe model.listings of
                         Just listings ->
-                            tbody [] (List.map (chooseDvlButton model) listings.rows)
+                            tbody [] (List.map (chooseDvlButton model) listings.docs)
 
                         Nothing ->
                             text "loading."

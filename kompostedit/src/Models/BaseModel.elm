@@ -89,15 +89,15 @@ type alias CouchStatusMessage =
 
 
 type alias DataRepresentation =
-    { total_rows : Int
-    , offset : Int
-    , rows : List Row
+    { docs : List Row
+    , warning : String
+    --, bookmark : String
     }
 
 
 type alias Row =
     { id : String
-    , key : String
+    , rev : String
     }
 
 

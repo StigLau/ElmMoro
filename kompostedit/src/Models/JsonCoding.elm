@@ -1,4 +1,4 @@
-module Models.JsonCoding exposing (kompositionDecoder, kompositionEncoder, couchServerStatusDecoder, kompositionListDecoder)
+module Models.JsonCoding exposing (kompositionDecoder, kompositionEncoder, couchServerStatusDecoder, kompositionListDecoder, searchEncoder)
 
 import Json.Decode as JsonD
 import Json.Encode as JsonE
@@ -69,6 +69,9 @@ kompositionEncoder kompo kompoUrl =
                     ++ sources
                 )
 
+
+searchEncoder: String -> String
+searchEncoder typeIdentifier = "{\"selector\": {\"_id\": {\"$gt\": \"0\"}, \"type\": \""++ typeIdentifier ++ "\"}, \"fields\": [ \"_id\", \"_rev\" ], \"sort\": [ {\"_id\": \"asc\"} ] }" --, \"use_index\":\"komposition-index\"
 
 couchServerStatusDecoder : JsonD.Decoder CouchStatusMessage
 couchServerStatusDecoder =
@@ -172,14 +175,15 @@ encodeConfig config =
 
 kompositionListDecoder : JsonD.Decoder DataRepresentation
 kompositionListDecoder =
-    JsonD.map3 DataRepresentation
-        (JsonD.field "total_rows" JsonD.int)
-        (JsonD.field "offset" JsonD.int)
-        (JsonD.field "rows" <| JsonD.list rowDecoder)
+    JsonD.map2 DataRepresentation
+        (JsonD.field "docs" <| JsonD.list rowDecoder)
+        (JsonD.field "warning" JsonD.string)
+  --      (JsonD.field "bookmark" JsonD.string)
+
 
 
 rowDecoder : JsonD.Decoder Row
 rowDecoder =
     JsonD.map2 Row
-        (JsonD.field "id" JsonD.string)
-        (JsonD.field "key" JsonD.string)
+        (JsonD.field "_id" JsonD.string)
+        (JsonD.field "_rev" JsonD.string)
