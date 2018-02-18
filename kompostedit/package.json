@@ -24,8 +24,7 @@
   "homepage": "https://github.com/stiglau/ElmMoro#readme",
   "dependencies": {
     "create-elm-app": "^0.3.2",
-    "elm": "^0.18.0",
-    "waveform-data": "^2.0.1"
+    "elm": "^0.18.0"
   },
   "devDependencies": {
     "assets-webpack-plugin": "^3.5.0",
