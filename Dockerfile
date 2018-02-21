@@ -11,6 +11,3 @@ RUN cd kompostedit && npm install
 EXPOSE 80 8000 3000
 
 CMD ["npm", "start", "--prefix", "/kompostedit"]
-
-
-#docker build -t kompostedit .
