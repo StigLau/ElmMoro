@@ -6,8 +6,8 @@ spec:
   containers:
   - name: komposter
     image: eu.gcr.io/makeshitapp/kompostedit:latest
-#    ports:
-#      - containerPort: 3000
+    ports:
+      - containerPort: 3000
 
 #    volumeMounts:
 #    - mountPath: /mypath
