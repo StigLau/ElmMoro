@@ -168,6 +168,9 @@ const devServer = new WebpackDevServer(compiler, {
 
 addMiddleware(devServer);
 
+devServer.use('/kvaern', httpProxyMiddleware({target: 'http://localhost:4567/', changeOrigin: true}));
+devServer.use('/kompost', httpProxyMiddleware({target: 'https://e82fe3cb-c41e-4b17-b0d1-a5f3d0bcb833-bluemix.cloudant.com/kompost/', changeOrigin: true}));
+
 // Launch WebpackDevServer.
 devServer.listen(port, function (err) {
   if (err) {

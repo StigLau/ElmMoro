@@ -1,6 +1,6 @@
 module Models.KompostApi exposing (kompoUrl, getKomposition, updateKompo, createKompo, deleteKompo, splitUpSnippets, createVideo, getDvlSegmentList, fetchETagHeader, kompostJson, fetchKompositionList)
 
-import Http exposing (emptyBody, expectJson)
+import Http exposing (emptyBody, expectJson, header)
 import Models.JsonCoding exposing (..)
 import RemoteData exposing (RemoteData(..))
 import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, SegmentListUpdated, SnippetSplitterResponse, ETagResponse, ListingsUpdated))
@@ -11,16 +11,16 @@ import MD5 exposing (hex)
 
 kompoUrl : String
 kompoUrl =
-    "https://heap.kompo.se/"
+    "https://e82fe3cb-c41e-4b17-b0d1-a5f3d0bcb833-bluemix.cloudant.com/kompost/"
 
 
 kvaernUrl =
-    "http://localhost:4567/"
+    "http://localhost:3000/"
 
 
 base =
     { method = ""
-    , headers = []
+    , headers = [ (Http.header "Authorization" "Basic aHJp...")]
     , url = ""
     , body = Http.emptyBody
     , expect = Http.expectJson couchServerStatusDecoder
