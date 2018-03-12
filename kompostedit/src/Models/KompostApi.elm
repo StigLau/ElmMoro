@@ -15,12 +15,13 @@ kompoUrl =
 
 
 kvaernUrl =
-    "http://localhost:3000/"
+    "http://localhost:3000"
 
+autHeaders = [ (Http.header "Authorization" "Basic aHJpb25zaW9uZXNzaWNlcHJlZGlkc3RyOjE4NWQ4MDgyMzE0MGY4Yzg0NDk5YTU3OTkxNGNkZDZhNTIzYjM5ZjA=")]
 
 base =
     { method = ""
-    , headers = [ (Http.header "Authorization" "Basic aHJp...")]
+    , headers = autHeaders
     , url = ""
     , body = Http.emptyBody
     , expect = Http.expectJson couchServerStatusDecoder
@@ -30,7 +31,7 @@ base =
 
 snuppet =
     { method = ""
-    , headers = []
+    , headers = autHeaders
     , url = ""
     , body = Http.emptyBody
     , expect = Http.expectJson kompositionDecoder
@@ -53,7 +54,13 @@ fetchKompositionList typeIdentifier =
 
 getKomposition : String -> Cmd Msg
 getKomposition id =
-    Http.get (kompoUrl ++ id) kompositionDecoder
+    Http.request
+            { base
+                | method = "GET"
+                , headers = autHeaders
+                , url = kompoUrl ++ id
+                , expect = Http.expectJson kompositionDecoder
+            }
         |> RemoteData.sendRequest
         |> Cmd.map KompositionUpdated
 
@@ -81,7 +88,7 @@ splitUpSnippets komposition =
     Http.request
         { snuppet
             | method = "POST"
-            , url = "http://localhost:3000/kvaern/snippetsplitter?" ++ komposition.name
+            , url = kvaernUrl ++ "/kvaern/snippetsplitter?" ++ komposition.name
             , body = Http.stringBody "application/json" <| kompostJson komposition False
         }
         |> RemoteData.sendRequest
@@ -93,7 +100,7 @@ createVideo komposition =
     Http.request
         { base
             | method = "POST"
-            , url = "http://localhost:3000/kvaern/createvideo?" ++ komposition.name
+            , url = kvaernUrl ++ "/kvaern/createvideo?" ++ komposition.name
             , body = Http.stringBody "application/json" <| kompostJson komposition True
         }
         |> RemoteData.sendRequest
@@ -105,6 +112,7 @@ updateKompo komposition =
     Http.request
         { base
             | method = "PUT"
+            , headers = autHeaders
             , url = kompoUrl ++ komposition.name
             , body = Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl
         }
@@ -117,6 +125,7 @@ deleteKompo komposition =
     Http.request
         { base
             | method = "DELETE"
+            , headers = autHeaders
             , url = kompoUrl ++ komposition.name ++ "?rev=" ++ komposition.revision
         }
         |> RemoteData.sendRequest
@@ -132,7 +141,7 @@ getHeader : String -> String -> Http.Request String
 getHeader name url =
     Http.request
         { method = "GET"
-        , headers = []
+        , headers = autHeaders
         , url = url
         , body = Http.emptyBody
         , expect = Http.expectStringResponse (extractEtagAndChecksum name)
