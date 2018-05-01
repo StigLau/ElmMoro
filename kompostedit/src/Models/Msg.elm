@@ -23,10 +23,8 @@ type Msg
     | SegmentListUpdated (WebData Komposition)
     | CreateSegment
     | CouchServerStatus (WebData CouchStatusMessage)
-    | SnippetSplitterResponse (WebData Komposition)
     | DvlSpecificsMsg DvlSpecifics.Msg.Msg
     | SegmentMsg Segment.Model.Msg
     | ETagResponse (Result Http.Error String)
-    | SplitUpToSnippets
     | CreateVideo
     | ShowKompositionJson

@@ -110,18 +110,6 @@ update msg model =
             in
                 newModel ! [ navigateTo navigation ]
 
-        SnippetSplitterResponse serverResponse ->
-            let
-                _ = Debug.log "Splitting response" serverResponse
-                changedKomposition =
-                    case RemoteData.toMaybe serverResponse of
-                        Just returnedKomposition ->
-                                returnedKomposition
-                        _ ->
-                            model.kompost
-            in
-                ({model | kompost = changedKomposition}, Cmd.none)
-
         DvlSpecificsMsg msg ->
             let
                 ( newModel, cmd, childMsg ) =
@@ -151,9 +139,6 @@ update msg model =
                             []
             in
                 newModel ! cmds
-
-        SplitUpToSnippets ->
-            model ! [ splitUpSnippets model.kompost ]
 
         CreateVideo ->
             model ! [ createVideo model.kompost ]
