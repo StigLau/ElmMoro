@@ -89,7 +89,7 @@ splitUpSnippets komposition =
         { snuppet
             | method = "POST"
             , url = kvaernUrl ++ "/kvaern/snippetsplitter?" ++ komposition.name
-            , body = Http.stringBody "application/json" <| kompostJson komposition False
+            , body = Http.stringBody "application/json" <| kompostJson komposition
         }
         |> RemoteData.sendRequest
         |> Cmd.map SnippetSplitterResponse
@@ -101,7 +101,7 @@ createVideo komposition =
         { base
             | method = "POST"
             , url = kvaernUrl ++ "/kvaern/createvideo?" ++ komposition.name
-            , body = Http.stringBody "application/json" <| kompostJson komposition True
+            , body = Http.stringBody "application/json" <| kompostJson komposition
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
@@ -166,10 +166,6 @@ stripHyphens input = --Remove '/"' --> devowel = replace All (regex "[aeiou]") (
         |> String.dropLeft 1
 
 
-kompostJson : Komposition -> Bool -> String
-kompostJson kompost showSnippets =
-    let
-        filterdSourcies =
-            List.filter (\source -> showSnippets == source.isSnippet || source.mediaType == "audio") kompost.sources
-    in
-        kompositionEncoder { kompost | sources = filterdSourcies } kompoUrl
+kompostJson : Komposition -> String
+kompostJson kompost =
+        kompositionEncoder { kompost | sources = kompost.sources } kompoUrl

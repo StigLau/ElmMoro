@@ -66,12 +66,9 @@ editSpecifics model =
             ]
 
 
-showMediaFileList : List Models.BaseModel.Source -> Bool -> Html Models.Msg.Msg
-showMediaFileList mediaFile showSnippets =
-    div []
-        ((List.filter (\source -> showSnippets == source.isSnippet) mediaFile)
-            |> List.map showSingleMediaFile
-        )
+showMediaFileList : List Models.BaseModel.Source -> Html Models.Msg.Msg
+showMediaFileList mediaFile =
+    div [] ( List.map showSingleMediaFile mediaFile )
 
 
 showSingleMediaFile : Models.BaseModel.Source -> Html Models.Msg.Msg

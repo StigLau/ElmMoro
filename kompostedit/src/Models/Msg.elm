@@ -30,4 +30,3 @@ type Msg
     | SplitUpToSnippets
     | CreateVideo
     | ShowKompositionJson
-    | FlipSnippetShowing Bool

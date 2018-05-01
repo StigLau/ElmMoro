@@ -8,7 +8,6 @@ import Bootstrap.CDN as CDN
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Form.Select as Select
-import Bootstrap.Form.Checkbox as Chk
 import Bootstrap.Button as Button
 import RemoteData exposing (WebData)
 import Models.BaseModel exposing (..)
@@ -71,22 +70,13 @@ editSpecifics kompo =
 
 showSpecifics : Model -> Html Models.Msg.Msg
 showSpecifics model =
-    let
-        sourcesText =
-            case model.showSnippets of
-                False ->
-                    "Original Sources:"
-
-                True ->
-                    "Snippets:"
-    in
         Grid.container []
             [ addRow "Name" (text model.kompost.name)
             , addRow "Revision" (text model.kompost.revision)
             , addRow "BPM" (text (toString model.kompost.bpm))
             , Grid.row [] [ Grid.col [] [], Grid.col [] [], Grid.col [] [ Button.button [ Button.secondary, Button.onClick Models.Msg.EditSpecifics ] [ text "Edit Specifics" ] ] ]
-            , h4 [] [ text sourcesText ]
-            , showMediaFileList model.kompost.sources model.showSnippets
+            , h4 [] [ text "Original Sources:" ]
+            , showMediaFileList model.kompost.sources
             , Grid.row []
                 [ Grid.col [] []
                 , Grid.col [] []

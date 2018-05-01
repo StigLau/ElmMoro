@@ -18,23 +18,9 @@ import Navigation.AppRouting exposing (Page(ListingsUI))
 
 kompost : Model -> Html Models.Msg.Msg
 kompost model =
-    let
-        ( sourceText, videoCreationButton ) =
-            case model.showSnippets of
-                False ->
-                    ( "Sources"
-                    , Button.button [ Button.primary, Button.small, Button.onClick SplitUpToSnippets ] [ text "Split up snippets" ]
-                    )
-
-                True ->
-                    ( "Snippets"
-                    , Button.button [ Button.primary, Button.small, Button.onClick CreateVideo ] [ text "Create Video" ]
-                    )
-    in
         div []
             [ Grid.row []
-                [ Grid.col [] [ Checkbox.checkbox [ Checkbox.onCheck FlipSnippetShowing, Checkbox.checked model.showSnippets ] sourceText ]
-                , Grid.col [] []
+                [ Grid.col [] []
                 , Grid.col [] [ Button.button [ Button.secondary, Button.onClick (NavigateTo ListingsUI) ] [ text "List Komposti" ] ]
                 ]
 
@@ -53,7 +39,7 @@ kompost model =
                 , Grid.col [] [ Button.button [ Button.success, Button.small, Button.onClick StoreKomposition ] [ text "Store Komposition" ] ]
                 , Grid.col [] [ Button.button [ Button.danger, Button.small, Button.onClick DeleteKomposition ] [ text "Delete Komposition" ] ]
                 ]
-            , Grid.simpleRow [ Grid.col [] [ videoCreationButton ] ]
+            , Grid.simpleRow [ Grid.col [] [ Button.button [ Button.primary, Button.small, Button.onClick CreateVideo ] [ text "Create Video" ] ] ]
             , Grid.simpleRow
                 [ Grid.col []
                     [ Button.button [ Button.primary, Button.small, Button.onClick ShowKompositionJson ] [ text "Show JSON" ] ]
