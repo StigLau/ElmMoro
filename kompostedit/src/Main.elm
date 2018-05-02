@@ -223,16 +223,16 @@ emptyModel =
     , activePage = ListingsUI
     , editableSegment = False
     , segment = emptySegment
-    , editingMediaFile = Source "" "" 0 "" "" "" False
+    , editingMediaFile = Source "" "" 0 "" "" ""
     , subSegmentList = Set.empty
     }
 
 
 emptySegment =
-    Segment "" "" 0 0 0 Nothing
+    Segment "" "" 0 0 0
 
 
 defaultSegments : List Segment
 defaultSegments =
-    [ Segment "Empty" "http://jalla1" 0 16 16 (Just "A Segment")
+    [ Segment "Empty" "http://jalla1" 0 16 16
     ]

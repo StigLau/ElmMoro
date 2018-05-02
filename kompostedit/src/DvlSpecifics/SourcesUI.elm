@@ -20,14 +20,10 @@ import DvlSpecifics.Msg as SpecificsMsg exposing (Msg(EditMediaFile, SaveSource,
 editSpecifics : Model -> Html SpecificsMsg.Msg
 editSpecifics model =
     let
-        mediaFile =
-            model.editingMediaFile
-        sourceSnippetText = case mediaFile.isSnippet of
-            True -> "Snippet"
-            False -> "Source"
+        mediaFile = model.editingMediaFile
     in
         div []
-            [ h1 [] [ (Checkbox.checkbox [ Checkbox.onCheck SpecificsMsg.SetSnippet, Checkbox.checked mediaFile.isSnippet ] ("Editing " ++ sourceSnippetText)) ]
+            [ h1 [] [ text "Editing Source" ]
             , Form.form [ class "container" ]
                 [ (wrapping "ID" (Input.text [ Input.id "id", Input.defaultValue mediaFile.id, Input.onInput SpecificsMsg.SetId ]))
                 , (wrapping "URL" (Input.text [ Input.id "URLz", Input.defaultValue mediaFile.url, Input.onInput SpecificsMsg.SetURL ]))

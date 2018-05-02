@@ -43,13 +43,6 @@ update msg model =
             in
                 ( setSource { source | url = url } model, Cmd.none, Nothing )
 
-        SetSnippet isSnippet ->
-            let
-                source =
-                    model.editingMediaFile
-            in
-                ( setSource { source | isSnippet = isSnippet } model, Cmd.none, Nothing )
-
         SetDvlType dvlType ->
             let
                 kompost =
@@ -161,7 +154,7 @@ update msg model =
                             Debug.log "We found preexisting media file" mediaFile
 
                         _ ->
-                            Source "" "" 0 "" "" "" False -- Empty Source
+                            Source "" "" 0 "" "" "" -- Empty Source
             in
                 ( { model | editingMediaFile = mediaFile }, Cmd.none, Just (OutNavigateTo MediaFileUI) )
 

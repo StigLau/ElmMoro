@@ -36,7 +36,6 @@ type alias Source =
     , checksum : String
     , extensionType : String
     , mediaType : String
-    , isSnippet : Bool
     }
 
 
@@ -46,7 +45,6 @@ type alias Segment =
     , start : Int
     , duration : Int
     , end : Int
-    , snippetId : Maybe String
     }
 
 
