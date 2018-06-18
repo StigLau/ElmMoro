@@ -19,6 +19,7 @@ import Bootstrap.Grid.Col as Col
 import Bootstrap.CDN as CDN
 import Set
 
+import Ports.WaveForm exposing (..)
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
@@ -157,6 +158,19 @@ update msg model =
         ETagResponse (Err err) ->
             ( { model | statusMessage = [ toString err ] }, Cmd.none )
 
+        --Ports Subscriptions
+        Change newWord ->
+            model
+            --( Model newWord [], Cmd.none )
+
+        Suggest newSuggestions ->
+            model
+              --( Model model.word newSuggestions, Cmd.none )
+
+        Check -> ( model, check model.word )
+
+
+
 
 
 ---- VIEW Base ----
@@ -208,7 +222,7 @@ main =
         { view = view
         , init = init
         , update = update
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = Ports.WaveForm.subscriptions
         }
 
 

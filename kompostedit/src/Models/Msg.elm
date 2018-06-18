@@ -28,3 +28,7 @@ type Msg
     | ETagResponse (Result Http.Error String)
     | CreateVideo
     | ShowKompositionJson
+    -- For ports subscriptions
+    | Change String
+    | Check
+    | Suggest (List String)

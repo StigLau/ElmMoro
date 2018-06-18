@@ -4,8 +4,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>KompostEdit</title>
+
+    <script>
+        function changeWaveVisibility(visible) {
+            var waver = document.getElementById("waver");
+            if (visible) {
+                waver.style.display = "block";
+            } else {
+                waver.style.display = "none";
+            }
+        }
+    </script>
 </head>
 <body>
     <div id="root"></div>
+
+    <button onclick="changeWaveVisibility(true)">show</button>
+    <button onclick="changeWaveVisibility(false)">hide</button>
+    <div id="waver" style="display: none"><p>Some shit to be hidden</p></div>
 </body>
 </html>
