@@ -160,11 +160,11 @@ update msg model =
 
         --Ports Subscriptions
         Change newWord ->
-            model
+            (model, Cmd.none)
             --( Model newWord [], Cmd.none )
 
         Suggest newSuggestions ->
-            model
+            (model, Cmd.none)
               --( Model model.word newSuggestions, Cmd.none )
 
         Check -> ( model, check model.word )
@@ -239,6 +239,8 @@ emptyModel =
     , segment = emptySegment
     , editingMediaFile = Source "" "" 0 "" "" ""
     , subSegmentList = Set.empty
+    , word = "Nothing yet"
+    , suggestions = ["No suggestions", "For you"]
     }
 
 
