@@ -24,6 +24,7 @@
             console.log("Stuff coming from Elm", word);
             //setupFile('media/Clarian_Ver_11_Am_Mix.mp3'); //Overriding for test purposes
             document.getElementById("waver").innerHTML = word;
+            changeWaveVisibility(true);
 
             var suggestions = [word, word, "Gunnar"];
             //Sending back response to server
@@ -45,9 +46,6 @@
 </head>
 <body>
 <!-- <script type="text/javascript">Elm.Main.fullscreen()</script> -->
-
-<button onclick="changeWaveVisibility(true)">show</button>
-<button onclick="changeWaveVisibility(false)">hide</button>
-<div id="waver" style="display: block"><p>Some shit to be hidden</p></div>
+<div id="waver" style="display: none"><p>Some shit to be hidden</p></div>
 </body>
 </html>
