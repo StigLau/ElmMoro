@@ -42,6 +42,7 @@ kompost model =
             , Grid.simpleRow [ Grid.col [] [ Button.button [ Button.primary, Button.small, Button.onClick CreateVideo ] [ text "Create Video" ] ] ]
             , Grid.simpleRow
                 [ Grid.col []
-                    [ Button.button [ Button.primary, Button.small, Button.onClick ShowKompositionJson ] [ text "Show JSON" ] ]
+                    [ Button.button [ Button.primary, Button.small, Button.onClick ShowKompositionJson ] [ text "Show JSON" ]
+                    , Button.button [ Button.primary, Button.small, Button.onClick JsonToWave ] [ text "JSON to wave" ] ]
                 ]
             ]

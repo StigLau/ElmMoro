@@ -27,3 +27,8 @@ kubectl describe deployments komposter
 
 kubectl expose deployment komposter --type=LoadBalancer --name=komposter-service
 https://kubernetes.io/docs/tutorials/stateless-application/expose-external-ip-address/
+
+
+
+kubectl config current-context
+kubectl config use-context default

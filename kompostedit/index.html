@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+    <style>html, head, body {
+        padding: 0;
+        margin: 0;
+    }
+
+    body {
+        font-family: calibri, helvetica, arial, sans-serif;
+    }</style>
+
+    <div id="main"></div>
+    <script src="main.js"></script>
+    <script>
+        var node = document.getElementById('main');
+        var app = Elm.Main.embed(node);
+        // Note: if your Elm module is named "MyThing.Root" you
+        // would call "Elm.MyThing.Root.embed(node)" instead.
+
+        app.ports.check.subscribe(function (word) {
+            console.log("Stuff coming from Elm", word);
+            //setupFile('media/Clarian_Ver_11_Am_Mix.mp3'); //Overriding for test purposes
+            document.getElementById("waver").innerHTML = word;
+
+            var suggestions = [word, word, "Gunnar"];
+            //Sending back response to server
+            console.log("Sending stuff back to Elm", suggestions);
+
+            app.ports.suggestions.send(suggestions);
+        });
+    </script>
+    <script>
+        function changeWaveVisibility(visible) {
+            var waver = document.getElementById("waver");
+            if (visible) {
+                waver.style.display = "block";
+            } else {
+                waver.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+<!-- <script type="text/javascript">Elm.Main.fullscreen()</script> -->
+
+<button onclick="changeWaveVisibility(true)">show</button>
+<button onclick="changeWaveVisibility(false)">hide</button>
+<div id="waver" style="display: block"><p>Some shit to be hidden</p></div>
+</body>
+</html>
