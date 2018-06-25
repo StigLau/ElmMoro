@@ -31,5 +31,4 @@ type Msg
     | JsonToWave
     -- For ports subscriptions
     | Change String
-    | Check
     | Suggest (List String)

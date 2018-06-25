@@ -148,7 +148,7 @@ update msg model =
             model ! [ navigateTo KompositionJsonUI ]
 
         JsonToWave ->
-                (model, check (KompostApi.kompostJson model.kompost))
+                (model, exportJsonKompositionToJavascript (KompostApi.kompostJson model.kompost))
 
         ETagResponse (Ok checksum) ->
             --Stripping surrounding ampersands
@@ -167,9 +167,6 @@ update msg model =
 
         Suggest newSuggestions ->
               ( { model | suggestions = newSuggestions }, Cmd.none )
-
-        Check -> ( model, check model.word )
-
 
 
 

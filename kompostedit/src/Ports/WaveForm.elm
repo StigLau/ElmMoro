@@ -4,7 +4,7 @@ import Models.BaseModel as Model exposing (..)
 
 port suggestions : (List String -> msg) -> Sub msg
 
-port check : String -> Cmd msg
+port exportJsonKompositionToJavascript : String -> Cmd msg
 
 
 
