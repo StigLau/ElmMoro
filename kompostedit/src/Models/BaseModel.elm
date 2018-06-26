@@ -14,9 +14,6 @@ type alias Model =
     , segment : Segment
     , editingMediaFile : Source
     , subSegmentList : Set.Set String
-    --For Ports
-    , word : String
-    , suggestions : List String
     }
 
 

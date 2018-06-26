@@ -20,17 +20,15 @@
         // Note: if your Elm module is named "MyThing.Root" you
         // would call "Elm.MyThing.Root.embed(node)" instead.
 
-        app.ports.exportJsonKompositionToJavascript.subscribe(function (word) {
-            console.log("Stuff coming from Elm", word);
+        app.ports.exportJsonKompositionToJavascript.subscribe(function (fromElmApplication) {
+            console.log("Stuff coming from Elm", fromElmApplication);
             //setupFile('media/Clarian_Ver_11_Am_Mix.mp3'); //Overriding for test purposes
-            document.getElementById("waver").innerHTML = word;
+            document.getElementById("waver").innerHTML = fromElmApplication;
             changeWaveVisibility(true);
-
-            var suggestions = [word, word, "Gunnar"];
             //Sending back response to server
-            console.log("Sending stuff back to Elm", suggestions);
+            console.log("Sending stuff back to Elm", fromElmApplication);
 
-            app.ports.suggestions.send(suggestions);
+            app.ports.suggestions.send(fromElmApplication);
         });
     </script>
     <script>

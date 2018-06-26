@@ -18,6 +18,7 @@ import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.CDN as CDN
 import Set
+import Models.JsonCoding exposing (segmentDecoder)
 
 import Ports.WaveForm exposing (..)
 
@@ -163,10 +164,14 @@ update msg model =
 
         --Ports Subscriptions
         Change newWord ->
-            ( { model | word = newWord, suggestions = [] }, Cmd.none )
+            --( { model | suggestions = "" }, Cmd.none )
+            ( model, Cmd.none )
 
         Suggest newSuggestions ->
-              ( { model | suggestions = newSuggestions }, Cmd.none )
+            --let js = Debug.log "Woot " segmentDecoder newSuggestions
+
+             --( { model | suggestions = "Sometan" }, Cmd.none )
+             ( model, Cmd.none )
 
 
 
@@ -237,8 +242,6 @@ emptyModel =
     , segment = emptySegment
     , editingMediaFile = Source "" "" 0 "" "" ""
     , subSegmentList = Set.empty
-    , word = "Nothing yet"
-    , suggestions = ["No suggestions", "For you"]
     }
 
 
