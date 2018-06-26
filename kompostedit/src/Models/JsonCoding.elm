@@ -1,4 +1,4 @@
-module Models.JsonCoding exposing (kompositionDecoder, kompositionEncoder, couchServerStatusDecoder, kompositionListDecoder, searchEncoder)
+module Models.JsonCoding exposing (kompositionDecoder, kompositionEncoder, couchServerStatusDecoder, kompositionListDecoder, searchEncoder, segmentDecoder)
 
 import Json.Decode as JsonD
 import Json.Encode as JsonE
