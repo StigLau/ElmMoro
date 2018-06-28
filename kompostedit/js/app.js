@@ -6,7 +6,7 @@ var wavesurfer;
 /**
  * Init & load.
  */
-document.addEventListener('DOMContentLoaded', function() {
+function initWave(url, upAndDowndata, annotations) {
     // Init wavesurfer
     wavesurfer = WaveSurfer.create({
         container: '#waveform',
@@ -33,18 +33,18 @@ document.addEventListener('DOMContentLoaded', function() {
     wavesurfer.util
         .ajax({
             responseType: 'json',
-            url: 'js/rashomon.json'
+            url: upAndDowndata
         })
         .on('success', function(data) {
             wavesurfer.load(
-                'media/Scars_In_The_Sky_(Armen_Miran_Remix).mp3',
+                url,
                 data
             );
         });
 
     /* Regions */
 
-    wavesurfer.on('ready', function() {
+    wavesurfer.on('ready', function () {
         wavesurfer.enableDragSelection({
             color: randomColor(0.1)
         });
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
             wavesurfer.util
                 .ajax({
                     responseType: 'json',
-                    url: 'annotations.json'
+                    url: annotations
                 })
                 .on('success', function(data) {
                     loadRegions(data);
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
         playButton.style.display = '';
         pauseButton.style.display = 'none';
     });
-});
+}
 
 /**
  * Save annotations to localStorage.

@@ -27,12 +27,9 @@
 
         app.ports.exportJsonKompositionToJavascript.subscribe(function (fromElmApplication) {
             console.log("Stuff coming from Elm", fromElmApplication);
-            //setupFile('media/Clarian_Ver_11_Am_Mix.mp3'); //Overriding for test purposes
-            //document.getElementById("waver").innerHTML = fromElmApplication;
             changeWaveVisibility(true);
             //Sending back response to server
             console.log("Showing waver", fromElmApplication);
-            setupFile("/media/Scars_In_The_Sky_(Armen_Miran_Remix).mp3");
 
             app.ports.suggestions.send(fromElmApplication);
         });
@@ -46,28 +43,13 @@
                 waver.style.display = "none";
             }
         }
+        document.addEventListener('DOMContentLoaded', function() {
+            initWave('media/Scars_In_The_Sky_(Armen_Miran_Remix).mp3', 'js/rashomon.json', '/js/annotations.json');
+        });
     </script>
 </head>
 <body>
 <!-- <script type="text/javascript">Elm.Main.fullscreen()</script> -->
-<script>
-    var wavesurfer;
-
-    function setupFile(file) {
-        wavesurfer = WaveSurfer.create({
-            container: '#waveform',
-            waveColor: 'violet',
-            progressColor: 'purple'
-        });
-        wavesurfer.load(file);
-
-        document
-            .querySelector('[data-action="play"]')
-            .addEventListener('click', wavesurfer.playPause.bind(wavesurfer));
-    }
-
-
-</script>
 <div id="waver" class="container" style="display: none">
     <div class="header">
         <ul class="nav nav-pills pull-right">
