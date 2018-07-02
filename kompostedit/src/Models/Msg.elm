@@ -28,7 +28,6 @@ type Msg
     | ETagResponse (Result Http.Error String)
     | CreateVideo
     | ShowKompositionJson
-    | JsonToWave
     -- For ports subscriptions
-    | Change String
+    | JsonToWave
     | Suggest String

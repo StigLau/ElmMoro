@@ -148,8 +148,6 @@ update msg model =
         ShowKompositionJson ->
             model ! [ navigateTo KompositionJsonUI ]
 
-        JsonToWave ->
-                (model, exportJsonKompositionToJavascript (KompostApi.kompostJson model.kompost))
 
         ETagResponse (Ok checksum) ->
             --Stripping surrounding ampersands
@@ -163,9 +161,8 @@ update msg model =
             ( { model | statusMessage = [ toString err ] }, Cmd.none )
 
         --Ports Subscriptions
-        Change newWord ->
-            --( { model | suggestions = "" }, Cmd.none )
-            ( model, Cmd.none )
+        JsonToWave ->
+            (model, exportJsonKompositionToJavascript (KompostApi.exportableWaveEditable model.kompost))
 
         Suggest newSuggestions ->
             --let js = Debug.log "Woot " segmentDecoder newSuggestions

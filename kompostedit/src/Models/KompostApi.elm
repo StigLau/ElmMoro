@@ -1,4 +1,4 @@
-module Models.KompostApi exposing (kompoUrl, getKomposition, updateKompo, createKompo, deleteKompo, createVideo, getDvlSegmentList, fetchETagHeader, kompostJson, fetchKompositionList)
+module Models.KompostApi exposing (kompoUrl, getKomposition, updateKompo, createKompo, deleteKompo, createVideo, getDvlSegmentList, fetchETagHeader, kompostJson, exportableWaveEditable, fetchKompositionList)
 
 import Http exposing (emptyBody, expectJson, header)
 import Models.JsonCoding exposing (..)
@@ -156,4 +156,8 @@ stripHyphens input = --Remove '/"' --> devowel = replace All (regex "[aeiou]") (
 
 kompostJson : Komposition -> String
 kompostJson kompost =
+        kompositionEncoder { kompost | sources = kompost.sources } kompoUrl
+
+exportableWaveEditable : Komposition -> String
+exportableWaveEditable kompost =
         kompositionEncoder { kompost | sources = kompost.sources } kompoUrl

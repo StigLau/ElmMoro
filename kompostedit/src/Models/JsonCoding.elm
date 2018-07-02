@@ -184,3 +184,6 @@ rowDecoder =
     JsonD.map2 Row
         (JsonD.field "_id" JsonD.string)
         (JsonD.field "_rev" JsonD.string)
+
+simpleSegmentsEncoder: Komposition -> String
+simpleSegmentsEncoder kompo = JsonE.encode 2 (JsonE.object[ ( "segments", JsonE.list <| List.map encodeSegment kompo.segments ) ])

@@ -28,11 +28,11 @@
         app.ports.exportJsonKompositionToJavascript.subscribe(function (fromElmApplication) {
             console.log("Stuff coming from Elm", fromElmApplication);
             changeWaveVisibility(true);
-            //Sending back response to server
-            console.log("Showing waver", fromElmApplication);
-
-            app.ports.suggestions.send(fromElmApplication);
         });
+
+        function sendStuffBackToElm(something) {
+            app.ports.suggestions.send(something);
+        }
     </script>
     <script>
         function changeWaveVisibility(visible) {
@@ -44,7 +44,8 @@
             }
         }
         document.addEventListener('DOMContentLoaded', function() {
-            initWave('media/Scars_In_The_Sky_(Armen_Miran_Remix).mp3', 'js/rashomon.json', '/js/annotations.json');
+            //Alternative /media/Scars_In_The_Sky_(Armen_Miran_Remix).mp3
+            initWave('/media/Clarian_ver_11_am_mix.mp3', '/js/rashomon.json', '/js/annotations.json');
         });
     </script>
 </head>
