@@ -146,13 +146,11 @@ function getIntervals(peaks) {
 
 document.querySelector('form').addEventListener('submit', function(formEvent) {
   formEvent.preventDefault();
-  result.style.display = 'none';
-  spotifyApi.searchTracks(
-    queryInput.value.trim(), {limit: 1})
-    .then(function(results) {
-      var track = results.tracks.items[0];
-      var previewUrl = track.preview_url;
-      audioTag.src = track.preview_url;
+
+    var audiourl = queryInput.value.trim();
+
+    var previewUrl = audiourl;
+    audioTag.src = audiourl;//"./Corona_-_Baby_Baby.mp3";
 
       var request = new XMLHttpRequest();
       request.open('GET', previewUrl, true);
@@ -234,29 +232,13 @@ document.querySelector('form').addEventListener('submit', function(formEvent) {
           var top = groups.sort(function(intA, intB) {
             return intB.count - intA.count;
           }).splice(0, 5);
-
-          text.innerHTML = '<div id="guess">Guess for track <strong>' + track.name + '</strong> by ' +
-            '<strong>' + track.artists[0].name + '</strong> is <strong>' + Math.round(top[0].tempo) + ' BPM</strong>' +
-            ' with ' + top[0].count + ' samples.</div>';
-
-          text.innerHTML += '<div class="small">Other options are ' +
+        text.innerHTML += '<div class="small">Other options are ' +
             top.slice(1).map(function(group) {
               return group.tempo + ' BPM (' + group.count + ')';
             }).join(', ') +
             '</div>';
-
-          var printENBPM = function(tempo) {
-            text.innerHTML += '<div class="small">The tempo according to Spotify is ' +
-                  tempo + ' BPM</div>';
-          };
-          spotifyApi.getAudioFeaturesForTrack(track.id)
-            .then(function(audioFeatures) {
-              printENBPM(audioFeatures.tempo);
-            });
-
-          result.style.display = 'block';
+        result.style.display = 'block';
         };
-      };
-      request.send();
-    });
+    };
+    request.send();
 });
