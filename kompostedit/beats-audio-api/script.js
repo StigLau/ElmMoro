@@ -1,15 +1,9 @@
-/* global SpotifyWebApi */
 /*
   The code for finding out the BPM / tempo is taken from this post:
   http://tech.beatport.com/2014/web-audio/beat-detection-using-web-audio/
  */
 
 'use strict';
-
-var spotifyApi = new SpotifyWebApi();
-spotifyApi.getToken().then(function(response) {
-  spotifyApi.setAccessToken(response.token);
-});
 
 var queryInput = document.querySelector('#query'),
     result = document.querySelector('#result'),
@@ -144,16 +138,77 @@ function getIntervals(peaks) {
   return groups;
 }
 
+function drawSvg(peaks, buffer) {
+    var svg = document.querySelector('#svg');
+    svg.innerHTML = '';
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var rect;
+    peaks.forEach(function (peak) {
+        rect = document.createElementNS(svgNS, 'rect');
+        rect.setAttributeNS(null, 'x', (100 * peak.position / buffer.length) + '%');
+        rect.setAttributeNS(null, 'y', 0);
+        rect.setAttributeNS(null, 'width', 1);
+        rect.setAttributeNS(null, 'height', '100%');
+        svg.appendChild(rect);
+    });
+
+    rect = document.createElementNS(svgNS, 'rect');
+    rect.setAttributeNS(null, 'id', 'progress');
+    rect.setAttributeNS(null, 'y', 0);
+    rect.setAttributeNS(null, 'width', 1);
+    rect.setAttributeNS(null, 'height', '100%');
+    svg.appendChild(rect);
+
+    svg.innerHTML = svg.innerHTML; // force repaint in some browsers
+}
+
+function setUpFilters(offlineContext, buffer) {
+// Create buffer source
+    var source = offlineContext.createBufferSource();
+    source.buffer = buffer;
+
+    // Beats, or kicks, generally occur around the 100 to 150 hz range.
+    // Below this is often the bassline.  So let's focus just on that.
+
+    // First a lowpass to remove most of the song.
+
+    var lowpass = offlineContext.createBiquadFilter();
+    lowpass.type = "lowpass";
+    lowpass.frequency.value = 150;
+    lowpass.Q.value = 1;
+
+    // Run the output of the source through the low pass.
+
+    source.connect(lowpass);
+
+    // Now a highpass to remove the bassline.
+
+    var highpass = offlineContext.createBiquadFilter();
+    highpass.type = "highpass";
+    highpass.frequency.value = 100;
+    highpass.Q.value = 1;
+
+    // Run the output of the lowpass through the highpass.
+
+    lowpass.connect(highpass);
+
+    // Run the output of the highpass through our offline context.
+
+    highpass.connect(offlineContext.destination);
+
+    // Start the source, and render the output into the offline conext.
+
+    source.start(0);
+    offlineContext.startRendering();
+}
+
 document.querySelector('form').addEventListener('submit', function(formEvent) {
   formEvent.preventDefault();
-
     var audiourl = queryInput.value.trim();
-
-    var previewUrl = audiourl;
-    audioTag.src = audiourl;//"./Corona_-_Baby_Baby.mp3";
+    audioTag.src = audiourl;
 
       var request = new XMLHttpRequest();
-      request.open('GET', previewUrl, true);
+      request.open('GET', audiourl, true);
       request.responseType = 'arraybuffer';
       request.onload = function() {
 
@@ -162,73 +217,14 @@ document.querySelector('form').addEventListener('submit', function(formEvent) {
         var offlineContext = new OfflineContext(2, 30 * 44100, 44100);
 
         offlineContext.decodeAudioData(request.response, function(buffer) {
-
-          // Create buffer source
-          var source = offlineContext.createBufferSource();
-          source.buffer = buffer;
-
-          // Beats, or kicks, generally occur around the 100 to 150 hz range.
-          // Below this is often the bassline.  So let's focus just on that.
-
-          // First a lowpass to remove most of the song.
-
-          var lowpass = offlineContext.createBiquadFilter();
-          lowpass.type = "lowpass";
-          lowpass.frequency.value = 150;
-          lowpass.Q.value = 1;
-
-          // Run the output of the source through the low pass.
-
-          source.connect(lowpass);
-
-          // Now a highpass to remove the bassline.
-
-          var highpass = offlineContext.createBiquadFilter();
-          highpass.type = "highpass";
-          highpass.frequency.value = 100;
-          highpass.Q.value = 1;
-
-          // Run the output of the lowpass through the highpass.
-
-          lowpass.connect(highpass);
-
-          // Run the output of the highpass through our offline context.
-
-          highpass.connect(offlineContext.destination);
-
-          // Start the source, and render the output into the offline conext.
-
-          source.start(0);
-          offlineContext.startRendering();
+            setUpFilters(offlineContext, buffer);
         });
 
         offlineContext.oncomplete = function(e) {
           var buffer = e.renderedBuffer;
           var peaks = getPeaks([buffer.getChannelData(0), buffer.getChannelData(1)]);
           var groups = getIntervals(peaks);
-
-          var svg = document.querySelector('#svg');
-          svg.innerHTML = '';
-          var svgNS = 'http://www.w3.org/2000/svg';
-          var rect;
-          peaks.forEach(function(peak) {
-            rect = document.createElementNS(svgNS, 'rect');
-            rect.setAttributeNS(null, 'x', (100 * peak.position / buffer.length) + '%');
-            rect.setAttributeNS(null, 'y', 0);
-            rect.setAttributeNS(null, 'width', 1);
-            rect.setAttributeNS(null, 'height', '100%');
-            svg.appendChild(rect);
-          });
-
-          rect = document.createElementNS(svgNS, 'rect');
-          rect.setAttributeNS(null, 'id', 'progress');
-          rect.setAttributeNS(null, 'y', 0);
-          rect.setAttributeNS(null, 'width', 1);
-          rect.setAttributeNS(null, 'height', '100%');
-          svg.appendChild(rect);
-
-          svg.innerHTML = svg.innerHTML; // force repaint in some browsers
-
+          drawSvg(peaks, buffer);
           var top = groups.sort(function(intA, intB) {
             return intB.count - intA.count;
           }).splice(0, 5);
