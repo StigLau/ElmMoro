@@ -7,17 +7,23 @@
 
 var queryInput = document.querySelector('#query'),
     result = document.querySelector('#result'),
+    timestamp = document.querySelector('#timestamp'),
     text = document.querySelector('#text'),
     audioTag = document.querySelector('#audio'),
     playButton = document.querySelector('#play');
 
+//duration is set up based on the buffer.duration
+var duration = -1;
+var fixedLength = 30;
+
 function updateProgressState() {
-  if (audioTag.paused) {
-    return;
+    if (audioTag.paused) {
+      return;
   }
   var progressIndicator = document.querySelector('#progress');
-  if (progressIndicator && audioTag.duration) {
-    progressIndicator.setAttribute('x', (audioTag.currentTime * 100 / audioTag.duration) + '%');
+    console.log("Progress!!1", audioTag.currentTime);
+  if (progressIndicator && duration) {
+    progressIndicator.setAttribute('x', (audioTag.currentTime * 100 / fixedLength) + '%');
   }
   requestAnimationFrame(updateProgressState);
 }
@@ -26,6 +32,7 @@ audioTag.addEventListener('play', updateProgressState);
 audioTag.addEventListener('playing', updateProgressState);
 
 function updatePlayLabel() {
+    //console.log("Updating play label new", audioTag.paused);
   playButton.innerHTML = audioTag.paused ? 'Play track' : 'Pause track';
 }
 
@@ -115,8 +122,10 @@ function getIntervals(peaks) {
     for (var i = 1; (index + i) < peaks.length && i < 10; i++) {
       var group = {
         tempo: (60 * 44100) / (peaks[index + i].position - peak.position),
-        count: 1
+        count: 1,
+        position:roundToX(peak.position / 44100, 100)
       };
+      console.log("Peak position", roundToX(peak.position / 44100, 100));
 
       while (group.tempo < 90) {
         group.tempo *= 2;
@@ -126,7 +135,7 @@ function getIntervals(peaks) {
         group.tempo /= 2;
       }
 
-      group.tempo = Math.round(group.tempo);
+      group.tempo = roundToX(group.tempo, 100);
 
       if (!(groups.some(function(interval) {
         return (interval.tempo === group.tempo ? interval.count++ : 0);
@@ -137,6 +146,11 @@ function getIntervals(peaks) {
   });
   return groups;
 }
+
+function roundToX(valuez, decimals) {
+    return Math.round(valuez*decimals)/decimals;
+}
+
 
 function drawSvg(peaks, buffer) {
     var svg = document.querySelector('#svg');
@@ -158,6 +172,16 @@ function drawSvg(peaks, buffer) {
     rect.setAttributeNS(null, 'width', 1);
     rect.setAttributeNS(null, 'height', '100%');
     svg.appendChild(rect);
+
+    var newText = document.createElementNS(svgNS,"text");
+    var x = 100, y=10, val="mordi";
+    newText.setAttributeNS(null,"x",x);
+    newText.setAttributeNS(null,"y",y);
+    newText.setAttributeNS(null,"font-size","20");
+
+    var textNode = document.createTextNode(val);
+    newText.appendChild(textNode);
+    svg.appendChild(newText);
 
     svg.innerHTML = svg.innerHTML; // force repaint in some browsers
 }
@@ -214,15 +238,17 @@ document.querySelector('form').addEventListener('submit', function(formEvent) {
 
         // Create offline context
         var OfflineContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-        var offlineContext = new OfflineContext(2, 30 * 44100, 44100);
+        var offlineContext = new OfflineContext(2, fixedLength * 44100, 44100);
 
         offlineContext.decodeAudioData(request.response, function(buffer) {
             setUpFilters(offlineContext, buffer);
+            duration = buffer.duration;
         });
 
         offlineContext.oncomplete = function(e) {
           var buffer = e.renderedBuffer;
           var peaks = getPeaks([buffer.getChannelData(0), buffer.getChannelData(1)]);
+          console.log("Peaks", peaks);
           var groups = getIntervals(peaks);
           drawSvg(peaks, buffer);
           var top = groups.sort(function(intA, intB) {
@@ -230,7 +256,7 @@ document.querySelector('form').addEventListener('submit', function(formEvent) {
           }).splice(0, 5);
         text.innerHTML += '<div class="small">Other options are ' +
             top.slice(1).map(function(group) {
-              return group.tempo + ' BPM (' + group.count + ')';
+              return group.tempo + ' BPM (' + group.count + ') from: ' + group.position;
             }).join(', ') +
             '</div>';
         result.style.display = 'block';
