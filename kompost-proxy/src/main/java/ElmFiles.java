@@ -21,11 +21,19 @@ public class ElmFiles {
         Response response = null;
         try {
             response = client.newCall(request).execute();
-            String result = response.body().string();
-            return result;
+            if(response.isSuccessful()) {
+                String result = response.body().string();
+                return result;
+            } else {
+                throw new IOException("Could perform " + theFile + ". " + response.networkResponse().message());
+            }
         } finally {
-            response.body().close();
-            response.close();
+            if (response != null) {
+                if (response.body() != null) {
+                    response.body().close();
+                }
+                response.close();
+            }
         }
     }
 }

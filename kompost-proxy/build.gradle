@@ -1,0 +1,21 @@
+apply plugin: 'application'
+mainClassName = "no.nrk.gluon.Main"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+def camelVersion = "3.0.0-M1"
+
+dependencies {
+    compile 'org.apache.camel:camel-core:' + camelVersion
+    compile 'org.apache.camel:camel-jetty:' + camelVersion
+    compile 'com.squareup.okhttp3:okhttp:3.13.1'
+    compile 'ch.qos.logback:logback-classic:1.1.7'
+    compile 'ch.qos.logback:logback-core:1.1.7'
+    testCompile 'org.apache.camel:camel-test:' + camelVersion
+}
