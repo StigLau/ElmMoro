@@ -1,25 +1,14 @@
-module Segment.Model exposing (Msg(..), OutMsg(..), addSegmentToKomposition, asCurrentSegmentIn, asDurationIn, asEndIn, asIdIn, asSourceIdIn, asStartIn, containsSegment, deleteSegmentFromKomposition, extractFromOutmessage, performSegmentOnModel, setCurrentSegment, setDuration, setEnd, setId, setSourceId, setStart, update)
+module Segment.Model exposing (OutMsg(..), addSegmentToKomposition, asCurrentSegmentIn, asDurationIn, asEndIn, asIdIn, asSourceIdIn, asStartIn, containsSegment, deleteSegmentFromKomposition, extractFromOutmessage, performSegmentOnModel, setCurrentSegment, setDuration, setEnd, setId, setSourceId, setStart, update)
 
 import Models.BaseModel exposing (Komposition, Model, Segment)
-import Navigation.AppRouting exposing (Page(..))
-
-
-type Msg
-    = SetSegmentId String
-    | SetSourceId String
-    | SetSegmentStart String
-    | SetSegmentEnd String
-    | SetSegmentDuration String
-    | EditSegment String
-    | UpdateSegment
-    | DeleteSegment
+import Navigation.Page as Page exposing (Page)
+import Segment.Msg exposing (..)
 
 
 type OutMsg
     = OutNavigateTo Page
 
-
-update : Msg -> Model -> ( Model, List (Cmd Msg), Maybe OutMsg )
+update : Msg -> Model -> ( Model, Maybe OutMsg )
 update msg model =
     case msg of
         SetSegmentId id ->
@@ -29,7 +18,7 @@ update msg model =
                         |> asIdIn model.segment
                         |> asCurrentSegmentIn model
             in
-            ( newModel, [ Cmd.none ], Nothing )
+            ( newModel, Nothing )
 
         SetSourceId id ->
             let
@@ -38,7 +27,7 @@ update msg model =
                         |> asSourceIdIn model.segment
                         |> asCurrentSegmentIn model
             in
-            ( newModel, [ Cmd.none ], Nothing )
+            ( newModel, Nothing )
 
         SetSegmentStart start ->
             let --TODO FIX ME
@@ -49,7 +38,7 @@ update msg model =
 --                        |> asStartIn model.segment
 --                        |> asCurrentSegmentIn model
             in
-            ( newModel, [ Cmd.none ], Nothing )
+            ( newModel, Nothing )
 
         SetSegmentEnd end ->
             let
@@ -59,7 +48,7 @@ update msg model =
 --                        |> asEndIn model.segment
 --                        |> asCurrentSegmentIn model
             in
-            ( newModel, [ Cmd.none ], Nothing )
+            ( newModel, Nothing )
 
         SetSegmentDuration value ->
             let --TODO Fix me
@@ -67,7 +56,7 @@ update msg model =
 --                        |> asDurationIn model.segment
 --                        |> asCurrentSegmentIn model
             in
-            ( newModel, [ Cmd.none ], Nothing )
+            ( newModel, Nothing )
 
         EditSegment id ->
             let
@@ -79,12 +68,12 @@ update msg model =
                         _ ->
                             model.segment
             in
-            ( { model | segment = segment, editableSegment = False }, [], Just (OutNavigateTo SegmentUI) )
+            ( { model | segment = segment, editableSegment = False }, Just (OutNavigateTo Page.SegmentUI) )
 
         UpdateSegment ->
             case containsSegment model.segment.id model.kompost of
                 [] ->
-                    Debug.log "Adding segment []: " ( performSegmentOnModel model.segment addSegmentToKomposition model, [], Just (OutNavigateTo KompostUI) )
+                    Debug.log "Adding segment []: " ( performSegmentOnModel model.segment addSegmentToKomposition model, Just (OutNavigateTo Page.KompostUI) )
 
                 [ x ] ->
                     let
@@ -94,13 +83,13 @@ update msg model =
                         addedTo =
                             performSegmentOnModel model.segment addSegmentToKomposition deleted
                     in
-                    Debug.log "Updating segment [x]: " ( addedTo, [], Just (OutNavigateTo KompostUI) )
+                    Debug.log "Updating segment [x]: " ( addedTo, Just (OutNavigateTo Page.KompostUI) )
 
                 head :: tail ->
-                    Debug.log "Seggie heads tails: " ( model, [], Just (OutNavigateTo KompostUI) )
+                    Debug.log "Seggie heads tails: " ( model, Just (OutNavigateTo Page.KompostUI) )
 
         DeleteSegment ->
-            Debug.log "Deleting segment: " ( performSegmentOnModel model.segment deleteSegmentFromKomposition model, [], Just (OutNavigateTo KompostUI) )
+            Debug.log "Deleting segment: " ( performSegmentOnModel model.segment deleteSegmentFromKomposition model, Just (OutNavigateTo Page.KompostUI) )
 
 
 extractFromOutmessage : Maybe OutMsg -> Maybe Page

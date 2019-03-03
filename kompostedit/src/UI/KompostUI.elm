@@ -7,7 +7,7 @@ import Html exposing (..)
 import Html.Attributes exposing (style)
 import Models.BaseModel exposing (Model)
 import Models.Msg exposing (Msg(..))
-import Navigation.AppRouting exposing (Page(..))
+import Navigation.Page as Page exposing (Page)
 import Segment.SegmentUI
 
 
@@ -16,7 +16,7 @@ kompost model =
     div []
         [ Grid.row []
             [ Grid.col [] []
-            , Grid.col [] [ Button.button [ Button.secondary, Button.onClick (NavigateTo ListingsUI) ] [ text "List Komposti" ] ]
+            , Grid.col [] [ Button.button [ Button.secondary, Button.onClick (NavigateTo Page.ListingsUI) ] [ text "List Komposti" ] ]
             ]
         , div [] [ h4 [ style "flex" "1" ] [ text model.kompost.dvlType ] ]
         , Specifics.showSpecifics model

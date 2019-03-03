@@ -11,12 +11,12 @@ import Common.UIFunctions exposing (selectItems)
 import Html exposing (..)
 import Html.Attributes exposing (class, for, placeholder)
 import Models.BaseModel exposing (..)
-import Segment.Model exposing (Msg(..))
 import Segment.SegmentRendering exposing (gapVisualizer)
+import Segment.Msg as Msg exposing (..)
 import Set exposing (Set)
 
 
-segmentForm : Model -> Bool -> Html Segment.Model.Msg
+segmentForm : Model -> Bool -> Html Msg
 segmentForm model editableSegmentId =
     div []
         [ h1 [] [ text "Editing Segment" ]
@@ -70,7 +70,7 @@ segmentForm model editableSegmentId =
         ]
 
 
-showSegmentList : List Segment -> Html Segment.Model.Msg
+showSegmentList : List Segment -> Html Msg
 showSegmentList segs =
     div []
         (Grid.row []
@@ -79,7 +79,7 @@ showSegmentList segs =
         )
 
 
-showSingleSegment : Segment -> Html Segment.Model.Msg
+showSingleSegment : Segment -> Html Msg
 showSingleSegment segment =
     Grid.row []
         [ Grid.col [] [ Button.button [ Button.secondary, Button.small, Button.onClick (EditSegment segment.id) ] [ text segment.id ] ]
@@ -88,7 +88,7 @@ showSingleSegment segment =
         ]
 
 
-segmentIdSelection : Model -> Html Segment.Model.Msg
+segmentIdSelection : Model -> Html Msg
 segmentIdSelection model =
     if Common.StaticVariables.isKomposition model.kompost then
         Select.select [ Select.id "segmentId", Select.onChange SetSegmentId ]
@@ -106,7 +106,7 @@ segmentIdSelection model =
         Input.text [ Input.small, Input.value model.segment.id, Input.onInput SetSegmentId, Input.attrs [ placeholder "Id" ] ]
 
 
-sourceIdSelection : Model -> Html Segment.Model.Msg
+sourceIdSelection : Model -> Html Msg
 sourceIdSelection model =
     Select.select [ Select.id "sourceId", Select.onChange SetSourceId ]
         --setSourceId

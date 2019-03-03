@@ -11,10 +11,10 @@ import Common.UIFunctions exposing (selectItems)
 import DvlSpecifics.Msg as SpecificsMsg exposing (Msg)
 import DvlSpecifics.SourcesUI exposing (showMediaFileList)
 import Html exposing (..)
-import Html.Attributes exposing (class, href)
+import Html.Attributes exposing (class)
 import Models.BaseModel exposing (..)
 import Models.Msg exposing (Msg(..))
-import Navigation.AppRouting exposing (Page(..))
+import Navigation.Page as Page exposing (Page)
 
 
 editSpecifics : Komposition -> Html SpecificsMsg.Msg
@@ -62,7 +62,7 @@ editSpecifics kompo =
     div []
         [ specificsUI
         , configUI
-        , Button.button [ Button.primary, Button.onClick (SpecificsMsg.InternalNavigateTo KompostUI) ] [ text "<- Back" ]
+        , Button.button [ Button.primary, Button.onClick (SpecificsMsg.InternalNavigateTo Page.KompostUI) ] [ text "<- Back" ]
         ]
 
 

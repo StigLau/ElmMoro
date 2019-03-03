@@ -1,6 +1,6 @@
 module Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Komposition, Model, OutMsg(..), Row, Segment, SegmentGap, Source, VideoConfig)
 
-import Navigation.AppRouting exposing (Page)
+import Navigation.Page exposing (Page)
 import Set
 import Url exposing (Url)
 import Browser.Navigation

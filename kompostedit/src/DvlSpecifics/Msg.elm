@@ -1,7 +1,6 @@
 module DvlSpecifics.Msg exposing (Msg(..))
 
-import Navigation.AppRouting exposing (Page)
-
+import Navigation.Page exposing (Page)
 
 type Msg
     = SetKompositionName String

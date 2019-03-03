@@ -5,10 +5,10 @@ import Http exposing (Error)
 import Models.BaseModel exposing (..)
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation
-import Navigation.AppRouting exposing (Page)
+import Navigation.Page exposing (Page)
 import RemoteData exposing (WebData)
-import Segment.Model exposing (Msg)
 import Url exposing (Url)
+import Segment.Msg
 
 
 type Msg
@@ -26,7 +26,7 @@ type Msg
     | CreateSegment
     | CouchServerStatus (WebData CouchStatusMessage)
     | DvlSpecificsMsg DvlSpecifics.Msg.Msg
-    | SegmentMsg Segment.Model.Msg
+    | SegmentMsg Segment.Msg.Msg
     | ETagResponse (Result Http.Error String)
     | CreateVideo
     | ShowKompositionJson

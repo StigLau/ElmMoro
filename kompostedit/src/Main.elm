@@ -11,7 +11,8 @@ import Models.KompostApi as KompostApi exposing (..)
 import Models.Msg exposing (Msg(..))
 import Browser
 import Browser.Navigation as Nav
-import Navigation.AppRouting as AppRouting exposing (Page(..), replaceUrl)
+import Navigation.AppRouting as AppRouting exposing (replaceUrl)
+import Navigation.Page as Page exposing (Page)
 import RemoteData exposing (RemoteData(..))
 import Segment.Model exposing (update)
 import Segment.SegmentUI
@@ -24,7 +25,7 @@ import RemoteData exposing (WebData)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case Debug.log "Debugmsg " msg of
+    case Debug.log "Root.update" msg of
         ListingsUpdated (Success kompositionList) ->
             ( { model | listings = kompositionList }, Cmd.none)
 
@@ -58,7 +59,7 @@ update msg model =
             let
                 empModel = emptyModel model.key model.url
             in
-            ( { empModel | activePage = KompostUI, listings = model.listings }
+            ( { empModel | activePage = Page.KompostUI, listings = model.listings }
             , KompostApi.getKomposition id
             )
 
@@ -66,8 +67,8 @@ update msg model =
             let
                 empModel = emptyModel model.key model.url
             in
-                ( { model | kompost = empModel.kompost, activePage = KompostUI}
-            , replaceUrl AppRouting.DvlSpecificsUI model.key
+                ( { model | kompost = empModel.kompost, activePage = Page.KompostUI}
+            , replaceUrl Page.DvlSpecificsUI model.key
             )
 
         ChangeKompositionType searchType ->
@@ -81,7 +82,7 @@ update msg model =
                       { model | kompost = kompost }
                   _ ->
                       model
-            , replaceUrl KompostUI model.key
+            , replaceUrl Page.KompostUI model.key
             )
 
         SegmentListUpdated webKomposition ->
@@ -95,7 +96,7 @@ update msg model =
                             model
 
                 segmentNames =
-                    Debug.log "SegmentListUpdated" List.map (\segment -> segment.id) newModel.kompost.segments
+                    Debug.log "SegmentListUpdated" (List.map (\segment -> segment.id) newModel.kompost.segments)
             in
             ( { model | subSegmentList = Set.fromList segmentNames }
             , Cmd.none
@@ -121,13 +122,13 @@ update msg model =
             )
 
         EditSpecifics ->
-            ( { model | activePage = DvlSpecificsUI }
-            , replaceUrl AppRouting.DvlSpecificsUI model.key
+            ( { model | activePage = Page.DvlSpecificsUI }
+            , replaceUrl Page.DvlSpecificsUI model.key
             )
 
         CreateSegment ->
-            ( { model | editableSegment = True, segment = emptySegment }
-            , replaceUrl SegmentUI model.key
+            ( { model | editableSegment = True, segment = emptySegment, activePage = Page.SegmentUI }
+            , Cmd.none
             )
 
         CouchServerStatus serverstatus ->
@@ -139,10 +140,10 @@ update msg model =
                                 kompost =
                                     model.kompost
                             in
-                            ( { model | kompost = { kompost | revision = status.rev } }, KompostUI )
+                            ( { model | kompost = { kompost | revision = status.rev } }, Page.KompostUI )
 
                         _ ->
-                            ( model, KompostUI )
+                            ( model, Page.KompostUI )
             in
             ( newModel
             , replaceUrl page model.key
@@ -161,25 +162,24 @@ update msg model =
                         Nothing ->
                             [ cmd ]
             in
-            ( { newModel | activePage = KompostUI }
+            ( { newModel | activePage = Page.KompostUI }
             , Cmd.batch cmds
             )
 
         SegmentMsg theMsg ->
             let
-                ( newModel, _, childMsg ) =
+                ( newModel, childMsg ) =
                     Segment.Model.update theMsg model
 
-                cmds =
+                editedModel =
                     case Segment.Model.extractFromOutmessage childMsg of
-                        Just page ->
-                            [ replaceUrl page model.key ]
+                        Just page -> { newModel | activePage = page }
 
                         Nothing ->
-                            []
+                            newModel
             in
-            ( newModel
-            , Cmd.batch cmds
+            ( editedModel
+            , Cmd.none
             )
 
         CreateVideo ->
@@ -189,7 +189,7 @@ update msg model =
 
         ShowKompositionJson ->
             ( model
-            , replaceUrl KompositionJsonUI model.key
+            , replaceUrl Page.KompositionJsonUI model.key
             )
 
         ETagResponse (Ok checksum) ->
@@ -269,25 +269,25 @@ findOutWhatPageToView model =
         _ = Debug.log "Moving on to " model.activePage
     in
         [ case model.activePage of
-                ListingsUI ->
+                Page.ListingsUI ->
                     pageWrapper <| UI.KompostListingsUI.listings <| model
 
-                KompostUI ->
+                Page.KompostUI ->
                     pageWrapper <| UI.KompostUI.kompost model
 
-                KompositionJsonUI ->
+                Page.KompositionJsonUI ->
                     text (KompostApi.kompostJson model.kompost)
 
-                SegmentUI ->
+                Page.SegmentUI ->
                     Html.map SegmentMsg (pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)
 
-                DvlSpecificsUI ->
+                Page.DvlSpecificsUI ->
                     Html.map DvlSpecificsMsg (pageWrapper <| SpecificsUI.editSpecifics model.kompost)
 
-                MediaFileUI ->
+                Page.MediaFileUI ->
                     Html.map DvlSpecificsMsg (pageWrapper <| SourcesUI.editSpecifics model)
 
-                NotFound ->
+                Page.NotFound ->
                     div [] [ text "Sorry, nothing< here :(" ]
             ]
 
@@ -324,13 +324,13 @@ subscriptions model =
   Sub.none
 
 
--- Offline testdata
+-- Basis model and offline testdata
 emptyModel : Nav.Key -> Url -> Model
 emptyModel  navKey theUrl =
     { listings = DataRepresentation [] "" ""
     , kompost = Komposition "" "" "" 0 defaultSegments [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
     , statusMessage = []
-    , activePage = ListingsUI
+    , activePage = Page.ListingsUI
     , editableSegment = False
     , segment = emptySegment
     , editingMediaFile = Source "" "" 0 "" "" "" False

@@ -1,20 +1,11 @@
-module Navigation.AppRouting exposing (Page(..), replaceUrl, fromUrl, fromUrlString)
+module Navigation.AppRouting exposing (replaceUrl, fromUrl, fromUrlString)
 
 import Browser.Navigation as Navigation
 import Url
-import Url.Parser as Parser exposing ((</>), Parser, oneOf, s, string)
+import Url.Parser as Parser exposing ((</>), Parser, oneOf, s)
+import Navigation.Page exposing (..)
 
 --- Router ---
-
-
-type Page
-    = ListingsUI
-    | KompostUI
-    | KompositionJsonUI
-    | SegmentUI
-    | DvlSpecificsUI
-    | MediaFileUI
-    | NotFound
 
 
 
@@ -93,5 +84,5 @@ routeToString page =
                     in []
 
     in
-        Debug.log "Routing to " ("#/" ++ String.join "/" pieces)
+        Debug.log "routeToString " ("#/" ++ String.join "/" pieces)
 
