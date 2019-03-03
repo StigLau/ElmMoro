@@ -1,23 +1,23 @@
-module Models.KompostApi exposing (kompoUrl, getKomposition, updateKompo, createKompo, deleteKompo, createVideo, getDvlSegmentList, fetchETagHeader, kompostJson, fetchKompositionList)
+module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchETagHeader, fetchKompositionList, getDvlSegmentList, getKomposition, kompoUrl, kompostJson, updateKompo)
 
-import Http exposing (emptyBody, expectJson, header)
-import Models.JsonCoding exposing (..)
-import RemoteData exposing (RemoteData(..))
-import Models.Msg exposing (Msg(KompositionUpdated, CouchServerStatus, SegmentListUpdated, ETagResponse, ListingsUpdated))
-import Models.BaseModel exposing (Komposition)
 import Dict
-import MD5 exposing (hex)
+import Http
+import MD5
+import Models.BaseModel exposing (Komposition)
+import Models.JsonCoding exposing (..)
+import Models.Msg exposing (Msg(..))
+import RemoteData exposing (RemoteData(..))
 
 
 kompoUrl : String
 kompoUrl =
-    "https://e82fe3cb-c41e-4b17-b0d1-a5f3d0bcb833-bluemix.cloudant.com/kompost/"
+    "http://localhost:8001/kompost/"
 
 
 kvaernUrl =
     "http://localhost:3000"
 
-autHeaders = [ (Http.header "Authorization" "Basic aHJpb25zaW9uZXNzaWNlcHJlZGlkc3RyOjE4NWQ4MDgyMzE0MGY4Yzg0NDk5YTU3OTkxNGNkZDZhNTIzYjM5ZjA=")]
+autHeaders = []
 
 base =
     { method = ""
@@ -29,38 +29,32 @@ base =
     , withCredentials = False
     }
 
-snuppet =
-    { method = ""
-    , headers = autHeaders
-    , url = ""
-    , body = Http.emptyBody
-    , expect = Http.expectJson kompositionDecoder
-    , timeout = Nothing
-    , withCredentials = False
-    }
-
-fetchKompositionList : String ->  Cmd Msg
+fetchKompositionList : String -> Cmd Msg
 fetchKompositionList typeIdentifier =
     Http.request
-            { base
-                | method = "POST"
-                , url = kompoUrl ++ "_find"
-                , body = Http.stringBody "application/json" (searchEncoder typeIdentifier)
-
-                , expect = Http.expectJson kompositionListDecoder
-            }
+        { method = "POST"
+        , headers = autHeaders
+        , url = kompoUrl ++ "_find"
+        , body = Http.stringBody "application/json" (searchEncoder typeIdentifier)
+        , expect = Http.expectJson kompositionListDecoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
         |> RemoteData.sendRequest
         |> Cmd.map ListingsUpdated
+
 
 getKomposition : String -> Cmd Msg
 getKomposition id =
     Http.request
-            { base
-                | method = "GET"
-                , headers = autHeaders
-                , url = kompoUrl ++ id
-                , expect = Http.expectJson kompositionDecoder
-            }
+        { method = "GET"
+        , headers = autHeaders
+        , url = kompoUrl ++ id
+        , body = Http.emptyBody
+        , expect = Http.expectJson kompositionDecoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
         |> RemoteData.sendRequest
         |> Cmd.map KompositionUpdated
 
@@ -71,9 +65,9 @@ getDvlSegmentList id =
         _ =
             Debug.log "In getDvlSegmentList " (kompoUrl ++ id)
     in
-        Http.get (kompoUrl ++ id) kompositionDecoder
-            |> RemoteData.sendRequest
-            |> Cmd.map SegmentListUpdated
+    Http.get (kompoUrl ++ id) kompositionDecoder
+        |> RemoteData.sendRequest
+        |> Cmd.map SegmentListUpdated
 
 
 createKompo : Komposition -> Cmd Msg
@@ -142,13 +136,14 @@ extractEtagAndChecksum : String -> Http.Response String -> Result String String
 extractEtagAndChecksum name resp =
     case Result.fromMaybe ("header " ++ name ++ " not found") (Dict.get name resp.headers) of
         Result.Ok etag ->
-            Result.Ok (stripHyphens etag ++ "," ++ (MD5.hex resp.body))
+            Result.Ok (stripHyphens etag ++ "," ++ MD5.hex resp.body)
 
         Result.Err error ->
             Result.Err error
 
 
-stripHyphens input = --Remove '/"' --> devowel = replace All (regex "[aeiou]") (\_ -> "")
+stripHyphens input =
+    --Remove '/"' --> devowel = replace All (regex "[aeiou]") (\_ -> "")
     input
         |> String.dropRight 1
         |> String.dropLeft 1
@@ -156,4 +151,4 @@ stripHyphens input = --Remove '/"' --> devowel = replace All (regex "[aeiou]") (
 
 kompostJson : Komposition -> String
 kompostJson kompost =
-        kompositionEncoder { kompost | sources = kompost.sources } kompoUrl
+    kompositionEncoder { kompost | sources = kompost.sources } kompoUrl

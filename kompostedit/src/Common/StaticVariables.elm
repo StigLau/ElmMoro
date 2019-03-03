@@ -1,4 +1,4 @@
-module Common.StaticVariables exposing (komposionTypes, isKomposition, extensionTypes, evaluateMediaType, mediaTypes)
+module Common.StaticVariables exposing (evaluateMediaType, extensionTypes, isKomposition, komposionTypes, mediaTypes)
 
 import Models.BaseModel exposing (Komposition)
 

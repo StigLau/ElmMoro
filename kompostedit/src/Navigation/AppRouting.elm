@@ -1,8 +1,8 @@
-module Navigation.AppRouting exposing (..)
+module Navigation.AppRouting exposing (Page(..), replaceUrl, routeParsers, fromUrl, fromUrlString)
 
-import Navigation exposing (Location)
-import Route exposing ((:=), match)
-
+import Browser.Navigation as Navigation
+import Url
+import Url.Parser as Parser exposing ((</>), Parser, oneOf, s, string)
 
 --- Router ---
 
@@ -17,57 +17,81 @@ type Page
     | NotFound
 
 
-routeParsers =
-    { listings = ListingsUI := Route.static "Main.elm#listings"
-    , kompost = KompostUI := Route.static "Main.elm#kompost"
-    , kompositionJson = KompositionJsonUI := Route.static "Main.elm#kompostjson"
-    , segment = SegmentUI := Route.static "Main.elm#segment"
-    , dvlSpecificsUI = DvlSpecificsUI := Route.static "Main.elm#dvlSpecificsUI"
-    , mediaFileUI = MediaFileUI := Route.static "Main.elm#mediaFileUI"
-    }
 
-
-router : Route.Router Page
-router =
-    Route.router
-        [ routeParsers.listings
-        , routeParsers.kompost
-        , routeParsers.kompositionJson
-        , routeParsers.segment
-        , routeParsers.dvlSpecificsUI
-        , routeParsers.mediaFileUI
+parser : Parser (Page -> a) a
+parser =
+    oneOf
+        [ Parser.map ListingsUI Parser.top
+        , Parser.map KompostUI (s "kompost")
+        , Parser.map KompositionJsonUI (s "kompostjson")
+        , Parser.map SegmentUI (s "segment")
+        , Parser.map DvlSpecificsUI (s "dvlSpecifics")
+        , Parser.map MediaFileUI (s "media")
+        --, Parser.map DvlSpecificsUI (s "profile" </> Username.urlParser) Not in use
+        --, Parser.map NotFound (s "article" </> Slug.urlParser) Not in use
         ]
 
+fromUrlString : String -> Page
+fromUrlString yrl =
+        let anUrl = case (Url.fromString yrl) of
+                Just yay -> yay
+                Nothing ->
+                    let  _ = Debug.log "Opps: Navigation.fromUrlString " Nothing
+                    in { protocol = Url.Http
+                                     , host = "OOPS"
+                                     , port_ = Nothing
+                                     , path = "aPath"
+                                     , query = Nothing
+                                     , fragment = Nothing
+                                     }
+        in
+            case fromUrl anUrl of
+                   Just page -> page
+                   Nothing -> NotFound
 
-routeFromLocation : Location -> Page
-routeFromLocation location =
-    (location.pathname ++ location.hash)
-        |> match router
-        |> Maybe.withDefault NotFound
+
+fromUrl : Url.Url -> Maybe Page
+fromUrl url =
+    -- The RealWorld spec treats the fragment like a path.
+    -- This makes it *literally* the path, so we can proceed
+    -- with parsing as if it had been a normal path all along.
+    { url | path = Maybe.withDefault "" url.fragment, fragment = Nothing }
+        |> Parser.parse parser
 
 
-navigateTo : Page -> Cmd msg
-navigateTo page =
-    (case page of
-        ListingsUI ->
-            Route.reverse routeParsers.listings []
+replaceUrl : Page -> Navigation.Key -> Cmd msg
+replaceUrl page navKey  =
+    let
+      _ = Debug.log "Approuting.replaceUrl" page
+    in
+        Navigation.replaceUrl navKey (routeToString page)
 
-        KompostUI ->
-            Route.reverse routeParsers.kompost []
+routeToString : Page -> String
+routeToString page =
+    let
+        pieces =
+            case page of
+                ListingsUI ->
+                    --replaceUrl navKey page
+                    ["listings"] -- Main.elm#listings
+                            --Route.reverse routeParsers.listings []
 
-        KompositionJsonUI ->
-            Route.reverse routeParsers.kompositionJson []
+                KompostUI ->
+                    --Route.reverse routeParsers.kompost []
+                    ["Main.elm", "kompost"]
 
-        SegmentUI ->
-            Route.reverse routeParsers.segment []
+                KompositionJsonUI -> ["kompositionjson"]
 
-        DvlSpecificsUI ->
-            Route.reverse routeParsers.dvlSpecificsUI []
+                SegmentUI -> ["segment"]
 
-        MediaFileUI ->
-            Route.reverse routeParsers.mediaFileUI []
+                DvlSpecificsUI -> ["dvlspecifics"]
 
-        NotFound ->
-            "/"
-    )
-        |> Navigation.newUrl
+                MediaFileUI -> ["mediafile"]
+
+                NotFound ->
+                    let _ = Debug.log "routeToString dead end" NotFound
+                    in []
+
+    in
+        Debug.log "Routing to " ("#/" ++ String.join "/" pieces)
+

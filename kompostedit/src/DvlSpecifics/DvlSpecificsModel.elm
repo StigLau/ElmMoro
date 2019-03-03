@@ -1,12 +1,11 @@
-module DvlSpecifics.DvlSpecificsModel exposing (update, extractFromOutmessage, setSource)
+module DvlSpecifics.DvlSpecificsModel exposing (extractFromOutmessage, setSource, update)
 
-import Navigation.AppRouting exposing (Page)
-import Models.BaseModel exposing (Model, OutMsg(OutNavigateTo), Komposition, Source, BeatPattern)
-import Navigation.AppRouting exposing (navigateTo, Page(MediaFileUI, KompostUI))
-import Models.KompostApi exposing (getDvlSegmentList, fetchETagHeader)
-import DvlSpecifics.Msg exposing (Msg(..))
-import Models.Msg exposing (Msg)
 import Common.StaticVariables exposing (evaluateMediaType)
+import DvlSpecifics.Msg exposing (Msg(..))
+import Models.BaseModel exposing (BeatPattern, Komposition, Model, OutMsg(..), Source)
+import Models.KompostApi exposing (fetchETagHeader, getDvlSegmentList)
+import Models.Msg exposing (Msg)
+import Navigation.AppRouting exposing (Page(..), replaceUrl)
 
 
 extractFromOutmessage : Maybe OutMsg -> Maybe Page
@@ -27,70 +26,70 @@ update msg model =
                 kompost =
                     model.kompost
             in
-                ( { model | kompost = { kompost | name = name } }, Cmd.none, Nothing )
+            ( { model | kompost = { kompost | name = name } }, Cmd.none, Nothing )
 
         SetId id ->
             let
                 source =
                     model.editingMediaFile
             in
-                ( setSource { source | id = id } model, Cmd.none, Nothing )
+            ( setSource { source | id = id } model, Cmd.none, Nothing )
 
         SetURL url ->
             let
                 source =
                     model.editingMediaFile
             in
-                ( setSource { source | url = url } model, Cmd.none, Nothing )
+            ( setSource { source | url = url } model, Cmd.none, Nothing )
 
         SetSnippet isSnippet ->
             let
                 source =
                     model.editingMediaFile
             in
-                ( setSource { source | isSnippet = isSnippet } model, Cmd.none, Nothing )
+            ( setSource { source | isSnippet = isSnippet } model, Cmd.none, Nothing )
 
         SetDvlType dvlType ->
             let
                 kompost =
                     model.kompost
             in
-                ( { model | kompost = { kompost | dvlType = dvlType } }, Cmd.none, Nothing )
+            ( { model | kompost = { kompost | dvlType = dvlType } }, Cmd.none, Nothing )
 
         SetBpm value ->
             let
                 kompost =
                     model.kompost
             in
-                ( { model | kompost = { kompost | bpm = standardFloat value } }, Cmd.none, Nothing )
+            ( { model | kompost = { kompost | bpm = standardFloat value } }, Cmd.none, Nothing )
 
         SetChecksum checksum ->
             let
                 source =
                     model.editingMediaFile
             in
-                ( setSource { source | checksum = checksum } model, Cmd.none, Nothing )
+            ( setSource { source | checksum = checksum } model, Cmd.none, Nothing )
 
         SetOffset value ->
             let
                 source =
                     model.editingMediaFile
             in
-                ( setSource { source | startingOffset = standardFloat value } model, Cmd.none, Nothing )
+            ( setSource { source | startingOffset = standardFloat value } model, Cmd.none, Nothing )
 
         SetSourceExtensionType value ->
             let
                 source =
                     model.editingMediaFile
             in
-                ( setSource { source | extensionType = value, mediaType = evaluateMediaType value } model, Cmd.none, Nothing )
+            ( setSource { source | extensionType = value, mediaType = evaluateMediaType value } model, Cmd.none, Nothing )
 
         SetSourceMediaType value ->
             let
                 source =
                     model.editingMediaFile
             in
-                ( setSource { source | mediaType = value } model, Cmd.none, Nothing )
+            ( setSource { source | mediaType = value } model, Cmd.none, Nothing )
 
         --Config
         SetWidth value ->
@@ -98,28 +97,28 @@ update msg model =
                 config =
                     model.kompost.config
             in
-                ( setConfig ({ config | width = standardInt value }) model, Cmd.none, Nothing )
+            ( setConfig { config | width = standardInt value } model, Cmd.none, Nothing )
 
         SetHeight value ->
             let
                 config =
                     model.kompost.config
             in
-                ( setConfig ({ config | height = standardInt value }) model, Cmd.none, Nothing )
+            ( setConfig { config | height = standardInt value } model, Cmd.none, Nothing )
 
         SetFramerate value ->
             let
                 config =
                     model.kompost.config
             in
-                ( setConfig ({ config | framerate = standardInt value }) model, Cmd.none, Nothing )
+            ( setConfig { config | framerate = standardInt value } model, Cmd.none, Nothing )
 
         SetExtensionType value ->
             let
                 config =
                     model.kompost.config
             in
-                ( setConfig ({ config | extensionType = value }) model, Cmd.none, Nothing )
+            ( setConfig { config | extensionType = value } model, Cmd.none, Nothing )
 
         -- Beat Pattern
         SetFromBpm value ->
@@ -127,21 +126,21 @@ update msg model =
                 beatpattern =
                     extractBeatPattern model
             in
-                setBeatPattern ({ beatpattern | fromBeat = standardInt value }) model
+            setBeatPattern { beatpattern | fromBeat = standardInt value } model
 
         SetToBpm value ->
             let
                 beatpattern =
                     extractBeatPattern model
             in
-                setBeatPattern ({ beatpattern | toBeat = standardInt value }) model
+            setBeatPattern { beatpattern | toBeat = standardInt value } model
 
         SetMasterBpm value ->
             let
                 beatpattern =
                     extractBeatPattern model
             in
-                setBeatPattern ({ beatpattern | masterBPM = standardFloat value }) model
+            setBeatPattern { beatpattern | masterBPM = standardFloat value } model
 
         InternalNavigateTo page ->
             let
@@ -151,34 +150,34 @@ update msg model =
                 _ =
                     Debug.log "BPM is" model.kompost.bpm
             in
-                ( model, Cmd.none, Just (OutNavigateTo Navigation.AppRouting.KompostUI) )
+            ( model, Cmd.none, Just (OutNavigateTo Navigation.AppRouting.KompostUI) )
 
         EditMediaFile id ->
             let
-                mediaFile =
-                    case (containsMediaFile id model.kompost) of
+                theMediaFile =
+                    case containsMediaFile id model.kompost of
                         [ mediaFile ] ->
                             Debug.log "We found preexisting media file" mediaFile
 
                         _ ->
-                            Source "" "" 0 "" "" "" False -- Empty Source
+                            Source "" "" 0 "" "" "" False
             in
-                ( { model | editingMediaFile = mediaFile }, Cmd.none, Just (OutNavigateTo MediaFileUI) )
+            ( { model | editingMediaFile = theMediaFile }, Cmd.none, Just (OutNavigateTo MediaFileUI) )
 
         FetchAndLoadMediaFile id ->
             let
-                mediaFile =
-                    case (containsMediaFile id model.kompost) of
+                unusedMediaFile =
+                    case containsMediaFile id model.kompost of
                         [ mediaFile ] ->
                             Debug.log "We found preexisting media file" mediaFile
 
                         _ ->
                             Debug.log "Reusing Editing Media File" model.editingMediaFile
             in
-                ( model, getDvlSegmentList id, Nothing )
+            ( model, getDvlSegmentList id, Nothing )
 
         SaveSource ->
-            case (containsMediaFile model.editingMediaFile.id model.kompost) of
+            case containsMediaFile model.editingMediaFile.id model.kompost of
                 [] ->
                     Debug.log "Adding MediaFile []: "
                         ( performMediaFileOnModel model.editingMediaFile addMediaFileToKomposition model, Cmd.none, Just (OutNavigateTo KompostUI) )
@@ -191,7 +190,7 @@ update msg model =
                         addedTo =
                             performMediaFileOnModel model.editingMediaFile addMediaFileToKomposition deleted
                     in
-                        Debug.log "Updating mediaFile [x]: " ( addedTo, Cmd.none, Just (OutNavigateTo KompostUI) )
+                    Debug.log "Updating mediaFile [x]: " ( addedTo, Cmd.none, Just (OutNavigateTo KompostUI) )
 
                 head :: tail ->
                     Debug.log "Seggie heads tails: " ( model, Cmd.none, Just (OutNavigateTo KompostUI) )
@@ -201,7 +200,7 @@ update msg model =
                 modifiedModel =
                     performMediaFileOnModel model.editingMediaFile deleteMediaFileFromKomposition model
             in
-                ( modifiedModel, Cmd.none, Just (OutNavigateTo KompostUI) )
+            ( modifiedModel, Cmd.none, Just (OutNavigateTo KompostUI) )
 
         OrderChecksumEvalutation id ->
             ( model, fetchETagHeader id, Nothing )
@@ -213,7 +212,7 @@ containsMediaFile id komposition =
 
 
 performMediaFileOnModel mf function model =
-    { model | kompost = (function mf model.kompost) }
+    { model | kompost = function mf model.kompost }
 
 
 addMediaFileToKomposition : Source -> Komposition -> Komposition
@@ -231,7 +230,7 @@ setConfig funk model =
         kompost =
             model.kompost
     in
-        { model | kompost = { kompost | config = funk } }
+    { model | kompost = { kompost | config = funk } }
 
 
 setSource funk model =
@@ -251,15 +250,15 @@ setBeatPattern funk model =
                 Nothing ->
                     BeatPattern 0 0 0
     in
-        ( { model | kompost = { kompost | beatpattern = (Just funk) } }, Cmd.none, Nothing )
+    ( { model | kompost = { kompost | beatpattern = Just funk } }, Cmd.none, Nothing )
 
 
 standardInt value =
-    Result.withDefault 0 (String.toInt value)
+    Maybe.withDefault 0 (String.toInt value)
 
 
 standardFloat value =
-    Result.withDefault 0 (String.toFloat value)
+    Maybe.withDefault 0 (String.toFloat value)
 
 
 extractBeatPattern : Model -> BeatPattern

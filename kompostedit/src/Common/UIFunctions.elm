@@ -1,4 +1,4 @@
-module Common.UIFunctions exposing (..)
+module Common.UIFunctions exposing (selectItems)
 
 import Bootstrap.Form.Select as Select
 import Html exposing (..)

@@ -1,22 +1,19 @@
 module Segment.SegmentUI exposing (segmentForm, showSegmentList)
 
-import Html exposing (..)
-import Html.Attributes exposing (class, href, src, style, type_, placeholder, for)
-import Html.Events exposing (onInput, onClick)
-import Models.BaseModel exposing (..)
-import Bootstrap.Grid.Col as Col
+import Bootstrap.Button as Button
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
-import Bootstrap.Button as Button
+import Bootstrap.Form.Select as Select
 import Bootstrap.Grid as Grid
-import Bootstrap.Form.Select as Select exposing (onChange)
-import Segment.Model exposing (Msg(..))
-import Navigation.AppRouting exposing (Page(KompostUI))
-import Models.Msg exposing (Msg)
+import Bootstrap.Grid.Col as Col
+import Common.StaticVariables
 import Common.UIFunctions exposing (selectItems)
-import Common.StaticVariables exposing (isKomposition)
-import Set exposing (Set)
+import Html exposing (..)
+import Html.Attributes exposing (class, for, placeholder)
+import Models.BaseModel exposing (..)
+import Segment.Model exposing (Msg(..))
 import Segment.SegmentRendering exposing (gapVisualizer)
+import Set exposing (Set)
 
 
 segmentForm : Model -> Bool -> Html Segment.Model.Msg
@@ -36,7 +33,7 @@ segmentForm model editableSegmentId =
                 [ Form.colLabelSm [ Col.xs4 ]
                     [ Input.number
                         [ Input.small
-                        , Input.defaultValue (toString model.segment.start)
+                        , Input.value (String.fromInt model.segment.start)
                         , Input.onInput SetSegmentStart
                         , Input.attrs [ placeholder "Start" ]
                         ]
@@ -44,7 +41,7 @@ segmentForm model editableSegmentId =
                 , Form.col []
                     [ Input.number
                         [ Input.small
-                        , Input.defaultValue (toString model.segment.duration)
+                        , Input.value (String.fromInt model.segment.duration)
                         , Input.onInput SetSegmentDuration
                         , Input.attrs [ placeholder "Duration" ]
                         ]
@@ -52,7 +49,7 @@ segmentForm model editableSegmentId =
                 , Form.col []
                     [ Input.number
                         [ Input.small
-                        , Input.defaultValue (toString model.segment.end)
+                        , Input.value (String.fromInt model.segment.end)
                         , Input.onInput SetSegmentEnd
                         , Input.attrs [ placeholder "End" ]
                         ]
@@ -69,23 +66,25 @@ segmentForm model editableSegmentId =
                     [ Button.button [ Button.warning, Button.small, Button.onClick DeleteSegment ] [ text "Remove" ] ]
                 ]
             ]
-            , gapVisualizer model
+        , gapVisualizer model
         ]
 
 
 showSegmentList : List Segment -> Html Segment.Model.Msg
 showSegmentList segs =
-    div [] ( Grid.row []
-                   [ Grid.col [] [ text "Segment" ], Grid.col [] [ text "Start" ], Grid.col [] [ text "Duration" ] ]
-                   :: ((List.sortBy .start segs) |> List.map showSingleSegment)
-    )
+    div []
+        (Grid.row []
+            [ Grid.col [] [ text "Segment" ], Grid.col [] [ text "Start" ], Grid.col [] [ text "Duration" ] ]
+            :: (List.sortBy .start segs |> List.map showSingleSegment)
+        )
+
 
 showSingleSegment : Segment -> Html Segment.Model.Msg
 showSingleSegment segment =
     Grid.row []
         [ Grid.col [] [ Button.button [ Button.secondary, Button.small, Button.onClick (EditSegment segment.id) ] [ text segment.id ] ]
-        , Grid.col [] [ text <| toString segment.start ]
-        , Grid.col [] [ text <| toString segment.duration]
+        , Grid.col [] [ text <| String.fromInt segment.start ]
+        , Grid.col [] [ text <| String.fromInt segment.duration ]
         ]
 
 
@@ -102,8 +101,9 @@ segmentIdSelection model =
                         subSegmentList
                 )
             )
+
     else
-        Input.text [ Input.small, Input.defaultValue model.segment.id, Input.onInput SetSegmentId, Input.attrs [ placeholder "Id" ] ]
+        Input.text [ Input.small, Input.value model.segment.id, Input.onInput SetSegmentId, Input.attrs [ placeholder "Id" ] ]
 
 
 sourceIdSelection : Model -> Html Segment.Model.Msg

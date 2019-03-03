@@ -1,4 +1,4 @@
-module DvlSpecifics.Msg exposing (..)
+module DvlSpecifics.Msg exposing (Msg(..))
 
 import Navigation.AppRouting exposing (Page)
 

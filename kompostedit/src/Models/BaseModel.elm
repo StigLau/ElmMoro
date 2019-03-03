@@ -1,12 +1,14 @@
-module Models.BaseModel exposing (..)
+module Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Komposition, Model, OutMsg(..), Row, Segment, SegmentGap, Source, VideoConfig)
 
 import Navigation.AppRouting exposing (Page)
-import RemoteData exposing (WebData)
 import Set
+import Url exposing (Url)
+import Browser.Navigation
+
 
 
 type alias Model =
-    { listings : WebData DataRepresentation
+    { listings : DataRepresentation
     , kompost : Komposition
     , statusMessage : List String
     , activePage : Page
@@ -14,6 +16,8 @@ type alias Model =
     , segment : Segment
     , editingMediaFile : Source
     , subSegmentList : Set.Set String
+    , key : Browser.Navigation.Key
+    , url : Url.Url
     }
 
 
@@ -90,7 +94,7 @@ type alias CouchStatusMessage =
 type alias DataRepresentation =
     { docs : List Row
     , warning : String
-    --, bookmark : String
+    , bookmark : String
     }
 
 

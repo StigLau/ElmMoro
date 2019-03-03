@@ -1,17 +1,19 @@
 module Models.Msg exposing (Msg(..))
 
-import Models.BaseModel exposing (..)
-import RemoteData exposing (WebData)
-import Navigation.AppRouting exposing (Page)
-import Navigation exposing (Location)
 import DvlSpecifics.Msg exposing (Msg)
-import Segment.Model exposing (Msg)
 import Http exposing (Error)
+import Models.BaseModel exposing (..)
+import Browser exposing (UrlRequest(..))
+import Browser.Navigation
+import Navigation.AppRouting exposing (Page)
+import RemoteData exposing (WebData)
+import Segment.Model exposing (Msg)
+import Url exposing (Url)
 
 
 type Msg
     = ListingsUpdated (WebData DataRepresentation)
-    | LocationChanged Location
+    | LocationChanged Browser.Navigation.Key
     | NavigateTo Page
     | ChooseDvl String
     | EditSpecifics
@@ -28,3 +30,5 @@ type Msg
     | ETagResponse (Result Http.Error String)
     | CreateVideo
     | ShowKompositionJson
+    | ClickedLink UrlRequest
+    | ChangedUrl Url

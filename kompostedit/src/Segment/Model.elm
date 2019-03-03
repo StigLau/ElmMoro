@@ -1,7 +1,7 @@
-module Segment.Model exposing (..)
+module Segment.Model exposing (Msg(..), OutMsg(..), addSegmentToKomposition, asCurrentSegmentIn, asDurationIn, asEndIn, asIdIn, asSourceIdIn, asStartIn, containsSegment, deleteSegmentFromKomposition, extractFromOutmessage, performSegmentOnModel, setCurrentSegment, setDuration, setEnd, setId, setSourceId, setStart, update)
 
-import Models.BaseModel exposing (Model, Komposition, Segment)
-import Navigation.AppRouting as AppRouting exposing (navigateTo, Page(KompostUI, ListingsUI, SegmentUI))
+import Models.BaseModel exposing (Komposition, Model, Segment)
+import Navigation.AppRouting exposing (Page(..))
 
 
 type Msg
@@ -29,7 +29,7 @@ update msg model =
                         |> asIdIn model.segment
                         |> asCurrentSegmentIn model
             in
-                ( newModel, [ Cmd.none ], Nothing )
+            ( newModel, [ Cmd.none ], Nothing )
 
         SetSourceId id ->
             let
@@ -38,49 +38,51 @@ update msg model =
                         |> asSourceIdIn model.segment
                         |> asCurrentSegmentIn model
             in
-                ( newModel, [ Cmd.none ], Nothing )
+            ( newModel, [ Cmd.none ], Nothing )
 
         SetSegmentStart start ->
-            let
-                newModel =
-                    start
-                        |> asStartIn model.segment
-                        |> asCurrentSegmentIn model
+            let --TODO FIX ME
+                theStart = Maybe.withDefault 0 (String.toInt start)
+--                theSegment = (asStartIn theStart model.segment)
+                theSegment = model.segment
+                newModel = asCurrentSegmentIn model theSegment
+--                        |> asStartIn model.segment
+--                        |> asCurrentSegmentIn model
             in
-                ( newModel, [ Cmd.none ], Nothing )
+            ( newModel, [ Cmd.none ], Nothing )
 
         SetSegmentEnd end ->
             let
-                newModel =
-                    end
-                        |> asEndIn model.segment
-                        |> asCurrentSegmentIn model
+                newModel = --TODO Fix me
+                    asCurrentSegmentIn model model.segment
+--                    end
+--                        |> asEndIn model.segment
+--                        |> asCurrentSegmentIn model
             in
-                ( newModel, [ Cmd.none ], Nothing )
+            ( newModel, [ Cmd.none ], Nothing )
 
         SetSegmentDuration value ->
-            let
-                newModel =
-                    value
-                        |> asDurationIn model.segment
-                        |> asCurrentSegmentIn model
+            let --TODO Fix me
+                newModel = asCurrentSegmentIn model model.segment
+--                        |> asDurationIn model.segment
+--                        |> asCurrentSegmentIn model
             in
-                ( newModel, [ Cmd.none ], Nothing )
+            ( newModel, [ Cmd.none ], Nothing )
 
         EditSegment id ->
             let
                 segment =
-                    case (containsSegment id model.kompost) of
-                        [ segment ] ->
-                            segment
+                    case containsSegment id model.kompost of
+                        [ theSegment ] ->
+                            theSegment
 
                         _ ->
                             model.segment
             in
-                ( { model | segment = segment, editableSegment = False }, [], Just (OutNavigateTo SegmentUI) )
+            ( { model | segment = segment, editableSegment = False }, [], Just (OutNavigateTo SegmentUI) )
 
         UpdateSegment ->
-            case (containsSegment model.segment.id model.kompost) of
+            case containsSegment model.segment.id model.kompost of
                 [] ->
                     Debug.log "Adding segment []: " ( performSegmentOnModel model.segment addSegmentToKomposition model, [], Just (OutNavigateTo KompostUI) )
 
@@ -92,7 +94,7 @@ update msg model =
                         addedTo =
                             performSegmentOnModel model.segment addSegmentToKomposition deleted
                     in
-                        Debug.log "Updating segment [x]: " ( addedTo, [], Just (OutNavigateTo KompostUI) )
+                    Debug.log "Updating segment [x]: " ( addedTo, [], Just (OutNavigateTo KompostUI) )
 
                 head :: tail ->
                     Debug.log "Seggie heads tails: " ( model, [], Just (OutNavigateTo KompostUI) )
@@ -112,43 +114,43 @@ extractFromOutmessage childMsg =
 
 
 asStartIn =
-    flip setStart
+    \b a -> setStart a b
 
 
 asEndIn =
-    flip setEnd
+    \b a -> setEnd a b
 
 
 asDurationIn =
-    flip setDuration
+    \b a -> setDuration a b
 
 
 asIdIn =
-    flip setId
+    \b a -> setId a b
 
 
 asSourceIdIn =
-    flip setSourceId
+    \b a -> setSourceId a b
 
 
 setStart newStart segment =
-    { segment | start = Result.withDefault 0 (String.toInt newStart) }
+    { segment | start = Result.withDefault 0 newStart}
 
 
 setEnd newEnd segment =
     let
         end =
-            Result.withDefault 0 (String.toInt newEnd)
+            Result.withDefault 0 newEnd
     in
-        { segment | end = end, duration = end - segment.start }
+    { segment | end = end, duration = end - segment.start }
 
 
 setDuration duration segment =
     let
         dur =
-            Result.withDefault 0 (String.toInt duration)
+            Result.withDefault 0 duration
     in
-        { segment | duration = dur, end = segment.start + dur }
+    { segment | duration = dur, end = segment.start + dur }
 
 
 setId newId segment =
@@ -166,7 +168,7 @@ setCurrentSegment newSegment model =
 
 asCurrentSegmentIn : Model -> Segment -> Model
 asCurrentSegmentIn =
-    flip setCurrentSegment
+    \b a -> setCurrentSegment a b
 
 
 containsSegment : String -> Komposition -> List Segment
@@ -175,7 +177,7 @@ containsSegment id komposition =
 
 
 performSegmentOnModel segment function model =
-    { model | kompost = (function segment model.kompost) }
+    { model | kompost = function segment model.kompost }
 
 
 addSegmentToKomposition : Segment -> Komposition -> Komposition

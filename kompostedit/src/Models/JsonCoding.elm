@@ -1,15 +1,15 @@
-module Models.JsonCoding exposing (kompositionDecoder, kompositionEncoder, couchServerStatusDecoder, kompositionListDecoder, searchEncoder)
+module Models.JsonCoding exposing (couchServerStatusDecoder, kompositionDecoder, kompositionEncoder, kompositionListDecoder, searchEncoder)
 
 import Json.Decode as JsonD
+import Json.Decode.Pipeline exposing (optional, required)
 import Json.Encode as JsonE
-import Json.Decode.Pipeline as JsonDPipe
-import Json.Decode.Pipeline exposing (decode, required, optional, hardcoded)
-import Models.BaseModel exposing (Komposition, Segment, Source, VideoConfig, BeatPattern, CouchStatusMessage, DataRepresentation, Row)
+import Json.Encode as Encode exposing (encode, int, list)
+import Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Komposition, Row, Segment, Source, VideoConfig)
 
 
 kompositionDecoder : JsonD.Decoder Komposition
 kompositionDecoder =
-    Json.Decode.Pipeline.decode Komposition
+    JsonD.succeed Komposition
         |> required "_id" JsonD.string
         |> required "_rev" JsonD.string
         |> optional "type" JsonD.string ""
@@ -28,11 +28,12 @@ kompositionEncoder kompo kompoUrl =
                 "" ->
                     []
 
-                revision ->
-                    [ ( "_rev", JsonE.string revision ) ]
+                theRevision ->
+                    [ ( "_rev", JsonE.string theRevision ) ]
 
         sources =
-            [ ( "sources", JsonE.list <| (List.map (\n -> encodeSource kompoUrl n) kompo.sources) ) ]
+            --[ ( "sources", JsonE.list <| List.map (\n -> encodeSource kompoUrl n) kompo.sources ) ] -- TODO Fix this back!
+            encode 0 (list int [1,3,4])
 
         config =
             case kompo.dvlType of
@@ -51,27 +52,35 @@ kompositionEncoder kompo kompoUrl =
                     []
 
         segments =
-            [ ( "segments", JsonE.list <| List.map encodeSegment kompo.segments ) ]
+            [ -- TODO Fix this back!
+            --( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
+            encode 0 (list int [1,3,4])
+            ]
     in
-        Debug.log "Persisting"
-            JsonE.encode
-            0
-        <|
-            JsonE.object
-                ([ ( "_id", JsonE.string kompo.name )
-                 , ( "type", JsonE.string kompo.dvlType )
-                 , ( "bpm", JsonE.float kompo.bpm )
-                 ]
-                    ++ revision
-                    ++ config
-                    ++ beatpattern
-                    ++ segments
-                    ++ sources
-                )
+    Debug.log "Persisting"
+        JsonE.encode
+        0
+    <|
+        JsonE.object
+            ([ ( "_id", JsonE.string kompo.name )
+             , ( "type", JsonE.string kompo.dvlType )
+             , ( "bpm", JsonE.float kompo.bpm )
+             ]
+                ++ revision
+                ++ config
+                ++ beatpattern
+--                ++ segments
+--                ++ sources
+            )
+
+--, \"use_index\":\"komposition-index\"
+searchEncoder : String -> String
+searchEncoder typeIdentifier =
+    "{\"selector\": {\"_id\": {\"$gt\": \"0\"}, \"type\": \"" ++ typeIdentifier ++ "\"}, \"fields\": [ \"_id\", \"_rev\" ], \"sort\": [ {\"_id\": \"asc\"} ] }"
 
 
-searchEncoder: String -> String
-searchEncoder typeIdentifier = "{\"selector\": {\"_id\": {\"$gt\": \"0\"}, \"type\": \""++ typeIdentifier ++ "\"}, \"fields\": [ \"_id\", \"_rev\" ], \"sort\": [ {\"_id\": \"asc\"} ] }" --, \"use_index\":\"komposition-index\"
+
+
 
 couchServerStatusDecoder : JsonD.Decoder CouchStatusMessage
 couchServerStatusDecoder =
@@ -83,7 +92,7 @@ couchServerStatusDecoder =
 
 segmentDecoder : JsonD.Decoder Segment
 segmentDecoder =
-    Json.Decode.Pipeline.decode Segment
+    JsonD.succeed Segment
         |> required "id" JsonD.string
         |> optional "sourceid" JsonD.string ""
         |> required "start" JsonD.int
@@ -94,7 +103,7 @@ segmentDecoder =
 
 sourceDecoder : JsonD.Decoder Source
 sourceDecoder =
-    Json.Decode.Pipeline.decode Source
+    JsonD.succeed Source
         |> required "id" JsonD.string
         |> required "url" JsonD.string
         |> required "startingOffset" JsonD.float
@@ -106,7 +115,7 @@ sourceDecoder =
 
 configDecoder : JsonD.Decoder VideoConfig
 configDecoder =
-    Json.Decode.Pipeline.decode VideoConfig
+    JsonD.succeed VideoConfig
         |> optional "width" JsonD.int 0
         |> optional "height" JsonD.int 0
         |> optional "framerate" JsonD.int 0
@@ -115,7 +124,7 @@ configDecoder =
 
 beatpatternDecoder : JsonD.Decoder BeatPattern
 beatpatternDecoder =
-    Json.Decode.Pipeline.decode BeatPattern
+    JsonD.succeed BeatPattern
         |> optional "frombeat" JsonD.int 0
         |> optional "tobeat" JsonD.int 0
         |> optional "masterbpm" JsonD.float 0
@@ -136,20 +145,20 @@ encodeSource kompoUrl source =
         url =
             case source.url of
                 "" ->
-                    (kompoUrl ++ source.id)
+                    kompoUrl ++ source.id
 
-                url ->
-                    url
+                theUrl ->
+                    theUrl
     in
-        JsonE.object
-            [ ( "id", JsonE.string source.id )
-            , ( "url", JsonE.string url )
-            , ( "startingOffset", JsonE.float source.startingOffset )
-            , ( "checksums", JsonE.string source.checksum )
-            , ( "extension", JsonE.string source.extensionType )
-            , ( "mediatype", JsonE.string source.mediaType )
-            , ( "snippet", JsonE.bool source.isSnippet )
-            ]
+    JsonE.object
+        [ ( "id", JsonE.string source.id )
+        , ( "url", JsonE.string url )
+        , ( "startingOffset", JsonE.float source.startingOffset )
+        , ( "checksums", JsonE.string source.checksum )
+        , ( "extension", JsonE.string source.extensionType )
+        , ( "mediatype", JsonE.string source.mediaType )
+        , ( "snippet", JsonE.bool source.isSnippet )
+        ]
 
 
 encodeSegment : Segment -> JsonE.Value
@@ -172,14 +181,12 @@ encodeConfig config =
         , ( "extension", JsonE.string config.extensionType )
         ]
 
-
 kompositionListDecoder : JsonD.Decoder DataRepresentation
 kompositionListDecoder =
-    JsonD.map2 DataRepresentation
+    JsonD.map3 DataRepresentation
         (JsonD.field "docs" <| JsonD.list rowDecoder)
+        (JsonD.field "bookmark" JsonD.string)
         (JsonD.field "warning" JsonD.string)
-  --      (JsonD.field "bookmark" JsonD.string)
-
 
 
 rowDecoder : JsonD.Decoder Row
