@@ -15,6 +15,7 @@ import Html.Attributes exposing (class)
 import Models.BaseModel exposing (..)
 import Models.Msg exposing (Msg(..))
 import Navigation.Page as Page exposing (Page)
+import Source.View exposing (showMediaFileList)
 
 
 editSpecifics : Komposition -> Html DvlSpecifics.Msg.Msg
@@ -84,26 +85,6 @@ showSpecifics model =
             ]
         ]
 
-showMediaFileList : List Models.BaseModel.Source -> Html Msg
-showMediaFileList mediaFile =
-    div [] (List.map showSingleMediaFile mediaFile)
-
-
-showSingleMediaFile : Models.BaseModel.Source -> Html Msg
-showSingleMediaFile mf =
-    Grid.row []
-        [ Grid.col []
-            [ Html.map SourceMsg
-                (Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile mf.id) ] [ text mf.id ])
-            ]
-        , Grid.col []
-            [ Html.map SourceMsg
-                (Button.button
-                    [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile mf.id) ]
-                    [ text "Fetch" ]
-                )
-            ]
-        ]
 
 addRow title htmlIsh =
     Grid.row []
