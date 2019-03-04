@@ -9,6 +9,7 @@ import Models.BaseModel exposing (Model)
 import Models.Msg exposing (Msg(..))
 import Navigation.Page as Page exposing (Page)
 import Segment.SegmentUI
+import Source.View exposing (editSources, sourceNewButton)
 
 
 kompost : Model -> Html Models.Msg.Msg
@@ -20,6 +21,9 @@ kompost model =
             ]
         , div [] [ h4 [ style "flex" "1" ] [ text model.kompost.dvlType ] ]
         , Specifics.showSpecifics model
+        , h4 [] [ text "Original Sources:" ]
+        , editSources model.kompost.sources
+        , sourceNewButton
         , Grid.simpleRow [ Grid.col [] [] ]
         , h4 [] [ text "Segments:" ]
         , Html.map SegmentMsg (Segment.SegmentUI.showSegmentList model.kompost.segments)

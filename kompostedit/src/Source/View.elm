@@ -1,28 +1,42 @@
 module Source.View exposing (..)
 
-
 import Bootstrap.Button as Button
 import Bootstrap.Grid as Grid
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, h4, text)
+import Models.BaseModel exposing (Source)
 import Models.Msg exposing (Msg(..))
 import Source.Msg exposing (Msg(..))
 
---showMediaFileList : List  Source.Msg.Msg -> Html Msg
-showMediaFileList mediaFile =
-    div [] (List.map showSingleMediaFile mediaFile)
+sourceNewButton :Html Models.Msg.Msg
+sourceNewButton =
+        Grid.row []
+            [ Grid.col [] []
+            , Grid.col [] []
+            , Grid.col []
+                [ Html.map Models.Msg.SourceMsg (Button.button [ Button.secondary, Button.onClick (Source.Msg.EditMediaFile "") ] [ text "New Source" ])
+                ]
+            ]
+
+editSources : List Source -> Html Models.Msg.Msg
+editSources sources =
+        showSourceList sources
+
+showSourceList : List Source -> Html Models.Msg.Msg
+showSourceList source =
+    div [] (List.map showSingleSource source)
 
 
---showSingleMediaFile : Models.BaseModel.Source -> Html Msg
-showSingleMediaFile mf =
+showSingleSource : Source -> Html Models.Msg.Msg
+showSingleSource source =
     Grid.row []
         [ Grid.col []
             [ Html.map SourceMsg
-                (Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile mf.id) ] [ text mf.id ])
+                (Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile source.id) ] [ text source.id ])
             ]
         , Grid.col []
             [ Html.map SourceMsg
                 (Button.button
-                    [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile mf.id) ]
+                    [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile source.id) ]
                     [ text "Fetch" ]
                 )
             ]

@@ -9,13 +9,11 @@ import Bootstrap.Grid.Col as Col
 import Common.StaticVariables
 import Common.UIFunctions exposing (selectItems)
 import DvlSpecifics.Msg exposing (Msg(..))
-import Source.Msg exposing (Msg(..))
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Models.BaseModel exposing (..)
 import Models.Msg exposing (Msg(..))
 import Navigation.Page as Page exposing (Page)
-import Source.View exposing (showMediaFileList)
 
 
 editSpecifics : Komposition -> Html DvlSpecifics.Msg.Msg
@@ -74,15 +72,6 @@ showSpecifics model =
         , addRow "Revision" (text model.kompost.revision)
         , addRow "BPM" (text (String.fromFloat model.kompost.bpm))
         , Grid.row [] [ Grid.col [] [], Grid.col [] [], Grid.col [] [ Button.button [ Button.secondary, Button.onClick Models.Msg.EditSpecifics ] [ text "Edit Specifics" ] ] ]
-        , h4 [] [ text "Original Sources:" ]
-        , showMediaFileList model.kompost.sources
-        , Grid.row []
-            [ Grid.col [] []
-            , Grid.col [] []
-            , Grid.col []
-                [ Html.map Models.Msg.SourceMsg (Button.button [ Button.secondary, Button.onClick (Source.Msg.EditMediaFile "") ] [ text "New Source" ])
-                ]
-            ]
         ]
 
 
