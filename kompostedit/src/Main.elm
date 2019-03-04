@@ -149,38 +149,33 @@ update msg model =
             , replaceUrl page model.key
             )
 
-        DvlSpecificsMsg theMsg ->
+        SourceMsg theMsg ->
             let
                 ( newModel, cmd, childMsg ) =
                     DvlSpecifics.DvlSpecificsModel.update theMsg model
 
-                cmds =
-                    case DvlSpecifics.DvlSpecificsModel.extractFromOutmessage childMsg of
-                        Just page ->
-                            [ replaceUrl page model.key ]
-
-                        Nothing ->
-                            [ cmd ]
             in
-            ( { newModel | activePage = Page.KompostUI }
-            , Cmd.batch cmds
-            )
+                case DvlSpecifics.DvlSpecificsModel.extractFromOutmessage childMsg of
+                    Just page ->
+                        ( { newModel | activePage = page }, Cmd.none )
+
+                    Nothing ->
+                        ( newModel , Cmd.none )
+
 
         SegmentMsg theMsg ->
             let
                 ( newModel, childMsg ) =
                     Segment.Model.update theMsg model
 
-                editedModel =
-                    case Segment.Model.extractFromOutmessage childMsg of
-                        Just page -> { newModel | activePage = page }
-
-                        Nothing ->
-                            newModel
             in
-            ( editedModel
-            , Cmd.none
-            )
+                case Segment.Model.extractFromOutmessage childMsg of
+                    Just page ->
+                        ( { newModel | activePage = page }, Cmd.none )
+
+                    Nothing ->
+                        ( newModel, Cmd.none )
+
 
         CreateVideo ->
             ( model
@@ -282,10 +277,10 @@ findOutWhatPageToView model =
                     Html.map SegmentMsg (pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)
 
                 Page.DvlSpecificsUI ->
-                    Html.map DvlSpecificsMsg (pageWrapper <| SpecificsUI.editSpecifics model.kompost)
+                    Html.map SourceMsg (pageWrapper <| SpecificsUI.editSpecifics model.kompost)
 
                 Page.MediaFileUI ->
-                    Html.map DvlSpecificsMsg (pageWrapper <| SourcesUI.editSpecifics model)
+                    Html.map SourceMsg (pageWrapper <| SourcesUI.editSpecifics model)
 
                 Page.NotFound ->
                     div [] [ text "Sorry, nothing< here :(" ]

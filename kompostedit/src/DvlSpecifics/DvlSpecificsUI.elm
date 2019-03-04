@@ -79,7 +79,7 @@ showSpecifics model =
             [ Grid.col [] []
             , Grid.col [] []
             , Grid.col []
-                [ Html.map Models.Msg.DvlSpecificsMsg (Button.button [ Button.secondary, Button.onClick (SpecificsMsg.EditMediaFile "") ] [ text "New Source" ])
+                [ Html.map Models.Msg.SourceMsg (Button.button [ Button.secondary, Button.onClick (SpecificsMsg.EditMediaFile "") ] [ text "New Source" ])
                 ]
             ]
         ]

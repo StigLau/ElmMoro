@@ -76,11 +76,11 @@ showSingleMediaFile : Models.BaseModel.Source -> Html Models.Msg.Msg
 showSingleMediaFile mf =
     Grid.row []
         [ Grid.col []
-            [ Html.map Models.Msg.DvlSpecificsMsg
+            [ Html.map Models.Msg.SourceMsg
                 (Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile mf.id) ] [ text mf.id ])
             ]
         , Grid.col []
-            [ Html.map Models.Msg.DvlSpecificsMsg
+            [ Html.map Models.Msg.SourceMsg
                 (Button.button
                     [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile mf.id) ]
                     [ text "Fetch" ]

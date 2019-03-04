@@ -25,7 +25,7 @@ type Msg
     | SegmentListUpdated (WebData Komposition)
     | CreateSegment
     | CouchServerStatus (WebData CouchStatusMessage)
-    | DvlSpecificsMsg DvlSpecifics.Msg.Msg
+    | SourceMsg DvlSpecifics.Msg.Msg
     | SegmentMsg Segment.Msg.Msg
     | ETagResponse (Result Http.Error String)
     | CreateVideo
