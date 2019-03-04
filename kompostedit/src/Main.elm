@@ -2,9 +2,9 @@ module Main exposing (init, main, update, view)
 
 import Bootstrap.CDN as CDN
 import Bootstrap.Grid as Grid
-import DvlSpecifics.DvlSpecificsModel exposing (setSource, update)
-import DvlSpecifics.DvlSpecificsUI as SpecificsUI exposing (..)
-import DvlSpecifics.SourcesUI as SourcesUI
+import DvlSpecifics.DvlSpecificsModel exposing (update)
+import DvlSpecifics.DvlSpecificsUI
+import Source.SourcesUI exposing (update)
 import Html exposing (Html, div, text)
 import Models.BaseModel exposing (..)
 import Models.KompostApi as KompostApi exposing (..)
@@ -151,7 +151,20 @@ update msg model =
 
         SourceMsg theMsg ->
             let
-                ( newModel, cmd, childMsg ) =
+                ( newModel, childMsg ) =
+                    Source.SourcesUI.update theMsg model
+
+            in
+                case DvlSpecifics.DvlSpecificsModel.extractFromOutmessage childMsg of
+                    Just page ->
+                        ( { newModel | activePage = page }, Cmd.none )
+
+                    Nothing ->
+                        ( newModel , Cmd.none )
+
+        DvlSpecificsMsg theMsg ->
+            let
+                ( newModel, childMsg ) =
                     DvlSpecifics.DvlSpecificsModel.update theMsg model
 
             in
@@ -192,8 +205,10 @@ update msg model =
             let
                 source =
                     model.editingMediaFile
+                modifiedSource = { source | checksum = checksum }
+
             in
-            ( setSource { source | checksum = checksum } model, Cmd.none )
+            ( { model | editingMediaFile = modifiedSource }, Cmd.none )
 
         ETagResponse (Err err) ->
             --( { model | statusMessage = [ err ] }, Cmd.none ) -- TODO To fix
@@ -225,14 +240,16 @@ update msg model =
                     )
 
         ChangedUrl url ->
-            Debug.log "Tried ChangedUrl" (changeRouteTo (AppRouting.fromUrl url) model)
+            let _ = Debug.log "Tried ChangedUrl" url
+            in changeRouteTo (AppRouting.fromUrl url) model
 
 
 changeRouteTo : Maybe Page -> Model -> ( Model, Cmd Msg )
 changeRouteTo maybePage model =
     case maybePage of
         Nothing ->
-            Debug.log "changeRouteTo to Nothing" ( model, Cmd.none )
+            let _ = Debug.log "changeRouteTo to Nothing"
+            in ( model, Cmd.none )
 
 
         Just anotherPage ->
@@ -277,10 +294,10 @@ findOutWhatPageToView model =
                     Html.map SegmentMsg (pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)
 
                 Page.DvlSpecificsUI ->
-                    Html.map SourceMsg (pageWrapper <| SpecificsUI.editSpecifics model.kompost)
+                    Html.map DvlSpecificsMsg (pageWrapper <| DvlSpecifics.DvlSpecificsUI.editSpecifics model.kompost)
 
                 Page.MediaFileUI ->
-                    Html.map SourceMsg (pageWrapper <| SourcesUI.editSpecifics model)
+                    Html.map SourceMsg (pageWrapper <| Source.SourcesUI.editSpecifics model)
 
                 Page.NotFound ->
                     div [] [ text "Sorry, nothing< here :(" ]

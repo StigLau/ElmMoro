@@ -1,12 +1,13 @@
 module Models.Msg exposing (Msg(..))
 
-import DvlSpecifics.Msg exposing (Msg)
 import Http exposing (Error)
 import Models.BaseModel exposing (..)
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation
 import Navigation.Page exposing (Page)
 import RemoteData exposing (WebData)
+import Source.Msg
+import DvlSpecifics.Msg
 import Url exposing (Url)
 import Segment.Msg
 
@@ -25,7 +26,8 @@ type Msg
     | SegmentListUpdated (WebData Komposition)
     | CreateSegment
     | CouchServerStatus (WebData CouchStatusMessage)
-    | SourceMsg DvlSpecifics.Msg.Msg
+    | SourceMsg Source.Msg.Msg
+    | DvlSpecificsMsg DvlSpecifics.Msg.Msg
     | SegmentMsg Segment.Msg.Msg
     | ETagResponse (Result Http.Error String)
     | CreateVideo

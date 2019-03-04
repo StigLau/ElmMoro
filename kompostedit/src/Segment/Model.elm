@@ -1,4 +1,4 @@
-module Segment.Model exposing (OutMsg(..), addSegmentToKomposition, asCurrentSegmentIn, asDurationIn, asEndIn, asIdIn, asSourceIdIn, asStartIn, containsSegment, deleteSegmentFromKomposition, extractFromOutmessage, performSegmentOnModel, setCurrentSegment, setDuration, setEnd, setId, setSourceId, setStart, update)
+module Segment.Model exposing (OutMsg(..), addSegmentToKomposition, asCurrentSegmentIn, asIdIn, asSourceIdIn, containsSegment, deleteSegmentFromKomposition, extractFromOutmessage, performSegmentOnModel, setCurrentSegment, setDuration, setEnd, setId, setSourceId, setStart, update)
 
 import Models.BaseModel exposing (Komposition, Model, Segment)
 import Navigation.Page as Page exposing (Page)
@@ -30,33 +30,13 @@ update msg model =
             ( newModel, Nothing )
 
         SetSegmentStart start ->
-            let --TODO FIX ME
-                theStart = Maybe.withDefault 0 (String.toInt start)
---                theSegment = (asStartIn theStart model.segment)
-                theSegment = model.segment
-                newModel = asCurrentSegmentIn model theSegment
---                        |> asStartIn model.segment
---                        |> asCurrentSegmentIn model
-            in
-            ( newModel, Nothing )
+            ( { model | segment = setStart start model.segment }, Nothing )
 
         SetSegmentEnd end ->
-            let
-                newModel = --TODO Fix me
-                    asCurrentSegmentIn model model.segment
---                    end
---                        |> asEndIn model.segment
---                        |> asCurrentSegmentIn model
-            in
-            ( newModel, Nothing )
+            ( { model | segment = setEnd end model.segment }, Nothing )
 
-        SetSegmentDuration value ->
-            let --TODO Fix me
-                newModel = asCurrentSegmentIn model model.segment
---                        |> asDurationIn model.segment
---                        |> asCurrentSegmentIn model
-            in
-            ( newModel, Nothing )
+        SetSegmentDuration duration ->
+            ( { model | segment = setDuration duration model.segment }, Nothing )
 
         EditSegment id ->
             let
@@ -73,7 +53,8 @@ update msg model =
         UpdateSegment ->
             case containsSegment model.segment.id model.kompost of
                 [] ->
-                    Debug.log "Adding segment []: " ( performSegmentOnModel model.segment addSegmentToKomposition model, Just (OutNavigateTo Page.KompostUI) )
+                    let _ = Debug.log "Adding segment []: "
+                    in ( performSegmentOnModel model.segment addSegmentToKomposition model, Just (OutNavigateTo Page.KompostUI) )
 
                 [ x ] ->
                     let
@@ -101,19 +82,6 @@ extractFromOutmessage childMsg =
         _ ->
             Nothing
 
-
-asStartIn =
-    \b a -> setStart a b
-
-
-asEndIn =
-    \b a -> setEnd a b
-
-
-asDurationIn =
-    \b a -> setDuration a b
-
-
 asIdIn =
     \b a -> setId a b
 
@@ -122,22 +90,21 @@ asSourceIdIn =
     \b a -> setSourceId a b
 
 
+setStart: String -> Segment -> Segment
 setStart newStart segment =
-    { segment | start = Result.withDefault 0 newStart}
+    { segment | start = Maybe.withDefault 0 (String.toInt newStart)}
 
 
+setEnd: String -> Segment -> Segment
 setEnd newEnd segment =
     let
-        end =
-            Result.withDefault 0 newEnd
-    in
-    { segment | end = end, duration = end - segment.start }
-
+        end = Debug.log "newEnd" (Maybe.withDefault 0 (String.toInt newEnd))
+    in { segment | end = end, duration = end - segment.start}
 
 setDuration duration segment =
     let
         dur =
-            Result.withDefault 0 duration
+            Debug.log "duration" (Maybe.withDefault 0 (String.toInt duration))
     in
     { segment | duration = dur, end = segment.start + dur }
 

@@ -8,8 +8,8 @@ import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Common.StaticVariables
 import Common.UIFunctions exposing (selectItems)
-import DvlSpecifics.Msg as SpecificsMsg exposing (Msg)
-import DvlSpecifics.SourcesUI exposing (showMediaFileList)
+import DvlSpecifics.Msg exposing (Msg(..))
+import Source.Msg exposing (Msg(..))
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Models.BaseModel exposing (..)
@@ -17,16 +17,16 @@ import Models.Msg exposing (Msg(..))
 import Navigation.Page as Page exposing (Page)
 
 
-editSpecifics : Komposition -> Html SpecificsMsg.Msg
+editSpecifics : Komposition -> Html DvlSpecifics.Msg.Msg
 editSpecifics kompo =
     let
         specificsUI =
             Form.form [ class "container" ]
                 [ h1 [] [ text "Editing Specifics" ]
-                , (wrapping "Name" (Input.text [ Input.id "Name", Input.value kompo.name, Input.onInput SpecificsMsg.SetKompositionName, Input.disabled (kompo.revision /= "") ]))
+                , (wrapping "Name" (Input.text [ Input.id "Name", Input.value kompo.name, Input.onInput DvlSpecifics.Msg.SetKompositionName, Input.disabled (kompo.revision /= "") ]))
                 , (wrapping "Revision" (Input.text [ Input.id "Revision", Input.value kompo.revision, Input.disabled True ]))
-                , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.value (String.fromFloat kompo.bpm), Input.onInput SpecificsMsg.SetBpm ]))
-                , (wrapping "Type" (Select.select [ Select.onChange SpecificsMsg.SetDvlType ] (selectItems kompo.dvlType Common.StaticVariables.komposionTypes)))
+                , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.value (String.fromFloat kompo.bpm), Input.onInput SetBpm ]))
+                , (wrapping "Type" (Select.select [ Select.onChange DvlSpecifics.Msg.SetDvlType ] (selectItems kompo.dvlType Common.StaticVariables.komposionTypes)))
                 ]
 
         bpm =
@@ -42,18 +42,18 @@ editSpecifics kompo =
                 "Komposition" ->
                     Form.form [ class "container" ]
                         [ h3 [] [ text "Video Config" ]
-                        , (wrapping "Width" (Input.number [ Input.id "width", Input.value (String.fromInt kompo.config.width), Input.onInput SpecificsMsg.SetWidth ]))
-                        , (wrapping "Height" (Input.number [ Input.id "height", Input.value (String.fromInt kompo.config.height), Input.onInput SpecificsMsg.SetHeight ]))
-                        , (wrapping "Framerate" (Input.number [ Input.id "framerate", Input.value (String.fromInt kompo.config.framerate), Input.onInput SpecificsMsg.SetFramerate ]))
+                        , (wrapping "Width" (Input.number [ Input.id "width", Input.value (String.fromInt kompo.config.width), Input.onInput DvlSpecifics.Msg.SetWidth ]))
+                        , (wrapping "Height" (Input.number [ Input.id "height", Input.value (String.fromInt kompo.config.height), Input.onInput DvlSpecifics.Msg.SetHeight ]))
+                        , (wrapping "Framerate" (Input.number [ Input.id "framerate", Input.value (String.fromInt kompo.config.framerate), Input.onInput DvlSpecifics.Msg.SetFramerate ]))
                         , (wrapping "Extension Type"
-                            (Select.select [ Select.id "segmentId", Select.onChange SpecificsMsg.SetExtensionType ]
+                            (Select.select [ Select.id "segmentId", Select.onChange DvlSpecifics.Msg.SetExtensionType ]
                                 (selectItems kompo.config.extensionType Common.StaticVariables.extensionTypes)
                             )
                           )
                         , h3 [] [ text "Beat Pattern" ]
-                        , (wrapping "From BPM" (Input.number [ Input.id "frombpm", Input.value (String.fromInt bpm.fromBeat), Input.onInput SpecificsMsg.SetFromBpm ]))
-                        , (wrapping "To BPM" (Input.number [ Input.id "tobpm", Input.value (String.fromInt bpm.toBeat), Input.onInput SpecificsMsg.SetToBpm ]))
-                        , (wrapping "Master BPM" (Input.number [ Input.id "masterbpm", Input.value (String.fromFloat bpm.masterBPM), Input.onInput SpecificsMsg.SetMasterBpm ]))
+                        , (wrapping "From BPM" (Input.number [ Input.id "frombpm", Input.value (String.fromInt bpm.fromBeat), Input.onInput DvlSpecifics.Msg.SetFromBpm ]))
+                        , (wrapping "To BPM" (Input.number [ Input.id "tobpm", Input.value (String.fromInt bpm.toBeat), Input.onInput DvlSpecifics.Msg.SetToBpm ]))
+                        , (wrapping "Master BPM" (Input.number [ Input.id "masterbpm", Input.value (String.fromFloat bpm.masterBPM), Input.onInput DvlSpecifics.Msg.SetMasterBpm ]))
                         ]
 
                 _ ->
@@ -62,7 +62,7 @@ editSpecifics kompo =
     div []
         [ specificsUI
         , configUI
-        , Button.button [ Button.primary, Button.onClick (SpecificsMsg.InternalNavigateTo Page.KompostUI) ] [ text "<- Back" ]
+        , Button.button [ Button.primary, Button.onClick (DvlSpecifics.Msg.InternalNavigateTo Page.KompostUI) ] [ text "<- Back" ]
         ]
 
 
@@ -79,11 +79,31 @@ showSpecifics model =
             [ Grid.col [] []
             , Grid.col [] []
             , Grid.col []
-                [ Html.map Models.Msg.SourceMsg (Button.button [ Button.secondary, Button.onClick (SpecificsMsg.EditMediaFile "") ] [ text "New Source" ])
+                [ Html.map Models.Msg.SourceMsg (Button.button [ Button.secondary, Button.onClick (Source.Msg.EditMediaFile "") ] [ text "New Source" ])
                 ]
             ]
         ]
 
+showMediaFileList : List Models.BaseModel.Source -> Html Msg
+showMediaFileList mediaFile =
+    div [] (List.map showSingleMediaFile mediaFile)
+
+
+showSingleMediaFile : Models.BaseModel.Source -> Html Msg
+showSingleMediaFile mf =
+    Grid.row []
+        [ Grid.col []
+            [ Html.map SourceMsg
+                (Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile mf.id) ] [ text mf.id ])
+            ]
+        , Grid.col []
+            [ Html.map SourceMsg
+                (Button.button
+                    [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile mf.id) ]
+                    [ text "Fetch" ]
+                )
+            ]
+        ]
 
 addRow title htmlIsh =
     Grid.row []
