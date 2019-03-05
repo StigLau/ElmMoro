@@ -119,7 +119,7 @@ update msg model =
             ( modifiedModel, Cmd.none, Just (OutNavigateTo Page.KompostUI) )
 
         OrderChecksumEvalutation id ->
-            ( model, Cmd.none, Just(FetchETagHeader id))
+            ( model, Cmd.none, Nothing)
 
 editSpecifics : Model -> Html Msg
 editSpecifics model =
