@@ -63,7 +63,7 @@ getDvlSegmentList : String -> Cmd Msg
 getDvlSegmentList id =
     let
         _ =
-            Debug.log "In getDvlSegmentList " (kompoUrl ++ id)
+            Debug.log "getDvlSegmentList" (kompoUrl ++ id)
     in
     Http.get (kompoUrl ++ id) kompositionDecoder
         |> RemoteData.sendRequest

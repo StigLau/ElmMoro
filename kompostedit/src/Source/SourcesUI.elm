@@ -11,10 +11,12 @@ import Common.UIFunctions exposing (selectItems)
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Models.BaseModel exposing (Komposition, Model, OutMsg(..), Source)
+import Models.KompostApi exposing (getDvlSegmentList)
+import Models.Msg
 import Navigation.Page as Page
 import Source.Msg exposing (Msg(..))
 
-update : Source.Msg.Msg -> Model -> ( Model, Maybe OutMsg )
+update : Source.Msg.Msg -> Model -> ( Model, Cmd Models.Msg.Msg, Maybe OutMsg )
 update msg model =
     case msg of
         SetId id ->
@@ -22,49 +24,49 @@ update msg model =
                 source =
                     model.editingMediaFile
             in
-            ( setSource { source | id = id } model, Nothing )
+            ( setSource { source | id = id } model, Cmd.none, Nothing )
 
         SetURL url ->
             let
                 source =
                     model.editingMediaFile
             in
-            ( setSource { source | url = url } model, Nothing )
+            ( setSource { source | url = url } model, Cmd.none, Nothing )
 
         SetSnippet isSnippet ->
             let
                 source =
                     model.editingMediaFile
             in
-            ( setSource { source | isSnippet = isSnippet } model, Nothing )
+            ( setSource { source | isSnippet = isSnippet } model, Cmd.none, Nothing )
 
         SetChecksum checksum ->
             let
                 source =
                     model.editingMediaFile
             in
-            ( setSource { source | checksum = checksum } model, Nothing )
+            ( setSource { source | checksum = checksum } model, Cmd.none, Nothing )
 
         SetOffset value ->
             let
                 source =
                     model.editingMediaFile
             in
-            ( setSource { source | startingOffset = standardFloat value } model, Nothing )
+            ( setSource { source | startingOffset = standardFloat value } model, Cmd.none, Nothing )
 
         SetSourceExtensionType value ->
             let
                 source =
                     model.editingMediaFile
             in
-            ( setSource { source | extensionType = value, mediaType = evaluateMediaType value } model, Nothing )
+            ( setSource { source | extensionType = value, mediaType = evaluateMediaType value } model, Cmd.none, Nothing )
 
         SetSourceMediaType value ->
             let
                 source =
                     model.editingMediaFile
             in
-            ( setSource { source | mediaType = value } model, Nothing )
+            ( setSource { source | mediaType = value } model, Cmd.none, Nothing )
 
         EditMediaFile id ->
             let
@@ -76,11 +78,11 @@ update msg model =
                         _ ->
                             Source "" "" 0 "" "" "" False
             in
-            ( { model | editingMediaFile = theMediaFile }, Just (OutNavigateTo Page.MediaFileUI) )
+            ( { model | editingMediaFile = theMediaFile }, Cmd.none, Just (OutNavigateTo Page.MediaFileUI) )
 
         FetchAndLoadMediaFile id ->
             let
-                unusedMediaFile =
+                _ =
                     case containsMediaFile id model.kompost of
                         [ mediaFile ] ->
                             Debug.log "We found preexisting media file" mediaFile
@@ -88,14 +90,13 @@ update msg model =
                         _ ->
                             Debug.log "Reusing Editing Media File" model.editingMediaFile
             in
-            --( model, getDvlSegmentList id, Nothing ) -- TODO It would be very nice to be able to fetch the DvlSegmentList (?)
-            ( model, Nothing )
+            ( model, getDvlSegmentList id, Nothing )
 
         SaveSource ->
             case containsMediaFile model.editingMediaFile.id model.kompost of
                 [] ->
                     Debug.log "Adding MediaFile []: "
-                        ( performMediaFileOnModel model.editingMediaFile addMediaFileToKomposition model, Just (OutNavigateTo Page.KompostUI) )
+                        ( performMediaFileOnModel model.editingMediaFile addMediaFileToKomposition model, Cmd.none, Just (OutNavigateTo Page.KompostUI) )
 
                 [ x ] ->
                     let
@@ -105,22 +106,20 @@ update msg model =
                         addedTo =
                             performMediaFileOnModel model.editingMediaFile addMediaFileToKomposition deleted
                     in
-                    Debug.log "Updating mediaFile [x]: " ( addedTo, Just (OutNavigateTo Page.KompostUI) )
+                    Debug.log "Updating mediaFile [x]: " ( addedTo, Cmd.none, Just (OutNavigateTo Page.KompostUI) )
 
                 head :: tail ->
-                    Debug.log "Seggie heads tails: " ( model, Just (OutNavigateTo Page.KompostUI) )
+                    Debug.log "Seggie heads tails: " ( model, Cmd.none, Just (OutNavigateTo Page.KompostUI) )
 
         DeleteSource id ->
             let
                 modifiedModel =
                     performMediaFileOnModel model.editingMediaFile deleteMediaFileFromKomposition model
             in
-            ( modifiedModel, Just (OutNavigateTo Page.KompostUI) )
+            ( modifiedModel, Cmd.none, Just (OutNavigateTo Page.KompostUI) )
 
         OrderChecksumEvalutation id ->
-            ( model, Nothing )
-            --( model, fetchETagHeader id, Nothing ) TODO Perhaps do this too (?)
-
+            ( model, Cmd.none, Just(FetchETagHeader id))
 
 editSpecifics : Model -> Html Msg
 editSpecifics model =

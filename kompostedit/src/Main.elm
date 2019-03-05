@@ -151,16 +151,15 @@ update msg model =
 
         SourceMsg theMsg ->
             let
-                ( newModel, childMsg ) =
+                ( newModel, sourceMsg, childMsg ) =
                     Source.SourcesUI.update theMsg model
-
             in
                 case DvlSpecifics.DvlSpecificsModel.extractFromOutmessage childMsg of
                     Just page ->
-                        ( { newModel | activePage = page }, Cmd.none )
+                        ( { newModel | activePage = page }, sourceMsg )
 
                     Nothing ->
-                        ( newModel , Cmd.none )
+                        ( newModel, sourceMsg)
 
         DvlSpecificsMsg theMsg ->
             let
