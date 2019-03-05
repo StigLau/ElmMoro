@@ -16,14 +16,13 @@ listings model =
         , table [ class "table table-striped" ]
             [ thead []
                 [ tr []
-                    [ tbody [] (List.map (chooseDvlButton model) model.listings.docs)
-                    , Grid.simpleRow [ Grid.col [] [ Button.button [ Button.primary, Button.small, Button.onClick NewKomposition ] [ text "New Komposition" ] ] ]
-                    , ButtonGroup.radioButtonGroup []
+                    [ ButtonGroup.radioButtonGroup []
                         [ ButtonGroup.radioButton True [ Button.secondary, Button.onClick (ChangeKompositionType "Komposition") ] [ Html.text "Komposition" ]
                         , ButtonGroup.radioButton False [ Button.warning, Button.onClick (ChangeKompositionType "Video") ] [ Html.text "Video" ]
                         , ButtonGroup.radioButton False [ Button.success, Button.onClick (ChangeKompositionType "Audio") ] [ Html.text "Audio" ]
                         ]
-                    ]
+                    , tbody [] (List.map (chooseDvlButton model) model.listings.docs)
+                    , Grid.simpleRow [ Grid.col [] [ Button.button [ Button.primary, Button.small, Button.onClick NewKomposition ] [ text "New Komposition" ] ] ]                    ]
                 ]
             ]
         ]
