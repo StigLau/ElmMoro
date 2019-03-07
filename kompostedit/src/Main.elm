@@ -335,11 +335,14 @@ subscriptions model =
   Sub.none
 
 
+{--
 -- Basis model and offline testdata
+-- These are the data points that one will see when one creates a new Komposion! If the GUI lacks default data, this is where one punches that in.
+--}
 emptyModel : Nav.Key -> Url -> Model
 emptyModel  navKey theUrl =
     { listings = DataRepresentation [] "" ""
-    , kompost = Komposition "" "" "" 0 defaultSegments [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
+    , kompost = Komposition "" "" "Video" 120 defaultSegments [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
     , statusMessage = []
     , activePage = Page.ListingsUI
     , editableSegment = False
