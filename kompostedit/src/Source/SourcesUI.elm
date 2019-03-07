@@ -11,7 +11,7 @@ import Common.UIFunctions exposing (selectItems)
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Models.BaseModel exposing (Komposition, Model, OutMsg(..), Source)
-import Models.KompostApi exposing (getDvlSegmentList)
+import Models.KompostApi exposing (fetchETagHeader, getDvlSegmentList)
 import Models.Msg
 import Navigation.Page as Page
 import Source.Msg exposing (Msg(..))
@@ -119,7 +119,7 @@ update msg model =
             ( modifiedModel, Cmd.none, Just (OutNavigateTo Page.KompostUI) )
 
         OrderChecksumEvalutation id ->
-            ( model, Cmd.none, Nothing)
+            ( model, fetchETagHeader id, Nothing)
 
 editSpecifics : Model -> Html Msg
 editSpecifics model =

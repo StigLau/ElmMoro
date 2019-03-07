@@ -67,7 +67,7 @@ update msg model =
             let
                 empModel = emptyModel model.key model.url
             in
-                ( { model | kompost = empModel.kompost, activePage = Page.KompostUI}
+                ( { model | kompost = empModel.kompost, activePage = Page.DvlSpecificsUI}
             , replaceUrl Page.DvlSpecificsUI model.key
             )
 
@@ -281,7 +281,7 @@ findOutWhatPageToView model =
     in
         [ case model.activePage of
                 Page.ListingsUI ->
-                    pageWrapper <| UI.KompostListingsUI.listings <| model
+                    pageWrapper <| UI.KompostListingsUI.listings model
 
                 Page.KompostUI ->
                     pageWrapper <| UI.KompostUI.kompost model
