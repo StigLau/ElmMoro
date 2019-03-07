@@ -195,7 +195,7 @@ update msg model =
             )
 
         ShowKompositionJson ->
-            ( model
+            ( { model | activePage = Page.KompositionJsonUI }
             , replaceUrl Page.KompositionJsonUI model.key
             )
 
