@@ -47,7 +47,11 @@ class Routes extends RouteBuilder {
 
         from("jetty:http://0.0.0.0:8001/kompost/?matchOnUriPrefix=true")
                 .process(fetchFilesAdapter())
-                .removeHeaders("*", CONTENT_TYPE, "ETag")
+                .removeHeaders("*",
+                        CONTENT_TYPE,
+                        "Cache-Control",
+                        "ETag"
+                )
         ;
 
         restConfiguration().port(8080);
@@ -62,27 +66,44 @@ class Routes extends RouteBuilder {
             Message in = exchange.getIn();
             String httpMethod = in.getHeader(Exchange.HTTP_METHOD, String.class);
             String theFile = in.getHeader(Exchange.HTTP_PATH, String.class);
+            String contentType = in.getHeader(Exchange.CONTENT_TYPE, String.class);
             String body = in.getBody(String.class);
-            Response result = FetchFiles(theFile, httpMethod, body);
+
+            Response result;
+            if (httpMethod.equals("GET")) {
+                result = new OkHttpClient().newCall(
+                        new Request.Builder().get()
+                                .url(KompostFiles.url +theFile)
+                                .header("Authorization", KompostFiles.auth)
+                                .build()).execute();
+            } else {
+                result = FetchFiles(theFile, httpMethod, contentType, body);
+            }
+            Message out = exchange.getOut();
             if(result.networkResponse().isSuccessful()) {
-                Message out = exchange.getOut();
                 out.setBody(result.body().string());
                 Map<String, List<String>> headers = result.headers().toMultimap();
                 for (String headerName : headers.keySet()) {
                     out.setHeader(headerName, headers.get(headerName));
                 }
+            } else {
+                out.setBody("This sucked! " + result.networkResponse().message());
+                out.setFault(true);
             }
             result.body().close();
             result.close();
         };
     }
 
-    private Response FetchFiles(@Header(HTTP_PATH) String theFile, @Header(Exchange.HTTP_METHOD) String httpMethod, @Body String body) throws IOException {
-        Request.Builder requestBuilder = new Request.Builder();
-        if (httpMethod.equals("POST")) {
-            requestBuilder = requestBuilder.post(RequestBody.create(MediaType.parse("application/json"), body));
-        }
-        requestBuilder.header("Authorization", KompostFiles.auth)
+    private Response FetchFiles(
+            @Header(HTTP_PATH) String theFile,
+            @Header(Exchange.HTTP_METHOD) String httpMethod,
+            @Header(Exchange.CONTENT_TYPE) String contentType,
+            @Body String body) throws IOException {
+        Request.Builder requestBuilder = new Request.Builder().method(
+                httpMethod,
+                RequestBody.create(MediaType.parse(contentType), body))
+                .header("Authorization", KompostFiles.auth)
                 .url(KompostFiles.url +theFile);
         OkHttpClient client = new OkHttpClient();
         return client.newCall(requestBuilder.build()).execute();
