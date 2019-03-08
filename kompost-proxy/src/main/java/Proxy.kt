@@ -74,7 +74,7 @@ internal class Routes : RouteBuilder() {
                             OtherBuild(
                                     theFile,
                                     httpMethod,
-                                    `in`.getHeader(Exchange.CONTENT_TYPE, String::class.java),
+                                    `in`.getHeader(Exchange.CONTENT_TYPE, String::class.java) ?:"",
                                     `in`.getBody(String::class.java))
                         }
 
