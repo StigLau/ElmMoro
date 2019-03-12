@@ -15,7 +15,7 @@ kompoUrl =
 
 
 kvaernUrl =
-    "http://localhost:3000"
+    "http://localhost:8001/kvaern/"
 
 autHeaders = []
 

@@ -239,7 +239,7 @@ update msg model =
                     )
 
         ChangedUrl url ->
-            let _ = Debug.log "Tried ChangedUrl" url
+            let _ = Debug.log "ChangedUrl" url
             in changeRouteTo (AppRouting.fromUrl url) model
 
 

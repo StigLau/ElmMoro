@@ -43,8 +43,12 @@ internal class Routes : RouteBuilder() {
         from("jetty:http://0.0.0.0:8001/src/?matchOnUriPrefix=true")
                 .setBody(MethodCallExpression(ElmFiles("src")))
 
+        from("jetty:http://0.0.0.0:8001/kvaern/?matchOnUriPrefix=true")
+                .log("Incoming Body: \${body}")
+                .process(fetchFilesAdapter("http://localhost:4567"))
+
         from("jetty:http://0.0.0.0:8001/kompost/?matchOnUriPrefix=true")
-                .process(fetchFilesAdapter())
+                .process(fetchFilesAdapter(KompostFiles.url))
                 .removeHeaders("*",
                         CONTENT_TYPE,
                         "Cache-Control",
@@ -58,16 +62,16 @@ internal class Routes : RouteBuilder() {
                 .removeHeaders("*")
     }
 
-    private fun fetchFilesAdapter(): Processor =
+    private fun fetchFilesAdapter(remoteUrl:String): Processor =
             Processor { exchange ->
                 val `in` = exchange.getIn()
                 val httpMethod = `in`.getHeader(Exchange.HTTP_METHOD, String::class.java)
-                val theFile = `in`.getHeader(Exchange.HTTP_PATH, String::class.java)
+                val theFile = remoteUrl + `in`.getHeader(Exchange.HTTP_PATH, String::class.java)
 
                 val request: Request =
                         if (httpMethod == "GET") {
                             Request.Builder().get()
-                                    .url(KompostFiles.url + theFile)
+                                    .url(theFile)
                                     .header("Authorization", KompostFiles.auth)
                                     .build()
                         } else {
@@ -103,6 +107,6 @@ internal class Routes : RouteBuilder() {
                     httpMethod,
                     RequestBody.create(MediaType.parse(contentType), body))
                     .header("Authorization", KompostFiles.auth)
-                    .url(KompostFiles.url + theFile)
+                    .url(theFile)
                     .build()
 }
