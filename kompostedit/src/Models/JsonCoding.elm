@@ -32,8 +32,8 @@ kompositionEncoder kompo kompoUrl =
                     [ ( "_rev", JsonE.string theRevision ) ]
 
         sources =
-            --[ ( "sources", JsonE.list <| List.map (\n -> encodeSource kompoUrl n) kompo.sources ) ] -- TODO Fix this back!
-            encode 0 (list int [1,3,4])
+            [ ( "sources", (encodeSourceList kompoUrl kompo.sources ))]
+            --[ ( "sources", (encodeConfig kompo.config  ))]
 
         config =
             case kompo.dvlType of
@@ -56,6 +56,10 @@ kompositionEncoder kompo kompoUrl =
             --( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
             encode 0 (list int [1,3,4])
             ]
+
+        woppie = revision ++ config ++ beatpattern
+                 --++ segments
+                                 ++ sources
     in
     Debug.log "Persisting"
         JsonE.encode
@@ -80,6 +84,8 @@ searchEncoder typeIdentifier =
 
 
 
+encodeSourceList: String -> List Source -> List  JsonE.Value
+encodeSourceList kompoUrl = List.map (\n -> encodeSource kompoUrl n)
 
 
 couchServerStatusDecoder : JsonD.Decoder CouchStatusMessage
