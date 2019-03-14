@@ -20,8 +20,8 @@ kompositionDecoder =
         |> optional "beatpattern" (JsonD.map Just beatpatternDecoder) Nothing
 
 
-kompositionEncoder : Komposition -> String -> String
-kompositionEncoder kompo kompoUrl =
+kompositionEncoder : Komposition -> String
+kompositionEncoder kompo =
     let
         revision =
             case kompo.revision of
@@ -32,8 +32,7 @@ kompositionEncoder kompo kompoUrl =
                     [ ( "_rev", JsonE.string theRevision ) ]
 
         sources =
-            [ ( "sources", (encodeSourceList kompoUrl kompo.sources ))]
-            --[ ( "sources", (encodeConfig kompo.config  ))]
+            [ ( "sources", (list encodeSource kompo.sources))]
 
         config =
             case kompo.dvlType of
@@ -52,20 +51,10 @@ kompositionEncoder kompo kompoUrl =
                     []
 
         segments =
-            [ -- TODO Fix this back!
-            --( "segments", JsonE.list <| List.map encodeSegment kompo.segments )
-            encode 0 (list int [1,3,4])
-            ]
+            [ ( "segments",  (list encodeSegment kompo.segments))]
 
-        woppie = revision ++ config ++ beatpattern
-                 --++ segments
-                                 ++ sources
     in
-    Debug.log "Persisting"
-        JsonE.encode
-        0
-    <|
-        JsonE.object
+        JsonE.encode 0 <| JsonE.object
             ([ ( "_id", JsonE.string kompo.name )
              , ( "type", JsonE.string kompo.dvlType )
              , ( "bpm", JsonE.float kompo.bpm )
@@ -73,20 +62,14 @@ kompositionEncoder kompo kompoUrl =
                 ++ revision
                 ++ config
                 ++ beatpattern
---                ++ segments
---                ++ sources
+                ++ segments
+                ++ sources
             )
 
 --, \"use_index\":\"komposition-index\"
 searchEncoder : String -> String
 searchEncoder typeIdentifier =
     "{\"selector\": {\"_id\": {\"$gt\": \"0\"}, \"type\": \"" ++ typeIdentifier ++ "\"}, \"fields\": [ \"_id\", \"_rev\" ], \"sort\": [ {\"_id\": \"asc\"} ] }"
-
-
-
-encodeSourceList: String -> List Source -> List  JsonE.Value
-encodeSourceList kompoUrl = List.map (\n -> encodeSource kompoUrl n)
-
 
 couchServerStatusDecoder : JsonD.Decoder CouchStatusMessage
 couchServerStatusDecoder =
@@ -145,20 +128,11 @@ encodeBeatPattern beatpattern =
         ]
 
 
-encodeSource : String -> Source -> JsonE.Value
-encodeSource kompoUrl source =
-    let
-        url =
-            case source.url of
-                "" ->
-                    kompoUrl ++ source.id
-
-                theUrl ->
-                    theUrl
-    in
+encodeSource : Source -> JsonE.Value
+encodeSource source =
     JsonE.object
         [ ( "id", JsonE.string source.id )
-        , ( "url", JsonE.string url )
+        , ( "url", JsonE.string source.url )
         , ( "startingOffset", JsonE.float source.startingOffset )
         , ( "checksums", JsonE.string source.checksum )
         , ( "extension", JsonE.string source.extensionType )

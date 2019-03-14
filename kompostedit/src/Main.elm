@@ -8,6 +8,7 @@ import Source.SourcesUI exposing (update)
 import Html exposing (Html, div, text)
 import Models.BaseModel exposing (..)
 import Models.KompostApi as KompostApi exposing (..)
+import Models.JsonCoding as JsonCoding
 import Models.Msg exposing (Msg(..))
 import Browser
 import Browser.Navigation as Nav
@@ -190,6 +191,8 @@ update msg model =
 
 
         CreateVideo ->
+          let _ = Debug.log "Creating video" model.kompost
+          in
             ( model
             , createVideo model.kompost
             )
@@ -287,7 +290,7 @@ findOutWhatPageToView model =
                     pageWrapper <| UI.KompostUI.kompost model
 
                 Page.KompositionJsonUI ->
-                    text (KompostApi.kompostJson model.kompost)
+                    text (JsonCoding.kompositionEncoder model.kompost)
 
                 Page.SegmentUI ->
                     Html.map SegmentMsg (pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)

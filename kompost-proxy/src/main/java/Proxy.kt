@@ -44,7 +44,6 @@ internal class Routes : RouteBuilder() {
                 .setBody(MethodCallExpression(ElmFiles("src")))
 
         from("jetty:http://0.0.0.0:8001/kvaern/?matchOnUriPrefix=true")
-                .log("Incoming Body: \${body}")
                 .process(fetchFilesAdapter("http://localhost:4567"))
 
         from("jetty:http://0.0.0.0:8001/kompost/?matchOnUriPrefix=true")

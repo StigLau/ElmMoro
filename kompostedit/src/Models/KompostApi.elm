@@ -1,4 +1,4 @@
-module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchETagHeader, fetchKompositionList, getDvlSegmentList, getKomposition, kompoUrl, kompostJson, updateKompo)
+module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchETagHeader, fetchKompositionList, getDvlSegmentList, getKomposition, kompoUrl, updateKompo)
 
 import Dict
 import Http
@@ -72,7 +72,7 @@ getDvlSegmentList id =
 
 createKompo : Komposition -> Cmd Msg
 createKompo komposition =
-    Http.post kompoUrl (Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl) couchServerStatusDecoder
+    Http.post kompoUrl (Http.stringBody "application/json" <| kompositionEncoder komposition) couchServerStatusDecoder
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
 
@@ -83,7 +83,7 @@ createVideo komposition =
         { base
             | method = "POST"
             , url = kvaernUrl ++ "/kvaern/createvideo?" ++ komposition.name
-            , body = Http.stringBody "application/json" <| kompostJson komposition
+            , body = Http.stringBody "application/json" <| kompositionEncoder komposition
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
@@ -96,7 +96,7 @@ updateKompo komposition =
             | method = "PUT"
             , headers = autHeaders
             , url = kompoUrl ++ komposition.name
-            , body = Http.stringBody "application/json" <| kompositionEncoder komposition kompoUrl
+            , body = Http.stringBody "application/json" <| kompositionEncoder komposition
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
@@ -108,7 +108,7 @@ deleteKompo komposition =
         { base
             | method = "DELETE"
             , headers = autHeaders
-            , url = kompoUrl ++ komposition.name ++ "?rev=" ++ komposition.revision
+            , url = komposition.name ++ "?rev=" ++ komposition.revision
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
@@ -116,7 +116,7 @@ deleteKompo komposition =
 
 fetchETagHeader : String -> Cmd Msg
 fetchETagHeader id =
-    Http.send ETagResponse (getHeader "etag" (kompoUrl ++ id))
+    Http.send ETagResponse (getHeader "etag" id)
 
 
 getHeader : String -> String -> Http.Request String
@@ -147,8 +147,3 @@ stripHyphens input =
     input
         |> String.dropRight 1
         |> String.dropLeft 1
-
-
-kompostJson : Komposition -> String
-kompostJson kompost =
-    kompositionEncoder { kompost | sources = kompost.sources } kompoUrl
