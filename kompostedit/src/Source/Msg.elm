@@ -6,6 +6,7 @@ type Msg
     | FetchAndLoadMediaFile String
     | SaveSource
     | DeleteSource String
+    | JumpToSourceKomposition String
     | SetChecksum String
     | OrderChecksumEvalutation String
 

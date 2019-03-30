@@ -121,6 +121,11 @@ update msg model =
         OrderChecksumEvalutation id ->
             ( model, fetchETagHeader id, Nothing)
 
+        JumpToSourceKomposition mediaId ->
+            let _ = Debug.log "Navigating to Komposition" mediaId
+            in ({ model | activePage = Page.KompostUI}, Models.KompostApi.getKomposition mediaId, Nothing)
+
+
 editSpecifics : Model -> Html Msg
 editSpecifics model =
     let
@@ -138,7 +143,10 @@ editSpecifics model =
     div []
         [ h1 [] [ Checkbox.checkbox [ Checkbox.onCheck SetSnippet, Checkbox.checked mediaFile.isSnippet ] ("Editing " ++ sourceSnippetText) ]
         , Form.form [ class "container" ]
-            [ wrapping "ID" (Input.text [ Input.id "id", Input.value mediaFile.id, Input.onInput SetId ])
+            [ Form.row []
+                [ Form.colLabel [Col.xs2  ][ text "ID" ]
+                , Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value mediaFile.id, Input.onInput SetId ])]
+                , Form.col [Col.xs1] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "JumpTo" ] ] ]
             , wrapping "URL" (Input.text [ Input.id "URLz", Input.value mediaFile.url, Input.onInput SetURL ])
             , wrapping "Starting Offset"
                 (Input.text
