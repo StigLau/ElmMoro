@@ -144,9 +144,10 @@ editSpecifics model =
         [ h1 [] [ Checkbox.checkbox [ Checkbox.onCheck SetSnippet, Checkbox.checked mediaFile.isSnippet ] ("Editing " ++ sourceSnippetText) ]
         , Form.form [ class "container" ]
             [ Form.row []
-                [ Form.colLabel [Col.xs2  ][ text "ID" ]
+                [ Form.colLabel [Col.xs3  ][ text "ID" ]
+                , Form.col [Col.xs1] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "Navigate To" ] ]
                 , Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value mediaFile.id, Input.onInput SetId ])]
-                , Form.col [Col.xs1] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "JumpTo" ] ] ]
+                ]
             , wrapping "URL" (Input.text [ Input.id "URLz", Input.value mediaFile.url, Input.onInput SetURL ])
             , wrapping "Starting Offset"
                 (Input.text
