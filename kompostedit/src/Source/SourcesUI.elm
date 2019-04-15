@@ -26,13 +26,6 @@ update msg model =
             in
             ( setSource { source | id = id } model, Cmd.none, Nothing )
 
-        SetURL url ->
-            let
-                source =
-                    model.editingMediaFile
-            in
-            ( setSource { source | url = url } model, Cmd.none, Nothing )
-
         SetSnippet isSnippet ->
             let
                 source =
@@ -76,7 +69,7 @@ update msg model =
                             Debug.log "We found preexisting media file" mediaFile
 
                         _ ->
-                            Source "" "" 0 "" "" "" False
+                            Source "" 0 "" "" "" False
             in
             ( { model | editingMediaFile = theMediaFile }, Cmd.none, Just (OutNavigateTo Page.MediaFileUI) )
 
@@ -148,7 +141,6 @@ editSpecifics model =
                 , Form.col [Col.xs1] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "Navigate To" ] ]
                 , Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value mediaFile.id, Input.onInput SetId ])]
                 ]
-            , wrapping "URL" (Input.text [ Input.id "URLz", Input.value mediaFile.url, Input.onInput SetURL ])
             , wrapping "Starting Offset"
                 (Input.text
                     [ Input.id "Starting Offset"

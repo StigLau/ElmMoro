@@ -14,6 +14,5 @@ type Msg
     | SetSourceExtensionType String
 
     | SetId String
-    | SetURL String
     | SetOffset String
     | SetSnippet Bool

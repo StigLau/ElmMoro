@@ -94,7 +94,6 @@ sourceDecoder : JsonD.Decoder Source
 sourceDecoder =
     JsonD.succeed Source
         |> required "id" JsonD.string
-        |> required "url" JsonD.string
         |> required "startingOffset" JsonD.float
         |> required "checksums" JsonD.string
         |> required "extension" JsonD.string
@@ -132,7 +131,7 @@ encodeSource : Source -> JsonE.Value
 encodeSource source =
     JsonE.object
         [ ( "id", JsonE.string source.id )
-        , ( "url", JsonE.string source.url )
+        , ( "url", JsonE.string ( "https://heap.kompo.se/" ++ source.id)   )
         , ( "startingOffset", JsonE.float source.startingOffset )
         , ( "checksums", JsonE.string source.checksum )
         , ( "extension", JsonE.string source.extensionType )
