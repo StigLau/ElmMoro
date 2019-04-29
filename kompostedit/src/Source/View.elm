@@ -13,7 +13,7 @@ sourceNewButton =
             [ Grid.col [] []
             , Grid.col [] []
             , Grid.col []
-                [ Html.map Models.Msg.SourceMsg (Button.button [ Button.secondary, Button.onClick (Source.Msg.EditMediaFile "") ] [ text "New Source" ])
+                [ Html.map Models.Msg.SourceMsg (Button.button [ Button.primary, Button.small, Button.onClick (Source.Msg.EditMediaFile "") ] [ text "New Source" ])
                 ]
             ]
 

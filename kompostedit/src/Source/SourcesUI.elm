@@ -6,12 +6,12 @@ import Bootstrap.Form.Checkbox as Checkbox
 import Bootstrap.Form.Input as Input
 import Bootstrap.Form.Select as Select
 import Bootstrap.Grid.Col as Col
-import Common.StaticVariables exposing (evaluateMediaType)
+import Common.StaticVariables exposing (evaluateMediaType, videoTag)
 import Common.UIFunctions exposing (selectItems)
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Models.BaseModel exposing (Komposition, Model, OutMsg(..), Source)
-import Models.KompostApi exposing (fetchETagHeader, getDvlSegmentList)
+import Models.KompostApi exposing (fetchETagHeader, fetchKompositionList)
 import Models.Msg
 import Navigation.Page as Page
 import Source.Msg exposing (Msg(..))
@@ -19,7 +19,7 @@ import Source.Msg exposing (Msg(..))
 update : Source.Msg.Msg -> Model -> ( Model, Cmd Models.Msg.Msg, Maybe OutMsg )
 update msg model =
     case msg of
-        SetId id ->
+        SetSourceId id ->
             let
                 source =
                     model.editingMediaFile
@@ -83,7 +83,7 @@ update msg model =
                         _ ->
                             Debug.log "Reusing Editing Media File" model.editingMediaFile
             in
-            ( model, getDvlSegmentList id, Nothing )
+            ( model, fetchKompositionList videoTag, Nothing )
 
         SaveSource ->
             case containsMediaFile model.editingMediaFile.id model.kompost of
@@ -139,7 +139,11 @@ editSpecifics model =
             [ Form.row []
                 [ Form.colLabel [Col.xs3  ][ text "ID" ]
                 , Form.col [Col.xs1] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "Navigate To" ] ]
-                , Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value mediaFile.id, Input.onInput SetId ])]
+                , Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value mediaFile.id, Input.onInput SetSourceId ])]
+
+                , Form.col [Col.xs1] [ Button.button [ Button.primary, Button.small, Button.onClick (FetchAndLoadMediaFile mediaFile.id)] [ text "Fetch alternatives" ] ] --Ser ut som denne kanskje ikke trengs (?)
+
+                , Form.col  [] [sourceIdSelection model.segment.sourceId model.kompost.sources]
                 ]
             , wrapping "Starting Offset"
                 (Input.text
@@ -204,3 +208,10 @@ deleteMediaFileFromKomposition mediaFile komposition =
 
 standardFloat value =
     Maybe.withDefault 0 (String.toFloat value)
+
+
+sourceIdSelection : String -> List Source -> Html Msg --Note that this is a plain copy of SegmentUI sourceIdSelection
+sourceIdSelection sourceId sourceList =
+    Select.select [ Select.id "sourceId", Select.onChange SetSourceId ]
+        (selectItems sourceId (List.map (\segment -> segment.id) sourceList))
+

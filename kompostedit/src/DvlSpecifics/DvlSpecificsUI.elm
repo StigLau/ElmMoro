@@ -55,8 +55,6 @@ editSpecifics kompo =
                         , (wrapping "Master BPM" (Input.number [ Input.id "masterbpm", Input.value (String.fromFloat bpm.masterBPM), Input.onInput DvlSpecifics.Msg.SetMasterBpm ]))
                         ]
 
-                _ ->
-                    div [] []
     in
     div []
         [ specificsUI

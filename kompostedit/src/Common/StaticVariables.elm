@@ -1,16 +1,19 @@
-module Common.StaticVariables exposing (evaluateMediaType, extensionTypes, isKomposition, komposionTypes, mediaTypes)
+module Common.StaticVariables exposing (evaluateMediaType, extensionTypes, isKomposition, komposionTypes, mediaTypes, audioTag, videoTag, kompositionTag)
 
 import Models.BaseModel exposing (Komposition)
 
 
 komposionTypes : List String
 komposionTypes =
-    [ "Audio", "Video", "Komposition" ]
+    [ audioTag, videoTag, kompositionTag ]
 
+audioTag = "Audio"
+videoTag = "Video"
+kompositionTag = "Komposition"
 
 isKomposition : Komposition -> Bool
 isKomposition komposition =
-    komposition.dvlType == "Komposition"
+    komposition.dvlType == kompositionTag
 
 
 extensionTypes =

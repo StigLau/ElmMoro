@@ -13,6 +13,6 @@ type Msg
     | SetSourceMediaType String
     | SetSourceExtensionType String
 
-    | SetId String
+    | SetSourceId String
     | SetOffset String
     | SetSnippet Bool

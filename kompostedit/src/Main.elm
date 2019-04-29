@@ -2,6 +2,7 @@ module Main exposing (init, main, update, view)
 
 import Bootstrap.CDN as CDN
 import Bootstrap.Grid as Grid
+import Common.StaticVariables exposing (kompositionTag)
 import DvlSpecifics.DvlSpecificsModel exposing (update)
 import DvlSpecifics.DvlSpecificsUI
 import Source.SourcesUI exposing (update)
@@ -262,11 +263,6 @@ changeRouteTo maybePage model =
                     ( model, AppRouting.replaceUrl anotherPage model.key)
 
 
-updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
-updateWith toModel toMsg model ( subModel, subCmd ) =
-    ( toModel subModel
-    , Cmd.map toMsg subCmd
-    )
 
 ---- VIEW Base ----
 
@@ -320,7 +316,7 @@ pageWrapper forwaredPage =
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url navKey =
     (  emptyModel navKey url
-    , Cmd.batch [ fetchKompositionList "Komposition" ]
+    , Cmd.batch [ fetchKompositionList kompositionTag ]
     )
 
 main =
