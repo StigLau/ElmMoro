@@ -38,7 +38,7 @@ editSpecifics kompo =
 
         configUI =
             case kompo.dvlType of
-                "Komposition" ->
+                kompositionTag ->
                     Form.form [ class "container" ]
                         [ h3 [] [ text "Video Config" ]
                         , (wrapping "Width" (Input.number [ Input.id "width", Input.value (String.fromInt kompo.config.width), Input.onInput DvlSpecifics.Msg.SetWidth ]))
