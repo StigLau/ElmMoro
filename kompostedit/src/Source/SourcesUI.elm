@@ -10,7 +10,7 @@ import Common.StaticVariables exposing (evaluateMediaType, videoTag)
 import Common.UIFunctions exposing (selectItems)
 import Html exposing (..)
 import Html.Attributes exposing (class)
-import Models.BaseModel exposing (Komposition, Model, OutMsg(..), Source)
+import Models.BaseModel exposing (Komposition, Model, OutMsg(..), Row, Source)
 import Models.KompostApi exposing (fetchETagHeader, fetchKompositionList)
 import Models.Msg
 import Navigation.Page as Page
@@ -83,7 +83,7 @@ update msg model =
                         _ ->
                             Debug.log "Reusing Editing Media File" model.editingMediaFile
             in
-            ( model, fetchKompositionList videoTag, Nothing )
+            ( model, fetchKompositionList model.editingMediaFile.mediaType, Nothing )
 
         SaveSource ->
             case containsMediaFile model.editingMediaFile.id model.kompost of
@@ -137,13 +137,14 @@ editSpecifics model =
         [ h1 [] [ Checkbox.checkbox [ Checkbox.onCheck SetSnippet, Checkbox.checked mediaFile.isSnippet ] ("Editing " ++ sourceSnippetText) ]
         , Form.form [ class "container" ]
             [ Form.row []
-                [ Form.colLabel [Col.xs3  ][ text "ID" ]
-                , Form.col [Col.xs1] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "Navigate To" ] ]
+                [ Form.colLabel [Col.xs1  ][ text "ID" ] --Lage et kombinasjonsfelt - hvor man både kan søke/få opp en list, eller skrive inn noe selv...
                 , Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value mediaFile.id, Input.onInput SetSourceId ])]
-
-                , Form.col [Col.xs1] [ Button.button [ Button.primary, Button.small, Button.onClick (FetchAndLoadMediaFile mediaFile.id)] [ text "Fetch alternatives" ] ] --Ser ut som denne kanskje ikke trengs (?)
-
-                , Form.col  [] [sourceIdSelection model.segment.sourceId model.kompost.sources]
+                , Form.col [Col.xs1] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "Navigate To" ] ]
+                ]
+            , Form.row []
+                [ Form.col [Col.xs7] [sourceIdSelection model.segment.sourceId model.listings.docs]
+                , Form.col [Col.xs2] [ Select.select [ Select.id "Media type", Select.onChange SetSourceMediaType] (selectItems mediaFile.mediaType Common.StaticVariables.komposionTypes)]
+                , Form.col [Col.xs3] [Button.button [ Button.primary, Button.small, Button.onClick (FetchAndLoadMediaFile mediaFile.id)] [ text "Fetch alternatives" ]]
                 ]
             , wrapping "Starting Offset"
                 (Input.text
@@ -156,10 +157,6 @@ editSpecifics model =
             , wrapping "Extension Type"
                 (Select.select [ Select.id "segmentId", Select.onChange SetSourceExtensionType ]
                     (selectItems mediaFile.extensionType Common.StaticVariables.extensionTypes)
-                )
-            , wrapping "Media type"
-                (Select.select [ Select.id "Media type", Select.onChange SetSourceMediaType ]
-                    (selectItems mediaFile.mediaType Common.StaticVariables.mediaTypes)
                 )
             , Form.row []
                 [ Form.colLabel [ Col.xs4 ]
@@ -210,7 +207,7 @@ standardFloat value =
     Maybe.withDefault 0 (String.toFloat value)
 
 
-sourceIdSelection : String -> List Source -> Html Msg --Note that this is a plain copy of SegmentUI sourceIdSelection
+sourceIdSelection : String -> List Row -> Html Msg --Note that this is a plain copy of SegmentUI sourceIdSelection
 sourceIdSelection sourceId sourceList =
     Select.select [ Select.id "sourceId", Select.onChange SetSourceId ]
         (selectItems sourceId (List.map (\segment -> segment.id) sourceList))

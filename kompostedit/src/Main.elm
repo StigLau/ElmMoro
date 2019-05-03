@@ -2,7 +2,7 @@ module Main exposing (init, main, update, view)
 
 import Bootstrap.CDN as CDN
 import Bootstrap.Grid as Grid
-import Common.StaticVariables exposing (kompositionTag)
+import Common.StaticVariables exposing (audioTag, kompositionTag)
 import DvlSpecifics.DvlSpecificsModel exposing (update)
 import DvlSpecifics.DvlSpecificsUI
 import Source.SourcesUI exposing (update)
@@ -346,7 +346,7 @@ emptyModel  navKey theUrl =
     , activePage = Page.ListingsUI
     , editableSegment = False
     , segment = emptySegment
-    , editingMediaFile = Source "" 0 "" "" "" False
+    , editingMediaFile = Source "" 0 "" "" audioTag False
     , subSegmentList = Set.empty
     , url = theUrl
     , key = navKey
