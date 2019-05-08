@@ -1,5 +1,6 @@
 module Main exposing (init, main, update, view)
 
+import Common.AutoComplete
 import Bootstrap.CDN as CDN
 import Bootstrap.Grid as Grid
 import Common.StaticVariables exposing (audioTag, kompositionTag)
@@ -350,6 +351,8 @@ emptyModel  navKey theUrl =
     , subSegmentList = Set.empty
     , url = theUrl
     , key = navKey
+    , accessibleAutocomplete = Common.AutoComplete.init
+    , currentFocusAutoComplete = None
     }
 
 

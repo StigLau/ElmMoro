@@ -10,7 +10,9 @@ import Common.StaticVariables exposing (evaluateMediaType, videoTag)
 import Common.UIFunctions exposing (selectItems)
 import Html exposing (..)
 import Html.Attributes exposing (class)
-import Models.BaseModel exposing (Komposition, Model, OutMsg(..), Row, Source)
+import Html.Attributes as Attrs
+import Common.AutoComplete
+import Models.BaseModel exposing (Focused(..), Komposition, Model, OutMsg(..), Row, Source)
 import Models.KompostApi exposing (fetchETagHeader, fetchKompositionList)
 import Models.Msg
 import Navigation.Page as Page
@@ -118,6 +120,21 @@ update msg model =
             let _ = Debug.log "Navigating to Komposition" mediaId
             in ({ model | activePage = Page.KompostUI}, Models.KompostApi.getKomposition mediaId, Nothing)
 
+        AutoComplete autoMsg ->
+            let
+                mods =
+                    { model
+                        | accessibleAutocomplete =
+                            Tuple.first (Common.AutoComplete.update autoMsg model.accessibleAutocomplete)
+                    }
+            in
+                case autoMsg of
+                    Common.AutoComplete.OnFocus ->
+                        ({ mods| currentFocusAutoComplete = Simple }, Cmd.none, Nothing)
+
+                    _ ->
+                        ( mods, Cmd.none, Nothing)
+
 
 editSpecifics : Model -> Html Msg
 editSpecifics model =
@@ -135,6 +152,8 @@ editSpecifics model =
     in
     div []
         [ h1 [] [ Checkbox.checkbox [ Checkbox.onCheck SetSnippet, Checkbox.checked mediaFile.isSnippet ] ("Editing " ++ sourceSnippetText) ]
+        , Html.div [ Attrs.class "example-autocomplete" ] [ Html.map AutoComplete (Common.AutoComplete.view model.accessibleAutocomplete) ]
+
         , Form.form [ class "container" ]
             [ Form.row []
                 [ Form.colLabel [Col.xs1  ][ text "ID" ] --Lage et kombinasjonsfelt - hvor man både kan søke/få opp en list, eller skrive inn noe selv...

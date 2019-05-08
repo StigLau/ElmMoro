@@ -1,5 +1,6 @@
 module Source.Msg exposing (..)
 
+import Common.AutoComplete
 
 type Msg
     = EditMediaFile String
@@ -16,3 +17,4 @@ type Msg
     | SetSourceId String
     | SetOffset String
     | SetSnippet Bool
+    | AutoComplete Common.AutoComplete.Msg

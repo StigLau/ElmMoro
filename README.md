@@ -27,3 +27,20 @@ kubectl describe deployments komposter
 
 kubectl expose deployment komposter --type=LoadBalancer --name=komposter-service
 https://kubernetes.io/docs/tutorials/stateless-application/expose-external-ip-address/
+
+All Your Base
+=============
+https://e82fe3cb-c41e-4b17-b0d1-a5f3d0bcb833-bluemix.cloudant.com/dashboard.html#/_all_dbs
+
+
+Ting som må fikses:
+* Editing Source -> Evaluate Checksum. Ikke testet ut ordentlig
+* Komposition; sider funker ikke
+    * Store Komposition
+    * Delete Komposition
+    * Show Json
+    * Create video
+    
+    
+Nye features:
+    * Bruke bare ID til sources. Segmenter, Sources osv. ikke bruke fulle URL'er

@@ -1,9 +1,10 @@
-module Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Komposition, Model, OutMsg(..), Row, Segment, SegmentGap, Source, VideoConfig)
+module Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Komposition, Model, OutMsg(..), Row, Segment, SegmentGap, Source, VideoConfig, Focused(..))
 
 import Navigation.Page exposing (Page)
 import Set
 import Url exposing (Url)
 import Browser.Navigation
+import Common.AutoComplete as AutoComplete exposing (Person)
 
 
 
@@ -18,7 +19,13 @@ type alias Model =
     , subSegmentList : Set.Set String
     , key : Browser.Navigation.Key
     , url : Url.Url
+    , accessibleAutocomplete : AutoComplete.Model
+    , currentFocusAutoComplete : Focused
     }
+
+type Focused
+    = Simple
+    | None
 
 
 type alias Komposition =
