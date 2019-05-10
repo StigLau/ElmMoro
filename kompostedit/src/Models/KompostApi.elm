@@ -108,7 +108,7 @@ deleteKompo komposition =
         { base
             | method = "DELETE"
             , headers = autHeaders
-            , url = komposition.name ++ "?rev=" ++ komposition.revision
+            , url = kompoUrl ++ komposition.name ++ "?rev=" ++ komposition.revision
         }
         |> RemoteData.sendRequest
         |> Cmd.map CouchServerStatus
