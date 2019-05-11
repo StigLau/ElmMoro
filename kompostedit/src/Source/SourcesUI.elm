@@ -152,18 +152,14 @@ editSpecifics model =
     in
     div []
         [ h1 [] [ Checkbox.checkbox [ Checkbox.onCheck SetSnippet, Checkbox.checked mediaFile.isSnippet ] ("Editing " ++ sourceSnippetText) ]
-        , Html.div [ Attrs.class "example-autocomplete" ] [ Html.map AutoComplete (Common.AutoComplete.view model.accessibleAutocomplete) ]
 
         , Form.form [ class "container" ]
-            [ Form.row []
-                [ Form.colLabel [Col.xs1  ][ text "ID" ] --Lage et kombinasjonsfelt - hvor man både kan søke/få opp en list, eller skrive inn noe selv...
-                , Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value mediaFile.id, Input.onInput SetSourceId ])]
-                , Form.col [Col.xs1] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "Navigate To" ] ]
-                ]
+            [ Form.row [] [ Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value mediaFile.id, Input.onInput SetSourceId ])]]
+            , Form.row [] [ Form.col [Col.xs2] [ Select.select [ Select.id "Media type", Select.onChange SetSourceMediaType] (selectItems mediaFile.mediaType Common.StaticVariables.komposionTypes)]
+               , Form.col [Col.xs2] [Button.button [ Button.primary, Button.small, Button.onClick (FetchAndLoadMediaFile mediaFile.id)] [ text "Fetch alternatives" ]] ]
             , Form.row []
                 [ Form.col [Col.xs7] [sourceIdSelection model.segment.sourceId model.listings.docs]
-                , Form.col [Col.xs2] [ Select.select [ Select.id "Media type", Select.onChange SetSourceMediaType] (selectItems mediaFile.mediaType Common.StaticVariables.komposionTypes)]
-                , Form.col [Col.xs3] [Button.button [ Button.primary, Button.small, Button.onClick (FetchAndLoadMediaFile mediaFile.id)] [ text "Fetch alternatives" ]]
+                , Form.col [Col.xs2] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "Navigate To" ] ]
                 ]
             , wrapping "Starting Offset"
                 (Input.text
@@ -189,6 +185,7 @@ editSpecifics model =
                 , Form.col []
                     [ Button.button [ Button.small, Button.onClick (OrderChecksumEvalutation mediaFile.id) ] [ text "Evaluate Checksum" ] ]
                 ]
+            , Html.div [ Attrs.class "example-autocomplete" ] [ Html.map AutoComplete (Common.AutoComplete.view model.accessibleAutocomplete) ]
             ]
         ]
 
