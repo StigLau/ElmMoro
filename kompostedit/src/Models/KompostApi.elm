@@ -120,11 +120,11 @@ fetchETagHeader id =
 
 
 getHeader : String -> String -> Http.Request String
-getHeader name url =
+getHeader name urlId =
     Http.request
         { method = "GET"
         , headers = autHeaders
-        , url = url
+        , url = kompoUrl ++ urlId
         , body = Http.emptyBody
         , expect = Http.expectStringResponse (extractEtagAndChecksum name)
         , timeout = Nothing
