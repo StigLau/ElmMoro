@@ -88,6 +88,15 @@ update msg model =
             , replaceUrl Page.KompostUI model.key
             )
 
+        SourceUpdated webKomposition ->
+            ( case RemoteData.toMaybe webKomposition of
+                  Just kompost ->
+                       { model | subSegmentList = Set.fromList (List.map (\segment -> segment.id) kompost.segments) }
+                  _ ->
+                      model
+            , replaceUrl Page.KompostUI model.key
+            )
+
         SegmentListUpdated webKomposition ->
             let
                 newModel =
@@ -180,7 +189,7 @@ update msg model =
 
         SegmentMsg theMsg ->
             let
-                ( newModel, childMsg ) =
+                ( newModel, command, childMsg ) =
                     Segment.Model.update theMsg model
 
             in
@@ -189,7 +198,7 @@ update msg model =
                         ( { newModel | activePage = page }, Cmd.none )
 
                     Nothing ->
-                        ( newModel, Cmd.none )
+                        ( newModel, command )
 
 
         CreateVideo ->
@@ -290,7 +299,7 @@ findOutWhatPageToView model =
                     text (JsonCoding.kompositionEncoder model.kompost)
 
                 Page.SegmentUI ->
-                    Html.map SegmentMsg (pageWrapper <| Segment.SegmentUI.segmentForm model model.editableSegment)
+                    Html.map SegmentMsg (pageWrapper <| Segment.SegmentUI.segmentForm model)
 
                 Page.DvlSpecificsUI ->
                     Html.map DvlSpecificsMsg (pageWrapper <| DvlSpecifics.DvlSpecificsUI.editSpecifics model.kompost)
@@ -310,7 +319,6 @@ pageWrapper forwaredPage =
         , CDN.fontAwesome
         , forwaredPage
         ]
-
 
 
 ---- PROGRAM ----

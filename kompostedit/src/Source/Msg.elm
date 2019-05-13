@@ -4,7 +4,7 @@ import Common.AutoComplete
 
 type Msg
     = EditMediaFile String
-    | FetchAndLoadMediaFile String
+    | FetchSourceList String
     | SaveSource
     | DeleteSource String
     | JumpToSourceKomposition String

@@ -38,7 +38,7 @@ editSpecifics kompo =
 
         configUI =
             case kompo.dvlType of
-                kompositionTag ->
+                "Komposition" ->
                     Form.form [ class "container" ]
                         [ h3 [] [ text "Video Config" ]
                         , (wrapping "Width" (Input.number [ Input.id "width", Input.value (String.fromInt kompo.config.width), Input.onInput DvlSpecifics.Msg.SetWidth ]))
@@ -54,6 +54,7 @@ editSpecifics kompo =
                         , (wrapping "To BPM" (Input.number [ Input.id "tobpm", Input.value (String.fromInt bpm.toBeat), Input.onInput DvlSpecifics.Msg.SetToBpm ]))
                         , (wrapping "Master BPM" (Input.number [ Input.id "masterbpm", Input.value (String.fromFloat bpm.masterBPM), Input.onInput DvlSpecifics.Msg.SetMasterBpm ]))
                         ]
+                _ -> Form.form [] []
 
     in
     div []

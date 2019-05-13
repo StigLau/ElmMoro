@@ -9,3 +9,4 @@ type Msg
     | EditSegment String
     | UpdateSegment
     | DeleteSegment
+    | FetchAndLoadMediaFile String

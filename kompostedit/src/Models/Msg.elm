@@ -23,6 +23,7 @@ type Msg
     | StoreKomposition
     | DeleteKomposition
     | KompositionUpdated (WebData Komposition)
+    | SourceUpdated (WebData Komposition)
     | SegmentListUpdated (WebData Komposition)
     | CreateSegment
     | CouchServerStatus (WebData CouchStatusMessage)

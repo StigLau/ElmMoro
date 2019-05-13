@@ -2,7 +2,7 @@ module Source.View exposing (..)
 
 import Bootstrap.Button as Button
 import Bootstrap.Grid as Grid
-import Html exposing (Html, div, h4, text)
+import Html exposing (Html, div, text)
 import Models.BaseModel exposing (Source)
 import Models.Msg exposing (Msg(..))
 import Source.Msg exposing (Msg(..))
@@ -32,12 +32,5 @@ showSingleSource source =
         [ Grid.col []
             [ Html.map SourceMsg
                 (Button.button [ Button.secondary, Button.small, Button.onClick (EditMediaFile source.id) ] [ text source.id ])
-            ]
-        , Grid.col []
-            [ Html.map SourceMsg
-                (Button.button
-                    [ Button.secondary, Button.small, Button.onClick (FetchAndLoadMediaFile source.id) ]
-                    [ text "Fetch" ]
-                )
             ]
         ]

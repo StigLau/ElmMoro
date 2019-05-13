@@ -75,17 +75,8 @@ update msg model =
             in
             ( { model | editingMediaFile = theMediaFile }, Cmd.none, Just (OutNavigateTo Page.MediaFileUI) )
 
-        FetchAndLoadMediaFile id ->
-            let
-                _ =
-                    case containsMediaFile id model.kompost of
-                        [ mediaFile ] ->
-                            Debug.log "We found preexisting media file" mediaFile
-
-                        _ ->
-                            Debug.log "Reusing Editing Media File" model.editingMediaFile
-            in
-            ( model, fetchKompositionList model.editingMediaFile.mediaType, Nothing )
+        FetchSourceList id ->
+            ( model, fetchKompositionList id, Nothing )
 
         SaveSource ->
             case containsMediaFile model.editingMediaFile.id model.kompost of
@@ -156,7 +147,7 @@ editSpecifics model =
         , Form.form [ class "container" ]
             [ Form.row [] [ Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value mediaFile.id, Input.onInput SetSourceId ])]]
             , Form.row [] [ Form.col [Col.xs2] [ Select.select [ Select.id "Media type", Select.onChange SetSourceMediaType] (selectItems mediaFile.mediaType Common.StaticVariables.komposionTypes)]
-               , Form.col [Col.xs2] [Button.button [ Button.primary, Button.small, Button.onClick (FetchAndLoadMediaFile mediaFile.id)] [ text "Fetch alternatives" ]] ]
+               , Form.col [Col.xs2] [Button.button [ Button.primary, Button.small, Button.onClick (FetchSourceList mediaFile.mediaType)] [ text "Fetch alternatives" ]] ]
             , Form.row []
                 [ Form.col [Col.xs7] [sourceIdSelection model.segment.sourceId model.listings.docs]
                 , Form.col [Col.xs2] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "Navigate To" ] ]

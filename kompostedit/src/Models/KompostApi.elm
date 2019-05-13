@@ -1,4 +1,4 @@
-module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchETagHeader, fetchKompositionList, getDvlSegmentList, getKomposition, kompoUrl, updateKompo)
+module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchETagHeader, fetchKompositionList, getDvlSegmentList, getKomposition, fetchSource, kompoUrl, updateKompo)
 
 import Dict
 import Http
@@ -57,6 +57,21 @@ getKomposition id =
         }
         |> RemoteData.sendRequest
         |> Cmd.map KompositionUpdated
+
+
+fetchSource : String -> Cmd Msg
+fetchSource id =
+    Http.request
+        { method = "GET"
+        , headers = autHeaders
+        , url = kompoUrl ++ id
+        , body = Http.emptyBody
+        , expect = Http.expectJson kompositionDecoder
+        , timeout = Nothing
+        , withCredentials = False
+        }
+        |> RemoteData.sendRequest
+        |> Cmd.map SourceUpdated
 
 
 getDvlSegmentList : String -> Cmd Msg

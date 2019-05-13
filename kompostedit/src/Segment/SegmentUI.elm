@@ -16,14 +16,19 @@ import Segment.Msg as Msg exposing (..)
 import Set exposing (Set)
 
 
-segmentForm : Model -> Bool -> Html Msg
-segmentForm model editableSegmentId =
+segmentForm : Model -> Html Msg
+segmentForm model =
     div []
         [ h1 [] [ text "Editing Segment" ]
         , Form.form [ class "container" ]
             [ Form.label [ for "segmentId" ] [ text "Segment ID" ]
             , segmentIdSelection model
             , sourceIdSelection model.segment.sourceId model.kompost.sources
+            , Form.row[]
+                [ Form.col []
+                    [ Button.button [ Button.primary, Button.small, Button.onClick (FetchAndLoadMediaFile model.segment.sourceId) ] [ text "Fetch" ] ]
+            ]
+
             , Form.row []
                 [ Form.colLabelSm [ Col.xs4 ] [ text "Start" ]
                 , Form.colLabelSm [ Col.xs4 ] [ text "Duration" ]
