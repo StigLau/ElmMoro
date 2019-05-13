@@ -1,7 +1,6 @@
 module Common.AutoComplete exposing
     ( Model
     , Msg(..)
-    , Person
     , acceptablePeople
     , boolToString
     , getPersonAtId

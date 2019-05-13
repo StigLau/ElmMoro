@@ -1,14 +1,10 @@
-module Segment.Model exposing (OutMsg(..), addSegmentToKomposition, asCurrentSegmentIn, asIdIn, asSourceIdIn, containsSegment, deleteSegmentFromKomposition, extractFromOutmessage, performSegmentOnModel, setCurrentSegment, setDuration, setEnd, setId, setSourceId, setStart, update)
+module Segment.Model exposing (addSegmentToKomposition, asCurrentSegmentIn, asIdIn, asSourceIdIn, containsSegment, deleteSegmentFromKomposition, performSegmentOnModel, setCurrentSegment, setDuration, setEnd, setId, setSourceId, setStart, update)
 
-import Models.BaseModel exposing (Komposition, Model, Segment)
+import Models.BaseModel exposing (Komposition, Model, OutMsg(..), Segment)
 import Models.KompostApi exposing (fetchSource)
 import Models.Msg
 import Navigation.Page as Page exposing (Page)
 import Segment.Msg exposing (..)
-
-
-type OutMsg
-    = OutNavigateTo Page
 
 update : Msg -> Model -> ( Model, Cmd Models.Msg.Msg, Maybe OutMsg )
 update msg model =
@@ -29,7 +25,7 @@ update msg model =
                         |> asSourceIdIn model.segment
                         |> asCurrentSegmentIn model
             in
-            ( newModel, Cmd.none, Nothing )
+            ( newModel, Cmd.none, Just (FetchSourceListMsg id) )
 
         SetSegmentStart start ->
             ( { model | segment = setStart start model.segment }, Cmd.none, Nothing )
@@ -58,7 +54,7 @@ update msg model =
                     let _ = Debug.log "Adding segment []: "
                     in ( performSegmentOnModel model.segment addSegmentToKomposition model, Cmd.none, Just (OutNavigateTo Page.KompostUI) )
 
-                [ x ] ->
+                [ _ ] ->
                     let
                         deleted =
                             performSegmentOnModel model.segment deleteSegmentFromKomposition model
@@ -76,16 +72,6 @@ update msg model =
 
         FetchAndLoadMediaFile id ->
                     ( model, fetchSource id, Nothing )
-
-
-extractFromOutmessage : Maybe OutMsg -> Maybe Page
-extractFromOutmessage childMsg =
-    case childMsg of
-        Just (OutNavigateTo page) ->
-            Just page
-
-        _ ->
-            Nothing
 
 asIdIn =
     \b a -> setId a b

@@ -188,17 +188,17 @@ update msg model =
 
 
         SegmentMsg theMsg ->
-            let
-                ( newModel, command, childMsg ) =
-                    Segment.Model.update theMsg model
+            case Segment.Model.update theMsg model of
+                (newModel, _, Just (OutNavigateTo page) ) ->
+                    ( { newModel | activePage = page }, Cmd.none)
 
-            in
-                case Segment.Model.extractFromOutmessage childMsg of
-                    Just page ->
-                        ( { newModel | activePage = page }, Cmd.none )
+                (newModel, _, Just (FetchSourceListMsg sourceId)) ->
+                    ( newModel, fetchSource sourceId )
 
-                    Nothing ->
-                        ( newModel, command )
+                (newModel, command, childMsg) ->
+                    let _ = Debug.log "Extracting outmessage failed" childMsg
+                    in ( newModel, command )
+
 
 
         CreateVideo ->

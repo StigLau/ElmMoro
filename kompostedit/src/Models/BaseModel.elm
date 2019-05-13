@@ -4,7 +4,7 @@ import Navigation.Page exposing (Page)
 import Set
 import Url exposing (Url)
 import Browser.Navigation
-import Common.AutoComplete as AutoComplete exposing (Person)
+import Common.AutoComplete as AutoComplete
 
 
 
@@ -116,3 +116,4 @@ type alias Row =
 
 type OutMsg
     = OutNavigateTo Page
+    | FetchSourceListMsg String

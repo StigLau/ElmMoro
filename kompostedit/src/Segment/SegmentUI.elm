@@ -24,10 +24,6 @@ segmentForm model =
             [ Form.label [ for "segmentId" ] [ text "Segment ID" ]
             , segmentIdSelection model
             , sourceIdSelection model.segment.sourceId model.kompost.sources
-            , Form.row[]
-                [ Form.col []
-                    [ Button.button [ Button.primary, Button.small, Button.onClick (FetchAndLoadMediaFile model.segment.sourceId) ] [ text "Fetch" ] ]
-            ]
 
             , Form.row []
                 [ Form.colLabelSm [ Col.xs4 ] [ text "Start" ]
