@@ -22,9 +22,10 @@ segmentForm model =
         [ h1 [] [ text "Editing Segment" ]
         , Form.form [ class "container" ]
             [ Form.label [ for "segmentId" ] [ text "Segment ID" ]
+            , Form.row [] [ Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value model.segment.id, Input.onInput SetSegmentId ])]]
             , segmentIdSelection model
-            , sourceIdSelection model.segment.sourceId model.kompost.sources
-
+            , Select.select [ Select.id "sourceId", Select.onChange SetSourceId ]
+                    (selectItems model.segment.sourceId (List.map (\segment -> segment.id) model.kompost.sources))
             , Form.row []
                 [ Form.colLabelSm [ Col.xs4 ] [ text "Start" ]
                 , Form.colLabelSm [ Col.xs4 ] [ text "Duration" ]
@@ -102,12 +103,5 @@ segmentIdSelection model =
                         subSegmentList
                 )
             )
-
     else
         Input.text [ Input.small, Input.value model.segment.id, Input.onInput SetSegmentId, Input.attrs [ placeholder "Id" ] ]
-
-
-sourceIdSelection : String -> List Source -> Html Msg
-sourceIdSelection sourceId sourceList =
-    Select.select [ Select.id "sourceId", Select.onChange SetSourceId ]
-        (selectItems sourceId (List.map (\segment -> segment.id) sourceList))
