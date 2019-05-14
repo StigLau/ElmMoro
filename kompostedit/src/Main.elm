@@ -354,6 +354,7 @@ emptyModel  navKey theUrl =
     , statusMessage = []
     , activePage = Page.ListingsUI
     , editableSegment = False
+    , checkboxVisible = False
     , segment = emptySegment
     , editingMediaFile = Source "" 0 "" "" audioTag False
     , subSegmentList = Set.empty

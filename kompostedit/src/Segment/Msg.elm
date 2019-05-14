@@ -10,3 +10,4 @@ type Msg
     | UpdateSegment
     | DeleteSegment
     | FetchAndLoadMediaFile String
+    | SegmentSearchVisible Bool

@@ -2,11 +2,11 @@ module Segment.SegmentUI exposing (segmentForm, showSegmentList)
 
 import Bootstrap.Button as Button
 import Bootstrap.Form as Form
+import Bootstrap.Form.Checkbox as Checkbox
 import Bootstrap.Form.Input as Input
 import Bootstrap.Form.Select as Select
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
-import Common.StaticVariables
 import Common.UIFunctions exposing (selectItems)
 import Html exposing (..)
 import Html.Attributes exposing (class, for, placeholder)
@@ -21,11 +21,12 @@ segmentForm model =
     div []
         [ h1 [] [ text "Editing Segment" ]
         , Form.form [ class "container" ]
-            [ Form.label [ for "segmentId" ] [ text "Segment ID" ]
-            , Form.row [] [ Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value model.segment.id, Input.onInput SetSegmentId ])]]
-            , segmentIdSelection model
-            , Select.select [ Select.id "sourceId", Select.onChange SetSourceId ]
-                    (selectItems model.segment.sourceId (List.map (\segment -> segment.id) model.kompost.sources))
+            [ Form.label [ for "segmentId" ] []
+        , Form.row []
+                [ Form.colLabel [ Col.xs2 ] [text "Segment ID"]
+                , Form.col [] [ Checkbox.checkbox [ Checkbox.onCheck SegmentSearchVisible, Checkbox.checked model.checkboxVisible ] ("Search" ) ] ]
+            , if model.checkboxVisible then Html.div [] [sourceSelection model, segmentIdSelection model]
+                else Html.div [] [Form.row [] [ Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value model.segment.id, Input.onInput SetSegmentId ])]]]
             , Form.row []
                 [ Form.colLabelSm [ Col.xs4 ] [ text "Start" ]
                 , Form.colLabelSm [ Col.xs4 ] [ text "Duration" ]
@@ -89,19 +90,12 @@ showSingleSegment segment =
         , Grid.col [] [ text <| String.fromInt segment.duration ]
         ]
 
+sourceSelection : Model -> Html Msg
+sourceSelection model =
+        Select.select [ Select.id "sourceId", Select.onChange SetSourceId ]
+            (selectItems model.segment.sourceId (List.map (\segment -> segment.id) model.kompost.sources))
 
 segmentIdSelection : Model -> Html Msg
 segmentIdSelection model =
-    if Common.StaticVariables.isKomposition model.kompost then
         Select.select [ Select.id "segmentId", Select.onChange SetSegmentId ]
-            (selectItems model.segment.id
-                (case Set.toList model.subSegmentList of
-                    [] ->
-                        [ "Fetch Sources if Segment list is unpopulated" ]
-
-                    subSegmentList ->
-                        subSegmentList
-                )
-            )
-    else
-        Input.text [ Input.small, Input.value model.segment.id, Input.onInput SetSegmentId, Input.attrs [ placeholder "Id" ] ]
+            (selectItems model.segment.id (Set.toList model.subSegmentList ))

@@ -14,6 +14,7 @@ type alias Model =
     , statusMessage : List String
     , activePage : Page
     , editableSegment : Bool
+    , checkboxVisible : Bool --Used to show source/Segment search
     , segment : Segment
     , editingMediaFile : Source
     , subSegmentList : Set.Set String
