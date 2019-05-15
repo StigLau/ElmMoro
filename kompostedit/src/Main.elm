@@ -356,7 +356,7 @@ emptyModel  navKey theUrl =
     , editableSegment = False
     , checkboxVisible = False
     , segment = emptySegment
-    , editingMediaFile = Source "" 0 "" "" audioTag False
+    , editingMediaFile = Source "" 0 "" "" audioTag
     , subSegmentList = Set.empty
     , url = theUrl
     , key = navKey
@@ -366,10 +366,10 @@ emptyModel  navKey theUrl =
 
 
 emptySegment =
-    Segment "" "" 0 0 0 Nothing
+    Segment "" "" 0 0 0
 
 
 defaultSegments : List Segment
 defaultSegments =
-    [ Segment "Empty" "http://jalla1" 0 16 16 (Just "A Segment")
+    [ Segment "Empty" "http://jalla1" 0 16 16
     ]

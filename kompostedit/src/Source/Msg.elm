@@ -16,5 +16,5 @@ type Msg
 
     | SetSourceId String
     | SetOffset String
-    | SetSnippet Bool
+    | SourceSearchVisible Bool
     | AutoComplete Common.AutoComplete.Msg

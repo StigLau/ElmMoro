@@ -6,7 +6,7 @@ import Bootstrap.Form.Checkbox as Checkbox
 import Bootstrap.Form.Input as Input
 import Bootstrap.Form.Select as Select
 import Bootstrap.Grid.Col as Col
-import Common.StaticVariables exposing (evaluateMediaType, videoTag)
+import Common.StaticVariables exposing (evaluateMediaType)
 import Common.UIFunctions exposing (selectItems)
 import Html exposing (..)
 import Html.Attributes exposing (class)
@@ -28,12 +28,8 @@ update msg model =
             in
             ( setSource { source | id = id } model, Cmd.none, Nothing )
 
-        SetSnippet isSnippet ->
-            let
-                source =
-                    model.editingMediaFile
-            in
-            ( setSource { source | isSnippet = isSnippet } model, Cmd.none, Nothing )
+        SourceSearchVisible isVisible ->
+            ({model | checkboxVisible = isVisible }, Cmd.none, Nothing)
 
         SetChecksum checksum ->
             let
@@ -71,7 +67,7 @@ update msg model =
                             Debug.log "We found preexisting media file" mediaFile
 
                         _ ->
-                            Source "" 0 "" "" "" False
+                            Source "" 0 "" "" ""
             in
             ( { model | editingMediaFile = theMediaFile }, Cmd.none, Just (OutNavigateTo Page.MediaFileUI) )
 
@@ -132,26 +128,11 @@ editSpecifics model =
     let
         mediaFile =
             model.editingMediaFile
-
-        sourceSnippetText =
-            case mediaFile.isSnippet of
-                True ->
-                    "Snippet"
-
-                False ->
-                    "Source"
     in
     div []
-        [ h1 [] [ Checkbox.checkbox [ Checkbox.onCheck SetSnippet, Checkbox.checked mediaFile.isSnippet ] ("Editing " ++ sourceSnippetText) ]
-
+        [ h1 [] [Checkbox.checkbox [ Checkbox.onCheck SourceSearchVisible, Checkbox.checked model.checkboxVisible ] ("Editing Source") ]
         , Form.form [ class "container" ]
-            [ Form.row [] [ Form.col [Col.xs8] [(Input.text [ Input.id "id", Input.value mediaFile.id, Input.onInput SetSourceId ])]]
-            , Form.row [] [ Form.col [Col.xs2] [ Select.select [ Select.id "Media type", Select.onChange SetSourceMediaType] (selectItems mediaFile.mediaType Common.StaticVariables.komposionTypes)]
-               , Form.col [Col.xs2] [Button.button [ Button.primary, Button.small, Button.onClick (FetchSourceList mediaFile.mediaType)] [ text "Fetch alternatives" ]] ]
-            , Form.row []
-                [ Form.col [Col.xs7] [sourceIdSelection model.segment.sourceId model.listings.docs]
-                , Form.col [Col.xs2] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "Navigate To" ] ]
-                ]
+            [ Form.row [] (sourceSelector model)
             , wrapping "Starting Offset"
                 (Input.text
                     [ Input.id "Starting Offset"
@@ -180,6 +161,18 @@ editSpecifics model =
             ]
         ]
 
+sourceSelector model =
+    let mediaFile =
+                    model.editingMediaFile
+    in
+        if model.checkboxVisible then
+            [Form.col [Col.xs7]
+            [ Select.select [ Select.id "Media type", Select.onChange SetSourceMediaType] (selectItems mediaFile.mediaType Common.StaticVariables.komposionTypes)
+            , sourceIdSelection model.segment.sourceId model.listings.docs]
+            , Form.col [Col.xs2] [Button.button [ Button.primary, Button.small, Button.onClick (FetchSourceList mediaFile.mediaType)] [ text "Fetch alternatives" ]] ]
+        else [Form.col [Col.xs7] [Input.text [ Input.id "id", Input.value mediaFile.id, Input.onInput SetSourceId ]]
+             , Form.col [Col.xs2] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "Navigate To" ] ]
+             ]
 
 wrapping identifier funk =
     Form.row []

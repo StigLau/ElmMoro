@@ -87,7 +87,6 @@ segmentDecoder =
         |> required "start" JsonD.int
         |> optional "duration" JsonD.int 0
         |> optional "end" JsonD.int 0
-        |> optional "snippetid" (JsonD.map Just JsonD.string) Nothing
 
 
 sourceDecoder : JsonD.Decoder Source
@@ -98,7 +97,6 @@ sourceDecoder =
         |> required "checksums" JsonD.string
         |> required "extension" JsonD.string
         |> required "mediatype" JsonD.string
-        |> optional "snippet" JsonD.bool False
 
 
 configDecoder : JsonD.Decoder VideoConfig
@@ -136,7 +134,6 @@ encodeSource source =
         , ( "checksums", JsonE.string source.checksum )
         , ( "extension", JsonE.string source.extensionType )
         , ( "mediatype", JsonE.string source.mediaType )
-        , ( "snippet", JsonE.bool source.isSnippet )
         ]
 
 

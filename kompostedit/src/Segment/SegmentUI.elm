@@ -22,7 +22,7 @@ segmentForm model =
         [ h1 [] [ text "Editing Segment" ]
         , Form.form [ class "container" ]
             [ Form.label [ for "segmentId" ] []
-        , Form.row []
+            , Form.row []
                 [ Form.colLabel [ Col.xs2 ] [text "Segment ID"]
                 , Form.col [] [ Checkbox.checkbox [ Checkbox.onCheck SegmentSearchVisible, Checkbox.checked model.checkboxVisible ] ("Search" ) ] ]
             , if model.checkboxVisible then Html.div [] [sourceSelection model, segmentIdSelection model]
