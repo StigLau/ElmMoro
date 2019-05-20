@@ -2,7 +2,7 @@ module Segment.SegmentRendering exposing (calculateSegmentGaps, gapVisualizer)
 
 import Html exposing (Html, text)
 import Html.Attributes
-import Models.BaseModel exposing (Model, Segment, SegmentGap)
+import Models.BaseModel exposing (Komposition, Model, Segment, SegmentGap)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
@@ -40,29 +40,29 @@ quarnTwo first second =
     SegmentGap (first.id ++ " " ++ second.id) first.end (abs width)
 
 
-gapVisualizer : Model -> Html msg
-gapVisualizer model =
+gapVisualizer : Komposition -> Html msg
+gapVisualizer kompost =
     let
         width =
-            case model.kompost.beatpattern of
+            case kompost.beatpattern of
                 Just bpm ->
                     String.fromInt (bpm.toBeat + bpm.toBeat)
 
                 _ ->
                     "800"
     in
-    svg [ viewBox "0 0 100 200", Svg.Attributes.width (width ++ "px") ]
-        (drawSegmentGaps model ++ drawSegmentGapsText model)
+    svg [ viewBox "0 0 100 400", Svg.Attributes.width (width ++ "px") ]
+        (drawSegmentGaps kompost ++ drawSegmentGapsText kompost)
 
 
-drawSegmentGaps : Model -> List (Svg msg)
-drawSegmentGaps model =
-    List.map (\segment -> drawRect segment.id segment.start (segment.end - segment.start - 1)) model.kompost.segments
+drawSegmentGaps : Komposition -> List (Svg msg)
+drawSegmentGaps kompost =
+    List.map (\segment -> drawRect segment.id segment.start (segment.end - segment.start - 1)) kompost.segments
 
 
-drawSegmentGapsText : Model -> List (Svg msg)
-drawSegmentGapsText model =
-    List.map (\segment -> drawLegendText (String.fromInt segment.start ++ "\t" ++ segment.id) 0 segment.start) model.kompost.segments
+drawSegmentGapsText : Komposition -> List (Svg msg)
+drawSegmentGapsText kompost =
+    List.map (\segment -> drawLegendText (String.fromInt segment.start ++ "\t" ++ segment.id) 0 segment.start) kompost.segments
 
 
 drawRect : String -> Int -> Int -> Svg msg
