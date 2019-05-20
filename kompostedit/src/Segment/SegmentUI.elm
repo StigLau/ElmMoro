@@ -69,7 +69,6 @@ segmentForm model =
                     [ Button.button [ Button.warning, Button.small, Button.onClick DeleteSegment ] [ text "Remove" ] ]
                 ]
             ]
-        , gapVisualizer model.kompost
         ]
 
 

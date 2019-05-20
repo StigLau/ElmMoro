@@ -33,36 +33,18 @@ quarnUnknown head tail =
 
 quarnTwo : Segment -> Segment -> SegmentGap
 quarnTwo first second =
-    let
-        width =
-            second.start - first.end
-    in
-    SegmentGap (first.id ++ " " ++ second.id) first.end (abs width)
+    SegmentGap (first.id ++ " " ++ second.id) first.end (abs (second.start - first.end))
 
 
 gapVisualizer : Komposition -> Html msg
 gapVisualizer kompost =
-    let
-        width =
-            case kompost.beatpattern of
-                Just bpm ->
-                    String.fromInt (bpm.toBeat + bpm.toBeat)
-
-                _ ->
-                    "800"
-    in
-    svg [ viewBox "0 0 100 400", Svg.Attributes.width (width ++ "px") ]
-        (drawSegmentGaps kompost ++ drawSegmentGapsText kompost)
+    svg [ viewBox "0 0 200 800", Svg.Attributes.width ("800 px") ]
+        (drawSegmentGaps drawRect kompost.segments ++ drawSegmentGaps drawLegendText kompost.segments)
 
 
-drawSegmentGaps : Komposition -> List (Svg msg)
-drawSegmentGaps kompost =
-    List.map (\segment -> drawRect segment.id segment.start (segment.end - segment.start - 1)) kompost.segments
-
-
-drawSegmentGapsText : Komposition -> List (Svg msg)
-drawSegmentGapsText kompost =
-    List.map (\segment -> drawLegendText (String.fromInt segment.start ++ "\t" ++ segment.id) 0 segment.start) kompost.segments
+drawSegmentGaps : (String -> Int -> Int -> Svg msg) -> List Segment -> List (Svg msg)
+drawSegmentGaps svgDrawer segmentList  =
+    List.map (\segment -> svgDrawer segment.id segment.start (segment.end - segment.start - 1)) segmentList
 
 
 drawRect : String -> Int -> Int -> Svg msg
@@ -97,7 +79,6 @@ drawLegendText text positionX positionY =
         , Html.Attributes.style "-webkit-user-select" "none"
         ]
         [ Svg.tspan [ x "20", dy "1.2em" ] [ Svg.text text ] ]
-
 
 
 --https://github.com/oresmus/elm-examples/blob/master/svg-drag-1/svg-drag-1.elm

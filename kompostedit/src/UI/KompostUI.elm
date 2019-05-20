@@ -8,6 +8,7 @@ import Html.Attributes exposing (style)
 import Models.BaseModel exposing (Model)
 import Models.Msg exposing (Msg(..))
 import Navigation.Page as Page exposing (Page)
+import Segment.SegmentRendering exposing (gapVisualizer)
 import Segment.SegmentUI
 import Source.View exposing (editSources, sourceNewButton)
 
@@ -39,4 +40,6 @@ kompost model =
             [ Grid.col []
                 [ Button.button [ Button.primary, Button.small, Button.onClick ShowKompositionJson ] [ text "Show JSON" ] ]
             ]
+        , h4 [] [ text "Segments view:" ]
+        , gapVisualizer model.kompost
         ]
