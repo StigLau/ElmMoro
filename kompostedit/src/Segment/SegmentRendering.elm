@@ -63,18 +63,21 @@ drawRect text startInt widthInt =
         start =
             String.fromInt startInt
 
+        startPart =
+            String.fromInt (Elm.Kernel.Basics.idiv startInt 10)
+
         widthZ =
             String.fromInt (abs widthInt)
     in
-    rect [ x "10", y start, width "10", height widthZ, fill color ] []
+    rect [ x startPart, y start, width "10", height widthZ, fill color ] []
 
 
 drawLegendText : String -> Int -> Int -> Svg msg
-drawLegendText text positionX positionY =
+drawLegendText text startInt widthInt =
     Svg.text_
         [ pointerEvents "none" -- prevents typing cursor (and mousedown-capture, though this is behind all other objects so that doesn't matter)
-        , x (String.fromInt positionX)
-        , y (String.fromInt positionY)
+        , x (String.fromInt widthInt)
+        , y (String.fromInt startInt)
         , fontSize "4"
         , Html.Attributes.style "-webkit-user-select" "none"
         ]
