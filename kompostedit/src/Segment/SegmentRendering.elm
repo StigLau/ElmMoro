@@ -44,7 +44,7 @@ gapVisualizer kompost =
 
 drawSegmentGaps : (String -> Int -> Int -> Svg msg) -> List Segment -> List (Svg msg)
 drawSegmentGaps svgDrawer segmentList  =
-    List.map (\segment -> svgDrawer segment.id segment.start (segment.end - segment.start - 1)) segmentList
+    List.map (\segment -> svgDrawer (String.fromInt segment.start ++ " " ++ segment.id) segment.start (segment.end - segment.start - 1)) segmentList
 
 
 drawRect : String -> Int -> Int -> Svg msg
