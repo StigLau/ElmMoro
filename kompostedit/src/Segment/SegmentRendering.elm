@@ -63,25 +63,26 @@ drawRect text startInt widthInt =
         start =
             String.fromInt startInt
 
-        startPart =
-            String.fromInt (Elm.Kernel.Basics.idiv startInt 10)
-
         widthZ =
             String.fromInt (abs widthInt)
     in
-    rect [ x startPart, y start, width "10", height widthZ, fill color ] []
+    rect [ x (startPart startInt), y start, width "10", height widthZ, fill color ] []
 
 
 drawLegendText : String -> Int -> Int -> Svg msg
 drawLegendText text startInt widthInt =
-    Svg.text_
+    let wi = (startPart (startInt + 110))
+    in Svg.text_
         [ pointerEvents "none" -- prevents typing cursor (and mousedown-capture, though this is behind all other objects so that doesn't matter)
         , x (String.fromInt widthInt)
         , y (String.fromInt startInt)
         , fontSize "4"
         , Html.Attributes.style "-webkit-user-select" "none"
         ]
-        [ Svg.tspan [ x "20", dy "1.2em" ] [ Svg.text text ] ]
+        [ Svg.tspan [ x wi, dy "1.2em" ] [ Svg.text text ] ]
 
+
+startPart startInt =
+            String.fromInt (Elm.Kernel.Basics.idiv startInt 10)
 
 --https://github.com/oresmus/elm-examples/blob/master/svg-drag-1/svg-drag-1.elm
