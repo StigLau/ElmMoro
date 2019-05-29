@@ -349,7 +349,7 @@ subscriptions model =
 --}
 emptyModel : Nav.Key -> Url -> Model
 emptyModel  navKey theUrl =
-    { listings = DataRepresentation [] "" ""
+    { listings = DataRepresentation [Row "demokompo1" "rev1", Row "demokomp2" "rev1"] "" ""
     , kompost = Komposition "" "" "Video" 120 defaultSegments [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
     , statusMessage = []
     , activePage = Page.ListingsUI
