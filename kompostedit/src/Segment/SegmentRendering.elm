@@ -83,6 +83,6 @@ drawLegendText text startInt widthInt =
 
 
 startPart startInt =
-            String.fromInt (Elm.Kernel.Basics.idiv startInt 10)
+            String.fromInt (Basics.remainderBy startInt 10)
 
 --https://github.com/oresmus/elm-examples/blob/master/svg-drag-1/svg-drag-1.elm
