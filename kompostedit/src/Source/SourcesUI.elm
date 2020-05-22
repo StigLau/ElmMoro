@@ -13,7 +13,7 @@ import Html.Attributes exposing (class)
 import Html.Attributes as Attrs
 import Common.AutoComplete
 import Models.BaseModel exposing (Focused(..), Komposition, Model, OutMsg(..), Row, Source)
-import Models.KompostApi exposing (fetchETagHeader, fetchKompositionList)
+import Models.KompostApi exposing (fetchHeaderParam, fetchKompositionList)
 import Models.Msg
 import Navigation.Page as Page
 import Source.Msg exposing (Msg(..))
@@ -101,7 +101,7 @@ update msg model =
             ( modifiedModel, Cmd.none, Just (OutNavigateTo Page.KompostUI) )
 
         OrderChecksumEvalutation id ->
-            ( model, fetchETagHeader id, Nothing)
+            ( model, fetchHeaderParam id "etag", Nothing)
 
         JumpToSourceKomposition mediaId ->
             let _ = Debug.log "Navigating to Komposition" mediaId

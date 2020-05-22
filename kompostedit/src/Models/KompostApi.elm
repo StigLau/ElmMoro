@@ -1,77 +1,47 @@
-module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchETagHeader, fetchKompositionList, getDvlSegmentList, getKomposition, fetchSource, kompoUrl, updateKompo)
+module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchHeaderParam, fetchKompositionList, getDvlSegmentList, getKomposition, fetchSource, kompoUrl, updateKompo)
 
+import Debug
 import Dict
-import Http
+import Http exposing (Error, Response)
 import MD5
 import Models.BaseModel exposing (Komposition)
 import Models.JsonCoding exposing (..)
 import Models.Msg exposing (Msg(..))
-import RemoteData exposing (RemoteData(..))
+import RemoteData
 
 
 kompoUrl : String
 kompoUrl =
-    "http://localhost:8001/kompost/"
+    "http://localhost:8080/kompost/"
 
 
 kvaernUrl =
-    "http://localhost:8001/kvaern/"
+    "http://localhost:8080/kvaern"
 
-autHeaders = []
-
-base =
-    { method = ""
-    , headers = autHeaders
-    , url = ""
-    , body = Http.emptyBody
-    , expect = Http.expectJson couchServerStatusDecoder
-    , timeout = Nothing
-    , withCredentials = False
-    }
 
 fetchKompositionList : String -> Cmd Msg
 fetchKompositionList typeIdentifier =
-    Http.request
-        { method = "POST"
-        , headers = autHeaders
-        , url = kompoUrl ++ "_find"
+    Http.post
+        { url = kompoUrl ++ "_find"
         , body = Http.stringBody "application/json" (searchEncoder typeIdentifier)
-        , expect = Http.expectJson kompositionListDecoder
-        , timeout = Nothing
-        , withCredentials = False
+        , expect = Http.expectJson (RemoteData.fromResult >> ListingsUpdated) kompositionListDecoder
         }
-        |> RemoteData.sendRequest
-        |> Cmd.map ListingsUpdated
-
 
 getKomposition : String -> Cmd Msg
 getKomposition id =
-    Http.request
-        { method = "GET"
-        , headers = autHeaders
-        , url = kompoUrl ++ id
-        , body = Http.emptyBody
-        , expect = Http.expectJson kompositionDecoder
-        , timeout = Nothing
-        , withCredentials = False
-        }
-        |> RemoteData.sendRequest
-        |> Cmd.map KompositionUpdated
+     Http.get
+            { url = kompoUrl ++ id
+            , expect = Http.expectJson (RemoteData.fromResult >> KompositionUpdated) kompositionDecoder
+            }
 
 
 fetchSource : String -> Cmd Msg
 fetchSource id =
-    Http.request
-        { method = "GET"
-        , headers = autHeaders
-        , url = kompoUrl ++ id
-        , body = Http.emptyBody
-        , expect = Http.expectJson kompositionDecoder
-        , timeout = Nothing
-        , withCredentials = False
+    Http.get
+        { url = kompoUrl ++ id
+        , expect = Http.expectJson (RemoteData.fromResult >> SourceUpdated) kompositionDecoder
         }
-        |> RemoteData.sendRequest
-        |> Cmd.map SourceUpdated
+
 
 
 getDvlSegmentList : String -> Cmd Msg
@@ -80,85 +50,82 @@ getDvlSegmentList id =
         _ =
             Debug.log "getDvlSegmentList" (kompoUrl ++ id)
     in
-    Http.get (kompoUrl ++ id) kompositionDecoder
-        |> RemoteData.sendRequest
-        |> Cmd.map SegmentListUpdated
+    Http.get
+        { url = kompoUrl ++ id
+        , expect = Http.expectJson (RemoteData.fromResult >> SegmentListUpdated) kompositionDecoder
+        }
 
 
 createKompo : Komposition -> Cmd Msg
 createKompo komposition =
-    Http.post kompoUrl (Http.stringBody "application/json" <| kompositionEncoder komposition) couchServerStatusDecoder
-        |> RemoteData.sendRequest
-        |> Cmd.map CouchServerStatus
+     Http.post
+        { url = kompoUrl
+        , body = (Http.stringBody "application/json" <| kompositionEncoder komposition)
+        , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
+        }
 
 
 createVideo : Komposition -> Cmd Msg
 createVideo komposition =
-    Http.request
-        { base
-            | method = "POST"
-            , url = kvaernUrl ++ "/kvaern/createvideo?" ++ komposition.name
-            , body = Http.stringBody "application/json" <| kompositionEncoder komposition
-        }
-        |> RemoteData.sendRequest
-        |> Cmd.map CouchServerStatus
+        Http.post
+                { url = kvaernUrl ++ "/kvaern/createvideo?" ++ komposition.name
+                , body = Http.stringBody "application/json" <| kompositionEncoder komposition
+                , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
+                }
 
 
 updateKompo : Komposition -> Cmd Msg
 updateKompo komposition =
-    Http.request
-        { base
-            | method = "PUT"
-            , headers = autHeaders
-            , url = kompoUrl ++ komposition.name
-            , body = Http.stringBody "application/json" <| kompositionEncoder komposition
-        }
-        |> RemoteData.sendRequest
-        |> Cmd.map CouchServerStatus
+   Http.request
+    { method = "PUT"
+    , headers = []
+    , url = kompoUrl ++ komposition.name
+    , body = Http.stringBody "application/json" <| kompositionEncoder komposition
+    , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
+    , timeout = Nothing
+    , tracker = Nothing
+    }
 
 
 deleteKompo : Komposition -> Cmd Msg
 deleteKompo komposition =
     Http.request
-        { base
-            | method = "DELETE"
-            , headers = autHeaders
-            , url = kompoUrl ++ komposition.name ++ "?rev=" ++ komposition.revision
-        }
-        |> RemoteData.sendRequest
-        |> Cmd.map CouchServerStatus
+    {  method = "DELETE"
+    , headers = []
+    , url = kompoUrl ++ komposition.name ++ "?rev=" ++ komposition.revision
+    , body = Http.emptyBody
+    , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
+    , timeout = Nothing
+    , tracker = Nothing
+    }
+
+fetchHeaderParam:String -> String -> Cmd Msg
+fetchHeaderParam urlId headerName =
+  Http.get
+    { url = kompoUrl ++ urlId
+    , expect = Http.expectStringResponse ETagResponse (extractHeaderResponse headerName Ok)
+    }
 
 
-fetchETagHeader : String -> Cmd Msg
-fetchETagHeader id =
-    Http.send ETagResponse (getHeader "etag" id)
+extractHeaderResponse : String -> (String -> Result String a) -> Http.Response body -> Result Http.Error a
+extractHeaderResponse headerName toResult response =
+  case response of
+    Http.BadUrl_ url -> Err (Http.BadUrl url)
+    Http.Timeout_ -> Err Http.Timeout
+    Http.NetworkError_ -> Err Http.NetworkError
+    Http.BadStatus_ metadata _ -> Err (Http.BadStatus metadata.statusCode)
+    Http.GoodStatus_ metadata body ->
+        let
+            header = extractSingleHeader headerName metadata.headers
+            bodyval = Debug.toString body
+            hex =  MD5.hex bodyval
+        in Result.mapError Http.BadBody  (toResult (header ++ "," ++  hex))
 
-
-getHeader : String -> String -> Http.Request String
-getHeader name urlId =
-    Http.request
-        { method = "GET"
-        , headers = autHeaders
-        , url = kompoUrl ++ urlId
-        , body = Http.emptyBody
-        , expect = Http.expectStringResponse (extractEtagAndChecksum name)
-        , timeout = Nothing
-        , withCredentials = False
-        }
-
-
-extractEtagAndChecksum : String -> Http.Response String -> Result String String
-extractEtagAndChecksum name resp =
-    case Result.fromMaybe ("header " ++ name ++ " not found") (Dict.get name resp.headers) of
-        Result.Ok etag ->
-            Result.Ok (stripHyphens etag ++ "," ++ MD5.hex resp.body)
-
-        Result.Err error ->
-            Result.Err error
-
-
-stripHyphens input =
-    --Remove '/"' --> devowel = replace All (regex "[aeiou]") (\_ -> "")
-    input
-        |> String.dropRight 1
-        |> String.dropLeft 1
+extractSingleHeader: String -> Dict.Dict String String -> String
+extractSingleHeader headerName headers  =
+    let
+        availableHeaders = Debug.toString headers
+        _ = Debug.log "Printable" availableHeaders
+    in case Dict.get headerName headers of
+        Just header -> header
+        Nothing -> Debug.log ( "Header not found: " ++ headerName)("available headers " ++ availableHeaders )
