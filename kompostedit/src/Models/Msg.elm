@@ -1,5 +1,6 @@
 module Models.Msg exposing (Msg(..))
 
+import Auth.Msg
 import Http exposing (Error)
 import Models.BaseModel exposing (..)
 import Browser exposing (UrlRequest(..))
@@ -35,3 +36,4 @@ type Msg
     | ShowKompositionJson
     | ClickedLink UrlRequest
     | ChangedUrl Url
+    | AuthyMsg Auth.Msg.Msg

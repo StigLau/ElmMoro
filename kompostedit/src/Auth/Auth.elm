@@ -1,4 +1,4 @@
-module Auth.Main exposing (init, update, view, Model, Msg)
+module Auth.Auth exposing (init, update, view)
 
 {-| The content editor client top module.
 
@@ -6,13 +6,13 @@ module Auth.Main exposing (init, update, view, Model, Msg)
 
 -}
 
-import AWS.Auth as Auth
+import AWS.Auth as AWSAuth
+import Auth.Msg exposing (..)
 import AuthAPI
-import Browser
 import Css
 import Css.Global
 import Grid
-import Html
+import Html exposing (Html)
 import Html.Styled exposing (div, form, styled, text, toUnstyled)
 import Html.Styled.Attributes
 import Html.Styled.Events exposing (onClick, onInput)
@@ -27,42 +27,6 @@ import TheSett.Laf as Laf exposing (devices, fonts, responsiveMeta)
 import TheSett.Textfield as Textfield
 import Update3
 
-
-{-| The content editor program model.
--}
-type Model
-    = Error String
-    | Restoring InitializedModel
-    | Initialized InitializedModel
-
-
-type alias InitializedModel =
-    { laf : Laf.Model
-    , auth : Auth.Model
-    , session : AuthAPI.Status Auth.AuthExtensions Auth.Challenge
-    , username : String
-    , password : String
-    , passwordVerify : String
-    }
-
-
-{-| The content editor program top-level message types.
--}
-type Msg
-    = LafMsg Laf.Msg
-    | AuthMsg Auth.Msg
-    | InitialTimeout
-    | LogIn
-    | LogOut
-    | RespondWithNewPassword
-    | TryAgain
-    | Refresh
-    | UpdateUsername String
-    | UpdatePassword String
-    | UpdatePasswordVerificiation String
-
-
-
 -- Initialization
 
 
@@ -72,12 +36,12 @@ Requests that an Auth refresh be performed to check what the current
 authentication state is, as the application may be able to re-authenticate
 from a refresh token held as a cookie, without needing the user to log in.
 -}
-init : flags -> ( Model, Cmd Msg )
-init _ =
+init : ( AuthModel, Cmd Msg )
+init =
     let
         authInitResult =
-            Auth.api.init
-              { clientId = "6kn07ks3o2nj12chchdn69qko1" -- s10ve Hei123B#
+            AWSAuth.api.init
+              { clientId = "6kn07ks3o2nj12chchdn69qko1"
                 , region = "us-east-1"
                 , userIdentityMapping =
                     Just
@@ -104,7 +68,7 @@ init _ =
             ( Error errMsg, Cmd.none )
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> AuthModel -> ( AuthModel, Cmd Msg )
 update action model =
     case model of
         Error _ ->
@@ -127,14 +91,14 @@ updateInitialized action model =
                 |> Tuple.mapFirst (\laf -> { model | laf = laf })
 
         AuthMsg msg ->
-            Update3.lift .auth (\x m -> { m | auth = x }) AuthMsg Auth.api.update msg model
+            Update3.lift .auth (\x m -> { m | auth = x }) AuthMsg AWSAuth.api.update msg model
                 |> Update3.evalMaybe (\status -> \nextModel -> ( { nextModel | session = status }, Cmd.none )) Cmd.none
 
         InitialTimeout ->
-            ( model, Auth.api.refresh |> Cmd.map AuthMsg )
+            ( model, AWSAuth.api.refresh |> Cmd.map AuthMsg )
 
         LogIn ->
-            ( model, Auth.api.login { username = model.username, password = model.password } |> Cmd.map AuthMsg )
+            ( model, AWSAuth.api.login { username = model.username, password = model.password } |> Cmd.map AuthMsg )
 
         RespondWithNewPassword ->
             case model.password of
@@ -142,16 +106,16 @@ updateInitialized action model =
                     ( model, Cmd.none )
 
                 newPassword ->
-                    ( model, Auth.api.requiredNewPassword newPassword |> Cmd.map AuthMsg )
+                    ( model, AWSAuth.api.requiredNewPassword newPassword |> Cmd.map AuthMsg )
 
         TryAgain ->
-            ( clear model, Auth.api.unauthed |> Cmd.map AuthMsg )
+            ( clear model, AWSAuth.api.unauthed |> Cmd.map AuthMsg )
 
         LogOut ->
-            ( clear model, Auth.api.logout |> Cmd.map AuthMsg )
+            ( clear model, AWSAuth.api.logout |> Cmd.map AuthMsg )
 
         Refresh ->
-            ( model, Auth.api.refresh |> Cmd.map AuthMsg )
+            ( model, AWSAuth.api.refresh |> Cmd.map AuthMsg )
 
         UpdateUsername str ->
             ( { model | username = str }, Cmd.none )
@@ -198,20 +162,12 @@ global =
 
 {-| Top level view function.
 -}
-view : Model -> Browser.Document Msg
-view model =
-    { title = "Auth Elm Example"
-    , body = [ body model ]
-    }
+view : AuthModel -> Html Msg
+view autModel =
+            toUnstyled (styledBody autModel)
 
 
-body : Model -> Html.Html Msg
-body model =
-    styledBody model
-        |> toUnstyled
-
-
-styledBody : Model -> Html.Styled.Html Msg
+styledBody : AuthModel -> Html.Styled.Html Msg
 styledBody model =
     let
         innerView =
@@ -258,7 +214,7 @@ initializedView model =
         AuthAPI.LoggedIn state ->
             authenticatedView model state
 
-        AuthAPI.Challenged Auth.NewPasswordRequired ->
+        AuthAPI.Challenged AWSAuth.NewPasswordRequired ->
             requiresNewPasswordView model
 
 
@@ -341,11 +297,11 @@ notPermittedView model =
         ]
 
 
-authenticatedView : { a | username : String, auth : Auth.Model } -> { scopes : List String, subject : String } -> Html.Styled.Html Msg
+authenticatedView : { a | username : String, auth : AWSAuth.Model } -> { scopes : List String, subject : String } -> Html.Styled.Html Msg
 authenticatedView model user =
     let
         maybeAWSCredentials =
-            Auth.api.getAWSCredentials model.auth
+            AWSAuth.api.getAWSCredentials model.auth
                 |> Debug.log "credentials"
 
         credentialsView =
