@@ -15,7 +15,6 @@ import Segment.Msg
 
 type Msg
     = ListingsUpdated (WebData DataRepresentation)
-    | LocationChanged Browser.Navigation.Key
     | NavigateTo Page
     | ChooseDvl String
     | EditSpecifics
@@ -37,3 +36,4 @@ type Msg
     | ClickedLink UrlRequest
     | ChangedUrl Url
     | AuthyMsg Auth.Msg.Msg
+    | ToAuthPage

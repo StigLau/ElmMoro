@@ -1,6 +1,7 @@
 module Main exposing (init, main, update, view)
 
 import Auth.Msg exposing (AuthModel(..))
+import Auth.UI as AuthUI
 import AuthAPI exposing (Status(..))
 import Common.AutoComplete
 import Bootstrap.CDN as CDN
@@ -11,7 +12,7 @@ import DvlSpecifics.DvlSpecificsUI
 import Source.SourcesUI exposing (update)
 import Html exposing (Html, div, text)
 import Models.BaseModel exposing (..)
-import Models.KompostApi as KompostApi exposing (..)
+import Models.KompostApi as KompostApi exposing (createVideo, deleteKompo, fetchKompositionList, fetchSource, updateKompo)
 import Models.JsonCoding as JsonCoding
 import Models.Msg exposing (Msg(..))
 import Browser
@@ -22,9 +23,9 @@ import RemoteData exposing (RemoteData(..))
 import Segment.Model exposing (update)
 import Segment.SegmentUI
 import Set
-import Auth.Auth as AuthUI exposing (..)
-import UI.KompostListingsUI exposing (..)
-import UI.KompostUI exposing (..)
+import Auth.Auth as AuthMain exposing (init)
+import UI.KompostListingsUI
+import UI.KompostUI
 import Url exposing (Url)
 import RemoteData exposing (WebData)
 
@@ -48,14 +49,14 @@ update msg model =
                 Debug.log "Loading" (model, Cmd.none)
 
         AuthyMsg authMsg ->
-            let (authChangedModel, authResponseMsg) = AuthUI.update authMsg model.authy
-            in ({model | authy = authChangedModel}, authResponseMsg |> Cmd.map AuthyMsg )
+                case authMsg of
+                    Auth.Msg.NavigateTo page -> ( { model | activePage = page }, Cmd.none)
+                    _ ->
+                        let (authChangedModel, authResponseMsg) = AuthMain.update authMsg model.authy
+                        in ({model | authy = authChangedModel}, authResponseMsg |> Cmd.map AuthyMsg )
 
-        LocationChanged loc ->
-
-            let _ = Debug.log "Trying to change location" loc
-            in
-            ( { model | activePage = AppRouting.fromUrlString "" }, Cmd.none) --TODO check this out!!
+        ToAuthPage ->
+            ( { model | activePage = Page.AuthUI }, Cmd.none)
 
         NavigateTo page ->
             let _ = Debug.log "NavigateTo" page
@@ -335,7 +336,7 @@ pageWrapper forwaredPage =
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url navKey =
     let
-        ( authmodel, cmdMsg ) = AuthUI.init
+        ( authmodel, cmdMsg ) = AuthMain.init
     in
         (  emptyModel navKey url authmodel
         , Cmd.batch [ fetchKompositionList kompositionTag ] --TODO Verify that we shouldnt throw away the init!!!1

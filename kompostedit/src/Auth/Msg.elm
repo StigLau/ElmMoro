@@ -1,4 +1,5 @@
 module Auth.Msg exposing (..)
+import Navigation.Page as Navigation
 import TheSett.Laf as Laf
 import AWS.Auth as AWS
 import AuthAPI
@@ -12,6 +13,7 @@ type Msg
     | InitialTimeout
     | LogIn
     | LogOut
+    | NavigateTo Navigation.Page
     | RespondWithNewPassword
     | TryAgain
     | Refresh
