@@ -4,7 +4,6 @@ import Auth.Msg
 import Http exposing (Error)
 import Models.BaseModel exposing (..)
 import Browser exposing (UrlRequest(..))
-import Browser.Navigation
 import Navigation.Page exposing (Page)
 import RemoteData exposing (WebData)
 import Source.Msg

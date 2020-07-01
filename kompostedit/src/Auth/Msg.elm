@@ -24,7 +24,7 @@ type Msg
 type alias InitializedModel =
     { laf : Laf.Model
     , auth : AWS.Model
-    , session : AuthAPI.Status AWS.AuthExtensions AWS.Challenge
+    , session : AuthAPI.Status AWS.AuthExtensions AWS.Challenge AWS.FailReason
     , username : String
     , password : String
     , passwordVerify : String

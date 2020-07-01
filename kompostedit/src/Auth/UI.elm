@@ -1,7 +1,7 @@
 module Auth.UI exposing (view)
 
 import AWS.Auth as AWSAuth
-import Auth.Msg exposing (AuthModel(..), Msg(..))
+import Auth.Msg exposing (AuthModel(..), InitializedModel, Msg(..))
 import AuthAPI
 import Html.Styled exposing (Html)
 import Html.Styled exposing (div, form, styled, text, toUnstyled)
@@ -24,12 +24,13 @@ view : AuthModel -> Html.Html Msg
 view autModel =
             toUnstyled (styledBody autModel)
 
+initializedView : InitializedModel -> Html.Styled.Html Msg
 initializedView model =
     case model.session of
         AuthAPI.LoggedOut ->
             loginView model
 
-        AuthAPI.Failed ->
+        AuthAPI.Failed _ ->
             notPermittedView model
 
         AuthAPI.LoggedIn state ->
@@ -176,7 +177,7 @@ notPermittedView model =
         ]
 
 
-authenticatedView : { a | username : String, auth : AWSAuth.Model } -> { scopes : List String, subject : String } -> Html.Styled.Html Msg
+authenticatedView : { a | username : String, auth : AWSAuth.Model } -> { b | scopes : List String, subject : String } -> Html.Styled.Html Msg
 authenticatedView model user =
     let
         maybeAWSCredentials =
