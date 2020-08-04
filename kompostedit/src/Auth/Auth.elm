@@ -36,6 +36,8 @@ init =
                         , identityPoolId = "us-east-1:a1a1d225-9ce0-414a-a422-6e9fd3445843"
                         , accountId = "908262071533"
                         }
+                , authHeaderName = "Authorization"
+                , authHeaderPrefix = Just "Bearer"
                 }
     in
     case authInitResult of

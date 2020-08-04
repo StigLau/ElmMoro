@@ -1,6 +1,7 @@
 module Auth.UI exposing (view)
 
 import AWS.Auth as AWSAuth
+import AWS.Credentials exposing (Credentials)
 import Auth.Msg exposing (AuthModel(..), InitializedModel, Msg(..))
 import AuthAPI
 import Html.Styled exposing (Html)
@@ -176,6 +177,17 @@ notPermittedView model =
             devices
         ]
 
+accessKey : Credentials -> String
+accessKey creds = creds.accessKeyId
+
+secretAccessKey : Credentials -> String
+secretAccessKey creds = creds.secretAccessKey
+
+sessionToken : Credentials -> String
+sessionToken creds =
+    case creds.sessionToken of
+        Just stringy -> stringy
+        Nothing -> "Nada session token"
 
 authenticatedView : { a | username : String, auth : AWSAuth.Model } -> { b | scopes : List String, subject : String } -> Html.Styled.Html Msg
 authenticatedView model user =
@@ -187,8 +199,11 @@ authenticatedView model user =
         credentialsView =
             case maybeAWSCredentials of
                 Just creds ->
-                    [ Html.Styled.li []
-                        (text "With AWS access credentials."
+                    let _ = Debug.log "OMFG sessionToken" (sessionToken creds)
+                    in [ Html.Styled.li []
+                        (text ("With AWS access accessKey " ++ accessKey creds)
+                         :: text ("With AWS secretAccessKey " ++ secretAccessKey creds)
+                         :: text ("With AWS sessionToken " ++ sessionToken creds)
                             :: Html.Styled.br [] []
                             :: []
                         )
