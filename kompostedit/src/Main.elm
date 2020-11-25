@@ -291,11 +291,9 @@ view model =
 
 findOutWhatPageToView : Model -> Html Msg
 findOutWhatPageToView model =
-    let destPage = case model.authy of
-            Initialized initModel -> case initModel.session of
-                    LoggedIn _ -> model.activePage
-                    _ -> Page.AuthUI
-            _ -> Page.AuthUI
+    let destPage =
+            verifyAuthenticationPage model
+            --model.activePage
         _ = Debug.log "Moving on to " model.activePage
     in case destPage of
                 Page.AuthUI ->
@@ -322,6 +320,14 @@ findOutWhatPageToView model =
                 Page.NotFound ->
                     div [] [ text "Sorry, nothing< here :(" ]
 
+
+verifyAuthenticationPage : Model -> Page
+verifyAuthenticationPage model =
+    case model.authy of
+        Initialized initModel -> case initModel.session of
+            LoggedIn _ -> model.activePage
+            _ -> Page.AuthUI
+        _ -> Page.AuthUI
 
 pageWrapper : Html msg -> Html msg
 pageWrapper forwaredPage =
