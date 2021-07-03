@@ -9,30 +9,6 @@ The project source includes function code and supporting resources:
 - `template.yml` - An AWS CloudFormation template that creates an application.
 - `1-create-bucket.sh`, `2-deploy.sh`, etc. - Shell scripts that use the AWS CLI to deploy and manage the application.
 
-Variants of this sample application are available for the following languages:
-
-- Python – [blank-python](/sample-apps/blank-python).
-- Ruby – [blank-ruby](/sample-apps/blank-ruby).
-- Java – [blank-java](/sample-apps/blank-java).
-- Go – [blank-go](/sample-apps/blank-go).
-- C# – [blank-csharp](/sample-apps/blank-csharp).
-- PowerShell – [blank-powershell](/sample-apps/blank-powershell).
-
-Use the following instructions to deploy the sample application. For an in-depth look at its architecture and features, see [Blank Function Sample Application for AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/samples-blank-nodejs.html) in the developer guide.
-
-# Requirements
-- [Node.js 10 with npm](https://nodejs.org/en/download/releases/)
-- The Bash shell. For Linux and macOS, this is included by default. In Windows 10, you can install the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to get a Windows-integrated version of Ubuntu and Bash.
-- [The AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) v1.17 or newer.
-
-If you use the AWS CLI v2, add the following to your [configuration file](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) (`~/.aws/config`):
-
-```
-cli_binary_format=raw-in-base64-out
-```
-
-This setting enables the AWS CLI v2 to load JSON events from a file, matching the v1 behavior.
-
 # Setup
 Download or clone this repository.
 

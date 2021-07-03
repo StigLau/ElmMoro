@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eo pipefail
-STACK=blank-nodejs
+STACK=auth-lifter
 if [[ $# -eq 1 ]] ; then
     STACK=$1
     echo "Deleting stack $STACK"
@@ -11,7 +11,7 @@ echo "Deleted $STACK stack."
 
 if [ -f bucket-name.txt ]; then
     ARTIFACT_BUCKET=$(cat bucket-name.txt)
-    if [[ ! $ARTIFACT_BUCKET =~ lambda-artifacts-[a-z0-9]{16} ]] ; then
+    if [[ ! $ARTIFACT_BUCKET =~ lambda-artifacts-auth-lifter-[a-z0-9]{16} ]] ; then
         echo "Bucket was not created by this application. Skipping."
     else
         while true; do

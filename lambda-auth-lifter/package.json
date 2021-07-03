@@ -1,5 +1,5 @@
 {
-  "name": "blank-nodejs",
+  "name": "auth-lifter",
   "version": "1.0.0",
   "private": true,
   "devDependencies": {

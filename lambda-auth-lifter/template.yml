@@ -21,7 +21,7 @@ Resources:
   libs:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: blank-nodejs-lib
+      LayerName: auth-lifter-lib
       Description: Dependencies for the blank sample app.
       ContentUri: lib/.
       CompatibleRuntimes:
