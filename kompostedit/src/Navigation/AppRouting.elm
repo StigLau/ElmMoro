@@ -12,8 +12,7 @@ import Navigation.Page exposing (..)
 parser : Parser (Page -> a) a
 parser =
     oneOf
-        [ Parser.map AuthUI (s "auth")
-        , Parser.map ListingsUI Parser.top
+        [ Parser.map ListingsUI Parser.top
         , Parser.map KompostUI (s "kompost")
         , Parser.map KompositionJsonUI (s "kompostjson")
         , Parser.map SegmentUI (s "segment")
@@ -63,8 +62,6 @@ routeToString page =
     let
         pieces =
             case page of
-                AuthUI ->
-                    ["auth"]
                 ListingsUI ->
                     --replaceUrl navKey page
                     ["listings"] -- Main.elm#listings
