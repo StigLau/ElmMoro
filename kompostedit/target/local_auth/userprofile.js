@@ -3,9 +3,9 @@ myHeaders.set('Cache-Control', 'no-store');
 var urlParams = new URLSearchParams(window.location.search);
 var tokens;
 var domain = "auth.kompo.st";
-var appClientId = "2ai1pt4ve00t1igv7sb0c9gucl";
+var appClientId = "266phccqupctbc0qad85fk9tf3";
 var userPoolId = "eu-west-1_iKb6d0SIn";
-var redirectURI = "https://app.kompo.st/index.html";
+var redirectURI = "http://localhost:63342/ElmMoro/kompostedit/target/auth_info.html";
 
 //Convert Payload from Base64-URL to JSON
 const decodePayload = payload => {
@@ -23,7 +23,9 @@ const decodePayload = payload => {
 //Parse JWT Payload
 const parseJWTPayload = token => {
     const [header, payload, signature] = token.split('.');
-    return decodePayload(payload)
+    const jsonPayload = decodePayload(payload)
+
+    return jsonPayload
 };
 
 //Parse JWT Header
@@ -55,7 +57,9 @@ const hashToBase64url = arrayBuffer => {
     const items = new Uint8Array(arrayBuffer)
     const stringifiedArrayHash = items.reduce((acc, i) => `${acc}${String.fromCharCode(i)}`, '')
     const decodedHash = btoa(stringifiedArrayHash)
-    return decodedHash.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+
+    const base64URL = decodedHash.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    return base64URL
 }
 
 // Main Function

@@ -12,11 +12,15 @@ import RemoteData
 
 kompoUrl : String
 kompoUrl =
-    "http://localhost:8001/kompost/"
+--    "http://localhost:8001/kompost/"
+      "https://app.kompo.st/kompost/"
+
 
 
 kvaernUrl =
-    "http://localhost:8001/kvaern"
+--    "http://localhost:8001/kvaern"
+      "https://app.kompo.st/kvaern"
+
 
 
 fetchKompositionList : String -> Cmd Msg

@@ -17,10 +17,16 @@
 <p>Access Token</p>
 <p style="white-space:pre-line;" id="access_token"></p>
 
+<p style="white-space:pre-line;" id="kompost"></p>
+
 <p>User Profile</p>
 <p style="white-space:pre-line;" id="userInfo"></p>
 <script src="js/jsrsasign-latest-all-min.js"></script>
 <script src="js/verifier.js"></script>
 <script src="js/userprofile.js"></script>
 </body>
+<script src="elm/kompost.js"></script>
+<script>
+    var app = Elm.Main.init({ node: document.getElementById("kompost") });
+</script>
 </html>
