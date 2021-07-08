@@ -6,6 +6,7 @@ var domain = "auth.kompo.st";
 var appClientId = "2ai1pt4ve00t1igv7sb0c9gucl";
 var userPoolId = "eu-west-1_iKb6d0SIn";
 var redirectURI = "https://app.kompo.st/index.html";
+var app;
 
 //Convert Payload from Base64-URL to JSON
 const decodePayload = payload => {
@@ -29,9 +30,7 @@ const parseJWTPayload = token => {
 //Parse JWT Header
 const parseJWTHeader = token => {
     const [header, payload, signature] = token.split('.');
-    const jsonHeader = decodePayload(header)
-
-    return jsonHeader
+    return decodePayload(header)
 };
 
 //Generate a Random String
@@ -81,7 +80,6 @@ async function main() {
         // Redirect user-agent to /authorize endpoint
         location.href = "https://"+domain+"/oauth2/authorize?response_type=code&state="+state+"&client_id="+appClientId+"&redirect_uri="+redirectURI+"&scope=openid&code_challenge_method=S256&code_challenge="+code_challenge;
     } else {
-
         // Verify state matches
         state = urlParams.get('state');
         if(sessionStorage.getItem("pkce_state") != state) {
@@ -109,10 +107,27 @@ async function main() {
                             return;
                         }
                     });
-                    // Display tokens
-                    document.getElementById("id_token").innerHTML = JSON.stringify(parseJWTPayload(tokens.id_token),null,'\t');
-                    document.getElementById("access_token").innerHTML = JSON.stringify(parseJWTPayload(tokens.access_token),null,'\t');
+                    // Load application or show debug info
+                    try {
+                        console.log("Trying to show elm", Elm.Main)
+                        app = Elm.Main.init({ node: document.getElementById("kompost") });
+                    } catch (e) {
+                        console.log("Showing ID tokens instead")
+                        document.getElementById("id_token").innerHTML = JSON.stringify(parseJWTPayload(tokens.id_token), null, '\t');
+                        document.getElementById("access_token").innerHTML = JSON.stringify(parseJWTPayload(tokens.access_token), null, '\t');
+                    }
+                }).catch((error) => {
+                    // Your error is here!
+                    console.log("Oops in ur pants, ", error)
+                    urlParams.delete("code");
+                    history.replaceState(null, null, "?"+urlParams.toString());
+                    window.location.response = "https://vg.no";
+                    //window.location.response = "https://"+domain+"/oauth2/authorize?response_type=code&state="+state+"&client_id="+appClientId+"&redirect_uri="+redirectURI+"&scope=openid&code_challenge_method=S256&code_challenge="+code_challenge;
                 });
+            //Removing code, so it won't end up reused and borking state
+            urlParams.delete("code");
+            urlParams.delete("state");
+            history.replaceState(null, null, "?"+urlParams.toString());
 
             // Fetch from /user_info
             await fetch("https://"+domain+"/oauth2/userInfo",{
@@ -125,7 +140,9 @@ async function main() {
                 })
                 .then((data) => {
                     // Display user information
-                    document.getElementById("userInfo").innerHTML = JSON.stringify(data, null,'\t');
+                    if (document.getElementById("userInfo")) {
+                        document.getElementById("userInfo").innerHTML = JSON.stringify(data, null, '\t');
+                    }
                 });
         }}}
 main();

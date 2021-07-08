@@ -1,10 +1,10 @@
 var key_id;
 var keys;
-var key_index;
 
 //verify token
 async function verifyToken (token) {
 //get Cognito keys
+    const region = "eu-west-1";
     keys_url = 'https://cognito-idp.'+ region +'.amazonaws.com/' + userPoolId + '/.well-known/jwks.json';
     await fetch(keys_url)
         .then((response) => {
@@ -15,7 +15,7 @@ async function verifyToken (token) {
         });
 
 //Get the kid (key id)
-    var tokenHeader = parseJWTHeader(token);
+    const tokenHeader = parseJWTHeader(token);
     key_id = tokenHeader.kid;
 
 //search for the kid key id in the Cognito Keys
@@ -33,13 +33,13 @@ async function verifyToken (token) {
     }
 
 //verify token has not expired
-    var tokenPayload = parseJWTPayload(token);
+    let tokenPayload = parseJWTPayload(token);
     if (Date.now() >= tokenPayload.exp * 1000) {
         return("Token expired");
     }
 
 //verify app_client_id
-    var n = tokenPayload.aud.localeCompare(appClientId)
+    let n = tokenPayload.aud.localeCompare(appClientId);
     if (n !== 0){
         return("Token was not issued for this audience");
     }
