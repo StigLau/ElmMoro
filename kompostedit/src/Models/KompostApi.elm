@@ -11,15 +11,11 @@ import RemoteData
 
 
 kompoUrl : String
-kompoUrl =
---    "http://localhost:8001/kompost/"
-      "https://app.kompo.st/kompost/"
+kompoUrl = "/kompost/"
 
 
 
-kvaernUrl =
---    "http://localhost:8001/kvaern"
-      "https://app.kompo.st/kvaern"
+kvaernUrl = "/kvaern"
 
 
 
@@ -72,7 +68,7 @@ createKompo komposition =
 createVideo : Komposition -> Cmd Msg
 createVideo komposition =
         Http.post
-                { url = kvaernUrl ++ "/kvaern/createvideo?" ++ komposition.name
+                { url = kvaernUrl ++ "/createvideo?" ++ komposition.name
                 , body = Http.stringBody "application/json" <| kompositionEncoder komposition
                 , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
                 }
