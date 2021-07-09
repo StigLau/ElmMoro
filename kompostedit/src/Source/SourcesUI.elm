@@ -72,7 +72,7 @@ update msg model =
             ( { model | editingMediaFile = theMediaFile }, Cmd.none, Just (OutNavigateTo Page.MediaFileUI) )
 
         FetchSourceList id ->
-            ( model, fetchKompositionList id, Nothing )
+            ( model, fetchKompositionList id model.apiToken, Nothing )
 
         SaveSource ->
             case containsMediaFile model.editingMediaFile.id model.kompost of
@@ -105,7 +105,7 @@ update msg model =
 
         JumpToSourceKomposition mediaId ->
             let _ = Debug.log "Navigating to Komposition" mediaId
-            in ({ model | activePage = Page.KompostUI}, Models.KompostApi.getKomposition mediaId, Nothing)
+            in ({ model | activePage = Page.KompostUI}, Models.KompostApi.getKomposition mediaId model.apiToken, Nothing)
 
         AutoComplete autoMsg ->
             let

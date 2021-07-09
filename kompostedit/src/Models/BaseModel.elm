@@ -22,6 +22,7 @@ type alias Model =
     , url : Url.Url
     , accessibleAutocomplete : AutoComplete.Model
     , currentFocusAutoComplete : Focused
+    , apiToken : String
     }
 
 type Focused

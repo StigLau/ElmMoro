@@ -2,11 +2,6 @@ var myHeaders = new Headers();
 myHeaders.set('Cache-Control', 'no-store');
 var urlParams = new URLSearchParams(window.location.search);
 var tokens;
-var domain = "auth.kompo.st";
-var appClientId = "2ai1pt4ve00t1igv7sb0c9gucl";
-var userPoolId = "eu-west-1_iKb6d0SIn";
-var redirectURI = "https://app.kompo.st/index.html";
-var app;
 
 //Convert Payload from Base64-URL to JSON
 const decodePayload = payload => {
@@ -109,20 +104,12 @@ async function main() {
                     });
                     // Load application or show debug info
                     try {
-                        console.log("Trying to show elm", Elm.Main)
-                        app = Elm.Main.init({ node: document.getElementById("kompost") });
+                        startApp(tokens.id_token)
                     } catch (e) {
-                        console.log("Showing ID tokens instead")
-                        document.getElementById("id_token").innerHTML = JSON.stringify(parseJWTPayload(tokens.id_token), null, '\t');
-                        document.getElementById("access_token").innerHTML = JSON.stringify(parseJWTPayload(tokens.access_token), null, '\t');
+                        console.log("Showing ID tokens instead", e)
+                        document.getElementById("id_token").innerHTML = JSON.stringify(parseJWTPayload(tokens.id_token),null,'\t');
+                        document.getElementById("access_token").innerHTML = JSON.stringify(parseJWTPayload(tokens.access_token),null,'\t');
                     }
-                }).catch((error) => {
-                    // Your error is here!
-                    console.log("Oops in ur pants, ", error)
-                    urlParams.delete("code");
-                    history.replaceState(null, null, "?"+urlParams.toString());
-                    window.location.response = "https://vg.no";
-                    //window.location.response = "https://"+domain+"/oauth2/authorize?response_type=code&state="+state+"&client_id="+appClientId+"&redirect_uri="+redirectURI+"&scope=openid&code_challenge_method=S256&code_challenge="+code_challenge;
                 });
             //Removing code, so it won't end up reused and borking state
             urlParams.delete("code");

@@ -59,15 +59,15 @@ update msg model =
 
         ChooseDvl id ->
             let
-                empModel = emptyModel model.key model.url
+                empModel = emptyModel model.key model.url model.apiToken
             in
             ( { empModel | activePage = Page.KompostUI, listings = model.listings }
-            , KompostApi.getKomposition id
+            , KompostApi.getKomposition id model.apiToken
             )
 
         NewKomposition ->
             let
-                empModel = emptyModel model.key model.url
+                empModel = emptyModel model.key model.url model.apiToken
             in
                 ( { model | kompost = empModel.kompost, activePage = Page.DvlSpecificsUI}
             , replaceUrl Page.DvlSpecificsUI model.key
@@ -75,7 +75,7 @@ update msg model =
 
         ChangeKompositionType searchType ->
             ( model
-            , fetchKompositionList searchType
+            , fetchKompositionList searchType model.apiToken
             )
 
         KompositionUpdated webKomposition ->
@@ -321,12 +321,13 @@ pageWrapper forwaredPage =
 
 
 ---- PROGRAM ----
-init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init _ url navKey =
-    (  emptyModel navKey url
-    , Cmd.batch [ fetchKompositionList kompositionTag ]
+init : String -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init flag url navKey =
+    (  emptyModel navKey url flag
+    , Cmd.batch [ fetchKompositionList kompositionTag flag]
     )
 
+main : Program String Model Msg
 main =
     Browser.application
             { init = init
@@ -346,8 +347,8 @@ subscriptions model =
 -- Basis model and offline testdata
 -- These are the data points that one will see when one creates a new Komposion! If the GUI lacks default data, this is where one punches that in.
 --}
-emptyModel : Nav.Key -> Url -> Model
-emptyModel  navKey theUrl =
+emptyModel : Nav.Key -> Url -> String -> Model
+emptyModel  navKey theUrl apiGatewayToken =
     { listings = DataRepresentation [Row "demokompo1" "rev1", Row "demokomp2" "rev1"] "" ""
     , kompost = Komposition "" "" "Video" 120 defaultSegments [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
     , statusMessage = []
@@ -361,6 +362,7 @@ emptyModel  navKey theUrl =
     , key = navKey
     , accessibleAutocomplete = Common.AutoComplete.init
     , currentFocusAutoComplete = None
+    , apiToken = apiGatewayToken
     }
 
 

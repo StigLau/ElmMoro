@@ -2,7 +2,7 @@ module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchH
 
 import Debug
 import Dict
-import Http exposing (Error, Response)
+import Http exposing (Error, Header, Response)
 import MD5
 import Models.BaseModel exposing (Komposition)
 import Models.JsonCoding exposing (..)
@@ -19,19 +19,28 @@ kvaernUrl = "/kvaern"
 
 
 
-fetchKompositionList : String -> Cmd Msg
-fetchKompositionList typeIdentifier =
-    Http.post
-        { url = kompoUrl ++ "_find"
+fetchKompositionList : String -> String -> Cmd Msg
+fetchKompositionList typeIdentifier token =
+    Http.request
+        { method = "POST"
+        , headers = [Http.header "Authy" token ]
+        , url = kompoUrl ++ "_find"
         , body = Http.stringBody "application/json" (searchEncoder typeIdentifier)
         , expect = Http.expectJson (RemoteData.fromResult >> ListingsUpdated) kompositionListDecoder
+        , timeout = Nothing
+        , tracker = Nothing
         }
 
-getKomposition : String -> Cmd Msg
-getKomposition id =
-     Http.get
-            { url = kompoUrl ++ id
+getKomposition : String -> String -> Cmd Msg
+getKomposition id apiToken =
+    Http.request
+            { method = "GET"
+            , headers = [Http.header "Authy" apiToken ]
+            , url = kompoUrl ++ id
+            , body = Http.emptyBody
             , expect = Http.expectJson (RemoteData.fromResult >> KompositionUpdated) kompositionDecoder
+            , timeout = Nothing
+            , tracker = Nothing
             }
 
 
