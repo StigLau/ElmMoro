@@ -1,8 +1,8 @@
-module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchHeaderParam, fetchKompositionList, getDvlSegmentList, getKomposition, fetchSource, kompoUrl, updateKompo)
+module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchHeaderParam, fetchKompositionList, getKomposition, fetchSource, kompoUrl, updateKompo)
 
 import Debug
 import Dict
-import Http exposing (Error, Header, Response)
+import Http exposing (Error, Header, Response   )
 import MD5
 import Models.BaseModel exposing (Komposition)
 import Models.JsonCoding exposing (..)
@@ -20,74 +20,68 @@ kvaernUrl = "/kvaern"
 
 
 fetchKompositionList : String -> String -> Cmd Msg
-fetchKompositionList typeIdentifier token =
-    Http.request
-        { method = "POST"
-        , headers = [Http.header "Authy" token ]
-        , url = kompoUrl ++ "_find"
-        , body = Http.stringBody "application/json" (searchEncoder typeIdentifier)
-        , expect = Http.expectJson (RemoteData.fromResult >> ListingsUpdated) kompositionListDecoder
-        , timeout = Nothing
-        , tracker = Nothing
-        }
+fetchKompositionList typeIdentifier token = Http.request
+    { method = "POST"
+    , headers = [Http.header "Authy" token ]
+    , url = kompoUrl ++ "_find"
+    , body = Http.stringBody "application/json" (searchEncoder typeIdentifier)
+    , expect = Http.expectJson (RemoteData.fromResult >> ListingsUpdated) kompositionListDecoder
+    , timeout = Nothing
+    , tracker = Nothing
+    }
 
 getKomposition : String -> String -> Cmd Msg
-getKomposition id apiToken =
-    Http.request
-            { method = "GET"
-            , headers = [Http.header "Authy" apiToken ]
-            , url = kompoUrl ++ id
-            , body = Http.emptyBody
-            , expect = Http.expectJson (RemoteData.fromResult >> KompositionUpdated) kompositionDecoder
-            , timeout = Nothing
-            , tracker = Nothing
-            }
+getKomposition id apiToken = Http.request
+    { method = "GET"
+    , headers = [Http.header "Authy" apiToken ]
+    , url = kompoUrl ++ id
+    , body = Http.emptyBody
+    , expect = Http.expectJson (RemoteData.fromResult >> KompositionUpdated) kompositionDecoder
+    , timeout = Nothing
+    , tracker = Nothing
+    }
 
 
-fetchSource : String -> Cmd Msg
-fetchSource id =
-    Http.get
-        { url = kompoUrl ++ id
-        , expect = Http.expectJson (RemoteData.fromResult >> SourceUpdated) kompositionDecoder
-        }
+fetchSource : String -> String -> Cmd Msg
+fetchSource id apiToken = Http.request
+    { method = "GET"
+    , headers = [Http.header "Authy" apiToken ]
+    , url = kompoUrl ++ id
+    , body = Http.emptyBody
+    , expect = Http.expectJson (RemoteData.fromResult >> SourceUpdated) kompositionDecoder
+    , timeout = Nothing
+    , tracker = Nothing
+    }
 
 
-
-getDvlSegmentList : String -> Cmd Msg
-getDvlSegmentList id =
-    let
-        _ =
-            Debug.log "getDvlSegmentList" (kompoUrl ++ id)
-    in
-    Http.get
-        { url = kompoUrl ++ id
-        , expect = Http.expectJson (RemoteData.fromResult >> SegmentListUpdated) kompositionDecoder
-        }
-
-
-createKompo : Komposition -> Cmd Msg
-createKompo komposition =
-     Http.post
-        { url = kompoUrl
-        , body = (Http.stringBody "application/json" <| kompositionEncoder komposition)
-        , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
-        }
-
-
-createVideo : Komposition -> Cmd Msg
-createVideo komposition =
-        Http.post
-                { url = kvaernUrl ++ "/createvideo?" ++ komposition.name
-                , body = Http.stringBody "application/json" <| kompositionEncoder komposition
-                , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
-                }
-
-
-updateKompo : Komposition -> Cmd Msg
-updateKompo komposition =
-   Http.request
+createKompo : Komposition -> String -> Cmd Msg
+createKompo komposition apiToken = Http.request
     { method = "PUT"
-    , headers = []
+    , headers = [Http.header "Authy" apiToken ]
+    , url = kompoUrl ++ komposition.name
+    , body = (Http.stringBody "application/json" <| kompositionEncoder komposition)
+    , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
+    , timeout = Nothing
+    , tracker = Nothing
+    }
+
+
+createVideo : Komposition -> String -> Cmd Msg
+createVideo komposition apiToken = Http.request
+    { method = "POST"
+    , headers = [Http.header "Authy" apiToken ]
+    , url = kvaernUrl ++ "/createvideo?" ++ komposition.name
+    , body = Http.stringBody "application/json" <| kompositionEncoder komposition
+    , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
+    , timeout = Nothing
+    , tracker = Nothing
+    }
+
+
+updateKompo : Komposition -> String -> Cmd Msg
+updateKompo komposition apiToken = Http.request
+    { method = "PUT"
+    , headers = [Http.header "Authy" apiToken ]
     , url = kompoUrl ++ komposition.name
     , body = Http.stringBody "application/json" <| kompositionEncoder komposition
     , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
@@ -96,11 +90,10 @@ updateKompo komposition =
     }
 
 
-deleteKompo : Komposition -> Cmd Msg
-deleteKompo komposition =
-    Http.request
-    {  method = "DELETE"
-    , headers = []
+deleteKompo : Komposition -> String -> Cmd Msg
+deleteKompo komposition apiToken = Http.request
+    { method = "DELETE"
+    , headers = [Http.header "Authy" apiToken ]
     , url = kompoUrl ++ komposition.name ++ "?rev=" ++ komposition.revision
     , body = Http.emptyBody
     , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
@@ -108,11 +101,15 @@ deleteKompo komposition =
     , tracker = Nothing
     }
 
-fetchHeaderParam:String -> String -> Cmd Msg
-fetchHeaderParam urlId headerName =
-  Http.get
-    { url = kompoUrl ++ urlId
+fetchHeaderParam:String -> String -> String -> Cmd Msg
+fetchHeaderParam urlId headerName apiToken = Http.request
+    { method = "GET"
+    , headers = [Http.header "Authy" apiToken ]
+    , url = kompoUrl ++ urlId
+    , body = Http.emptyBody
     , expect = Http.expectStringResponse ETagResponse (extractHeaderResponse headerName Ok)
+    , timeout = Nothing
+    , tracker = Nothing
     }
 
 
@@ -138,3 +135,16 @@ extractSingleHeader headerName headers  =
     in case Dict.get headerName headers of
         Just header -> header
         Nothing -> Debug.log ( "Header not found: " ++ headerName)("available headers " ++ availableHeaders )
+
+{-- Example - If needed
+performGenericHttp : String -> String -> List Header -> Http.Body -> Expect Msg  -> Cmd Msg
+performGenericHttp method url headers body expectation = Http.request
+    { method = method
+    , headers = headers
+    , url = url
+    , body = body
+    , expect = expectation
+    , timeout = Nothing
+    , tracker = Nothing
+    }
+--}

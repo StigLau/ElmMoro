@@ -118,10 +118,10 @@ update msg model =
                 command =
                     case model.kompost.revision of
                         "" ->
-                            KompostApi.createKompo model.kompost
+                            KompostApi.createKompo model.kompost model.apiToken
 
                         _ ->
-                            updateKompo model.kompost
+                            updateKompo model.kompost model.apiToken
             in
             ( model
             , command
@@ -129,7 +129,7 @@ update msg model =
 
         DeleteKomposition ->
             ( model
-            , deleteKompo model.kompost
+            , deleteKompo model.kompost model.apiToken
             )
 
         EditSpecifics ->
@@ -192,7 +192,7 @@ update msg model =
                     ( { newModel | activePage = page }, Cmd.none)
 
                 (newModel, _, Just (FetchSourceListMsg sourceId)) ->
-                    ( newModel, fetchSource sourceId )
+                    ( newModel, fetchSource sourceId model.apiToken )
 
                 (newModel, command, childMsg) ->
                     let _ = Debug.log "Extracting outmessage failed" childMsg
@@ -204,7 +204,7 @@ update msg model =
           let _ = Debug.log "Creating video" model.kompost
           in
             ( model
-            , createVideo model.kompost
+            , createVideo model.kompost model.apiToken
             )
 
         ShowKompositionJson ->

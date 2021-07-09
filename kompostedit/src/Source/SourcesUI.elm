@@ -101,7 +101,7 @@ update msg model =
             ( modifiedModel, Cmd.none, Just (OutNavigateTo Page.KompostUI) )
 
         OrderChecksumEvalutation id ->
-            ( model, fetchHeaderParam id "etag", Nothing)
+            ( model, fetchHeaderParam id "etag" model.apiToken, Nothing)
 
         JumpToSourceKomposition mediaId ->
             let _ = Debug.log "Navigating to Komposition" mediaId
