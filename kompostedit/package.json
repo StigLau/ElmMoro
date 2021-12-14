@@ -44,7 +44,7 @@
     "http-proxy-middleware": "^0.17.3",
     "minimist": "1.2.5",
     "postcss-loader": "1.2.1",
-    "react-dev-utils": "0.4.2",
+    "react-dev-utils": "11.0.4",
     "style-loader": "0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "1.14.0",
