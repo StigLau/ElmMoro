@@ -23,7 +23,6 @@ listings model =
                         ]
                     , tbody [] (List.map (chooseDvlButton model) model.listings.docs)
                     , Grid.simpleRow [ Grid.col [] [ Button.button [ Button.primary, Button.small, Button.onClick NewKomposition ] [ text "New Komposition" ] ] ]                    ]
-                    , Grid.simpleRow [ Grid.col [] [ Button.button [ Button.small, Button.onClick ToAuthPage ] [ text "User" ] ] ]
                 ]
             ]
         ]

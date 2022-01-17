@@ -95,6 +95,7 @@ sourceDecoder =
         |> required "id" JsonD.string
         |> required "startingOffset" JsonD.float
         |> required "checksums" JsonD.string
+        |> required "format" JsonD.string
         |> required "extension" JsonD.string
         |> required "mediatype" JsonD.string
 

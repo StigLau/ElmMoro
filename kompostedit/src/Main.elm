@@ -1,8 +1,5 @@
 module Main exposing (init, main, update, view)
 
-import Auth.Msg exposing (AuthModel(..))
-import Auth.UI as AuthUI
-import AuthAPI exposing (Status(..))
 import Common.AutoComplete
 import Bootstrap.CDN as CDN
 import Bootstrap.Grid as Grid
@@ -23,7 +20,6 @@ import RemoteData exposing (RemoteData(..))
 import Segment.Model exposing (update)
 import Segment.SegmentUI
 import Set
-import Auth.Auth as AuthMain exposing (init)
 import UI.KompostListingsUI
 import UI.KompostUI
 import Url exposing (Url)
@@ -48,16 +44,6 @@ update msg model =
         ListingsUpdated Loading ->
                 Debug.log "Loading" (model, Cmd.none)
 
-        AuthyMsg authMsg ->
-                case authMsg of
-                    Auth.Msg.NavigateTo page -> ( { model | activePage = page }, Cmd.none)
-                    _ ->
-                        let (authChangedModel, authResponseMsg) = AuthMain.update authMsg model.authy
-                        in ({model | authy = authChangedModel}, authResponseMsg |> Cmd.map AuthyMsg )
-
-        ToAuthPage ->
-            ( { model | activePage = Page.AuthUI }, Cmd.none)
-
         NavigateTo page ->
             let _ = Debug.log "NavigateTo" page
             in  ( {model | activePage = page }
@@ -66,7 +52,7 @@ update msg model =
 
         ChooseDvl id ->
             let
-                empModel = emptyModel model.key model.url model.authy
+                empModel = emptyModel model.key model.url
             in
             ( { empModel | activePage = Page.KompostUI, listings = model.listings }
             , KompostApi.getKomposition id
@@ -74,7 +60,7 @@ update msg model =
 
         NewKomposition ->
             let
-                empModel = emptyModel model.key model.url model.authy
+                empModel = emptyModel model.key model.url
             in
                 ( { model | kompost = empModel.kompost, activePage = Page.DvlSpecificsUI}
             , replaceUrl Page.DvlSpecificsUI model.key
@@ -292,13 +278,9 @@ view model =
 findOutWhatPageToView : Model -> Html Msg
 findOutWhatPageToView model =
     let destPage =
-            verifyAuthenticationPage model
-            --model.activePage
+            model.activePage
         _ = Debug.log "Moving on to " model.activePage
     in case destPage of
-                Page.AuthUI ->
-                    Html.map AuthyMsg (pageWrapper <| (AuthUI.view model.authy))
-
                 Page.ListingsUI ->
                     pageWrapper <| UI.KompostListingsUI.listings model
 
@@ -321,14 +303,6 @@ findOutWhatPageToView model =
                     div [] [ text "Sorry, nothing< here :(" ]
 
 
-verifyAuthenticationPage : Model -> Page
-verifyAuthenticationPage model =
-    case model.authy of
-        Initialized initModel -> case initModel.session of
-            LoggedIn _ -> model.activePage
-            _ -> Page.AuthUI
-        _ -> Page.AuthUI
-
 pageWrapper : Html msg -> Html msg
 pageWrapper forwaredPage =
     Grid.container []
@@ -341,10 +315,7 @@ pageWrapper forwaredPage =
 ---- PROGRAM ----
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url navKey =
-    let
-        ( authmodel, cmdMsg ) = AuthMain.init
-    in
-        (  emptyModel navKey url authmodel
+        (  emptyModel navKey url
         , Cmd.batch [ fetchKompositionList kompositionTag ] --TODO Verify that we shouldnt throw away the init!!!1
         )
 
@@ -367,17 +338,16 @@ subscriptions model =
 -- Basis model and offline testdata
 -- These are the data points that one will see when one creates a new Komposion! If the GUI lacks default data, this is where one punches that in.
 --}
-emptyModel : Nav.Key -> Url -> AuthModel -> Model
-emptyModel  navKey theUrl authModel =
+emptyModel : Nav.Key -> Url -> Model
+emptyModel  navKey theUrl =
     { listings = DataRepresentation [Row "demokompo1" "rev1", Row "demokomp2" "rev1"] "" ""
-    , authy = authModel
     , kompost = Komposition "" "" "Video" 120 defaultSegments [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
     , statusMessage = []
     , activePage = Page.ListingsUI
     , editableSegment = False
     , checkboxVisible = False
     , segment = emptySegment
-    , editingMediaFile = Source "" 0 "" "" audioTag
+    , editingMediaFile = Source "" 0 "" "" "" audioTag
     , subSegmentList = Set.empty
     , url = theUrl
     , key = navKey
