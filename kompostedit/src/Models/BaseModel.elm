@@ -1,6 +1,5 @@
 module Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Komposition, Model, OutMsg(..), Row, Segment, SegmentGap, Source, VideoConfig, Focused(..))
 
-import Auth.Msg exposing (AuthModel)
 import Navigation.Page exposing (Page)
 import Set
 import Url exposing (Url)
@@ -11,7 +10,6 @@ import Common.AutoComplete as AutoComplete
 
 type alias Model =
     { listings : DataRepresentation
-    , authy : AuthModel
     , kompost : Komposition
     , statusMessage : List String
     , activePage : Page
@@ -24,6 +22,7 @@ type alias Model =
     , url : Url.Url
     , accessibleAutocomplete : AutoComplete.Model
     , currentFocusAutoComplete : Focused
+    , apiToken : String
     }
 
 type Focused
@@ -47,6 +46,7 @@ type alias Source =
     { id : String
     , startingOffset : Float
     , checksum : String
+    , format : Int
     , extensionType : String
     , mediaType : String
     }

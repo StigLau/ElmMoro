@@ -1,8 +1,7 @@
 module Navigation.Page exposing (..)
 
 type Page
-    = AuthUI -- Note different cross cutting concerns for login!
-    | ListingsUI
+    = ListingsUI
     | KompostUI
     | KompositionJsonUI
     | SegmentUI

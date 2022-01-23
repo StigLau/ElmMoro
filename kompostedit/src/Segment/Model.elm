@@ -71,7 +71,7 @@ update msg model =
             Debug.log "Deleting segment: " ( performSegmentOnModel model.segment deleteSegmentFromKomposition model, Cmd.none, Just (OutNavigateTo Page.KompostUI) )
 
         FetchAndLoadMediaFile id ->
-            ( model, fetchSource id, Nothing )
+            ( model, fetchSource id model.apiToken, Nothing )
 
         SegmentSearchVisible isVisible ->
             ({model | checkboxVisible = isVisible }, Cmd.none, Nothing)

@@ -38,6 +38,14 @@ update msg model =
             in
             ( setSource { source | checksum = checksum } model, Cmd.none, Nothing )
 
+
+        SetFormat format ->
+            let
+                source =
+                    model.editingMediaFile
+            in
+                ( setSource { source | format = standardInt format } model, Cmd.none, Nothing )
+
         SetOffset value ->
             let
                 source =
@@ -67,12 +75,12 @@ update msg model =
                             Debug.log "We found preexisting media file" mediaFile
 
                         _ ->
-                            Source "" 0 "" "" ""
+                            Source "" 0 "" -1 "" ""
             in
             ( { model | editingMediaFile = theMediaFile }, Cmd.none, Just (OutNavigateTo Page.MediaFileUI) )
 
         FetchSourceList id ->
-            ( model, fetchKompositionList id, Nothing )
+            ( model, fetchKompositionList id model.apiToken, Nothing )
 
         SaveSource ->
             case containsMediaFile model.editingMediaFile.id model.kompost of
@@ -101,11 +109,11 @@ update msg model =
             ( modifiedModel, Cmd.none, Just (OutNavigateTo Page.KompostUI) )
 
         OrderChecksumEvalutation id ->
-            ( model, fetchHeaderParam id "etag", Nothing)
+            ( model, fetchHeaderParam id "etag" model.apiToken, Nothing)
 
         JumpToSourceKomposition mediaId ->
             let _ = Debug.log "Navigating to Komposition" mediaId
-            in ({ model | activePage = Page.KompostUI}, Models.KompostApi.getKomposition mediaId, Nothing)
+            in ({ model | activePage = Page.KompostUI}, Models.KompostApi.getKomposition mediaId model.apiToken, Nothing)
 
         AutoComplete autoMsg ->
             let
@@ -141,6 +149,7 @@ editSpecifics model =
                     ]
                 )
             , wrapping "Checksums" (Input.text [ Input.id "Checksumz", Input.value mediaFile.checksum, Input.onInput SetChecksum ])
+            , wrapping "Format" (Input.text [ Input.id "Format", Input.value (String.fromInt mediaFile.format), Input.onInput SetFormat ])
             , wrapping "Extension Type"
                 (Select.select [ Select.id "segmentId", Select.onChange SetSourceExtensionType ]
                     (selectItems mediaFile.extensionType Common.StaticVariables.extensionTypes)
@@ -203,9 +212,13 @@ deleteMediaFileFromKomposition : Source -> Komposition -> Komposition
 deleteMediaFileFromKomposition mediaFile komposition =
     { komposition | sources = List.filter (\n -> n.id /= mediaFile.id) komposition.sources }
 
+standardFloat: String -> Float
 standardFloat value =
     Maybe.withDefault 0 (String.toFloat value)
 
+standardInt: String -> Int
+standardInt value =
+    Maybe.withDefault -1 (String.toInt value)
 
 sourceIdSelection : String -> List Row -> Html Msg --Note that this is a plain copy of SegmentUI sourceIdSelection
 sourceIdSelection sourceId sourceList =

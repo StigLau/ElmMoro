@@ -2,8 +2,7 @@ module Models.JsonCoding exposing (couchServerStatusDecoder, kompositionDecoder,
 
 import Json.Decode as JsonD
 import Json.Decode.Pipeline exposing (optional, required)
-import Json.Encode as JsonE
-import Json.Encode as Encode exposing (encode, int, list)
+import Json.Encode as JsonE exposing (list)
 import Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Komposition, Row, Segment, Source, VideoConfig)
 
 
@@ -95,9 +94,9 @@ sourceDecoder =
         |> required "id" JsonD.string
         |> required "startingOffset" JsonD.float
         |> required "checksums" JsonD.string
+        |> optional "format" JsonD.int -1
         |> required "extension" JsonD.string
         |> required "mediatype" JsonD.string
-
 
 configDecoder : JsonD.Decoder VideoConfig
 configDecoder =
@@ -132,6 +131,7 @@ encodeSource source =
         , ( "url", JsonE.string ( "https://heap.kompo.se/" ++ source.id)   )
         , ( "startingOffset", JsonE.float source.startingOffset )
         , ( "checksums", JsonE.string source.checksum )
+        , ( "format", JsonE.string (String.fromInt source.format) )
         , ( "extension", JsonE.string source.extensionType )
         , ( "mediatype", JsonE.string source.mediaType )
         ]

@@ -9,6 +9,7 @@ type Msg
     | DeleteSource String
     | JumpToSourceKomposition String
     | SetChecksum String
+    | SetFormat String
     | OrderChecksumEvalutation String
 
     | SetSourceMediaType String
