@@ -38,6 +38,14 @@ update msg model =
             in
             ( setSource { source | checksum = checksum } model, Cmd.none, Nothing )
 
+
+        SetFormat format ->
+            let
+                source =
+                    model.editingMediaFile
+            in
+                ( setSource { source | format = standardInt format } model, Cmd.none, Nothing )
+
         SetOffset value ->
             let
                 source =
@@ -67,7 +75,7 @@ update msg model =
                             Debug.log "We found preexisting media file" mediaFile
 
                         _ ->
-                            Source "" 0 "" "" ""
+                            Source "" 0 "" -1 "" ""
             in
             ( { model | editingMediaFile = theMediaFile }, Cmd.none, Just (OutNavigateTo Page.MediaFileUI) )
 
@@ -141,6 +149,7 @@ editSpecifics model =
                     ]
                 )
             , wrapping "Checksums" (Input.text [ Input.id "Checksumz", Input.value mediaFile.checksum, Input.onInput SetChecksum ])
+            , wrapping "Format" (Input.text [ Input.id "Format", Input.value (String.fromInt mediaFile.format), Input.onInput SetFormat ])
             , wrapping "Extension Type"
                 (Select.select [ Select.id "segmentId", Select.onChange SetSourceExtensionType ]
                     (selectItems mediaFile.extensionType Common.StaticVariables.extensionTypes)
@@ -203,9 +212,13 @@ deleteMediaFileFromKomposition : Source -> Komposition -> Komposition
 deleteMediaFileFromKomposition mediaFile komposition =
     { komposition | sources = List.filter (\n -> n.id /= mediaFile.id) komposition.sources }
 
+standardFloat: String -> Float
 standardFloat value =
     Maybe.withDefault 0 (String.toFloat value)
 
+standardInt: String -> Int
+standardInt value =
+    Maybe.withDefault -1 (String.toInt value)
 
 sourceIdSelection : String -> List Row -> Html Msg --Note that this is a plain copy of SegmentUI sourceIdSelection
 sourceIdSelection sourceId sourceList =
