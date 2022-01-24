@@ -44,13 +44,6 @@ update msg model =
         ListingsUpdated Loading ->
                 Debug.log "Loading" (model, Cmd.none)
 
-
-{--
-        LocationChanged loc ->
-            let _ = Debug.log "Trying to change location" loc
-            in
-            ( { model | activePage = AppRouting.fromUrlString "" }, Cmd.none) --TODO check this out!!
---}
         NavigateTo page ->
             let _ = Debug.log "NavigateTo" page
             in  ( {model | activePage = page }

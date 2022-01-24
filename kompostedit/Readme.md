@@ -4,7 +4,9 @@ Switche mellom ID og url i Source
 
 Building release file
 =====================
-elm make src/Main.elm --output target/elm/kompost.js
+elm make src/Main.elm --output release/content/src/kompost.js
+upload src/js/kompost.js to s3://app.kompo.st/js/
+
 Installation to capra kompo.se/edit bucket
 
 Getting Canonical ID for file permissions
@@ -13,7 +15,7 @@ aws s3api list-buckets --query Owner.ID --output text
 
 Elm Maintenance
 ===============
-
+elm-json upgrade
 elm-json tree
 elm-json uninstall the-sett/elm-aws-core
 
@@ -26,4 +28,15 @@ Authentication info isn't sent to API-gateway in the form we wish, resulting in,
 
 Pipedream for web debugging
 ===========================
-https://pipedream.com/@s10g?tab=workflows - s...l@google . Verify endpoint https://enq45xmnlt5mh9t.m.pipedream.net 
+https://pipedream.com/@s10g?tab=workflows - s...l@google . Verify endpoint https://enq45xmnlt5mh9t.m.pipedream.net
+
+Testing locally
+=======
+Start up
+no.lau.kompost.Kompost kvaern
+config kvaern-prod.properties
+then run
+
+Goto
+-------
+http://0.0.0.0:8001/src/
