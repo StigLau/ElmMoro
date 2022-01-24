@@ -4,8 +4,9 @@ Switche mellom ID og url i Source
 
 Building release file
 =====================
-elm make src/Main.elm --output release/content/src/kompost.js
-upload src/js/kompost.js to s3://app.kompo.st/js/
+elm make src/Main.elm --output release/content/elm/kompost.js
+upload release/content/js/kompost.js to s3://app.kompo.st/js/
+Can be done via "terraform apply from release dir"
 
 Installation to capra kompo.se/edit bucket
 
