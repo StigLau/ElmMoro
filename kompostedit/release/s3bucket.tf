@@ -1,10 +1,5 @@
 //https://barneyparker.com/posts/uploading-file-trees-to-s3-with-terraform/
 
-
-data "aws_s3_bucket" "kompostapp" {
-  bucket = "repo.kompo.st"
-}
-
 resource "aws_s3_bucket_object" "content" {
   for_each = fileset("${path.module}/content", "**/*.*")
   bucket       = data.aws_s3_bucket.kompostapp.id
