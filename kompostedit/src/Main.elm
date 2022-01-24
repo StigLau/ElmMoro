@@ -52,15 +52,15 @@ update msg model =
 
         ChooseDvl id ->
             let
-                empModel = emptyModel model.key model.url
+                empModel = emptyModel model.key model.url model.apiToken
             in
             ( { empModel | activePage = Page.KompostUI, listings = model.listings }
-            , KompostApi.getKomposition id
+            , KompostApi.getKomposition id model.apiToken
             )
 
         NewKomposition ->
             let
-                empModel = emptyModel model.key model.url
+                empModel = emptyModel model.key model.url model.apiToken
             in
                 ( { model | kompost = empModel.kompost, activePage = Page.DvlSpecificsUI}
             , replaceUrl Page.DvlSpecificsUI model.key
@@ -68,7 +68,7 @@ update msg model =
 
         ChangeKompositionType searchType ->
             ( model
-            , fetchKompositionList searchType
+            , fetchKompositionList searchType model.apiToken
             )
 
         KompositionUpdated webKomposition ->
@@ -111,10 +111,10 @@ update msg model =
                 command =
                     case model.kompost.revision of
                         "" ->
-                            KompostApi.createKompo model.kompost
+                            KompostApi.createKompo model.kompost model.apiToken
 
                         _ ->
-                            updateKompo model.kompost
+                            updateKompo model.kompost model.apiToken
             in
             ( model
             , command
@@ -122,7 +122,7 @@ update msg model =
 
         DeleteKomposition ->
             ( model
-            , deleteKompo model.kompost
+            , deleteKompo model.kompost model.apiToken
             )
 
         EditSpecifics ->
@@ -185,7 +185,7 @@ update msg model =
                     ( { newModel | activePage = page }, Cmd.none)
 
                 (newModel, _, Just (FetchSourceListMsg sourceId)) ->
-                    ( newModel, fetchSource sourceId )
+                    ( newModel, fetchSource sourceId model.apiToken )
 
                 (newModel, command, childMsg) ->
                     let _ = Debug.log "Extracting outmessage failed" childMsg
@@ -197,7 +197,7 @@ update msg model =
           let _ = Debug.log "Creating video" model.kompost
           in
             ( model
-            , createVideo model.kompost
+            , createVideo model.kompost model.apiToken
             )
 
         ShowKompositionJson ->
@@ -272,15 +272,15 @@ changeRouteTo maybePage model =
 view : Model -> Browser.Document Msg
 view model =
     { title = "KompostEdit"
-    , body = [findOutWhatPageToView model]
+    , body = findOutWhatPageToView model
     }
 
-findOutWhatPageToView : Model -> Html Msg
+findOutWhatPageToView : Model -> List (Html Msg)
 findOutWhatPageToView model =
-    let destPage =
-            model.activePage
+    let
         _ = Debug.log "Moving on to " model.activePage
-    in case destPage of
+    in
+        [ case model.activePage of
                 Page.ListingsUI ->
                     pageWrapper <| UI.KompostListingsUI.listings model
 
@@ -301,6 +301,7 @@ findOutWhatPageToView model =
 
                 Page.NotFound ->
                     div [] [ text "Sorry, nothing< here :(" ]
+            ]
 
 
 pageWrapper : Html msg -> Html msg
@@ -313,12 +314,13 @@ pageWrapper forwaredPage =
 
 
 ---- PROGRAM ----
-init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init _ url navKey =
-        (  emptyModel navKey url
-        , Cmd.batch [ fetchKompositionList kompositionTag ] --TODO Verify that we shouldnt throw away the init!!!1
-        )
+init : String -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init flag url navKey =
+    (  emptyModel navKey url flag
+    , Cmd.batch [ fetchKompositionList kompositionTag flag]
+    )
 
+main : Program String Model Msg
 main =
     Browser.application
             { init = init
@@ -338,8 +340,8 @@ subscriptions model =
 -- Basis model and offline testdata
 -- These are the data points that one will see when one creates a new Komposion! If the GUI lacks default data, this is where one punches that in.
 --}
-emptyModel : Nav.Key -> Url -> Model
-emptyModel  navKey theUrl =
+emptyModel : Nav.Key -> Url -> String -> Model
+emptyModel  navKey theUrl apiGatewayToken =
     { listings = DataRepresentation [Row "demokompo1" "rev1", Row "demokomp2" "rev1"] "" ""
     , kompost = Komposition "" "" "Video" 120 defaultSegments [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
     , statusMessage = []
@@ -347,12 +349,13 @@ emptyModel  navKey theUrl =
     , editableSegment = False
     , checkboxVisible = False
     , segment = emptySegment
-    , editingMediaFile = Source "" 0 "" "" "" audioTag
+    , editingMediaFile = Source "" 0 "" -1 "" audioTag
     , subSegmentList = Set.empty
     , url = theUrl
     , key = navKey
     , accessibleAutocomplete = Common.AutoComplete.init
     , currentFocusAutoComplete = None
+    , apiToken = apiGatewayToken
     }
 
 

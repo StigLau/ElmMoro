@@ -22,6 +22,7 @@ type alias Model =
     , url : Url.Url
     , accessibleAutocomplete : AutoComplete.Model
     , currentFocusAutoComplete : Focused
+    , apiToken : String
     }
 
 type Focused
@@ -45,7 +46,7 @@ type alias Source =
     { id : String
     , startingOffset : Float
     , checksum : String
-    , format : String
+    , format : Int
     , extensionType : String
     , mediaType : String
     }
