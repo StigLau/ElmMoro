@@ -5478,9 +5478,6 @@ var $author$project$Common$AutoComplete$presidents = _List_fromArray(
 		A4($author$project$Common$AutoComplete$Person, 'Barack Obama', 1961, 'Honolulu', 'Hawaii')
 	]);
 var $author$project$Common$AutoComplete$init = {autoState: $ContaSystemer$elm_menu$Menu$empty, howManyToShow: 5, people: $author$project$Common$AutoComplete$presidents, query: '', selectedPerson: $elm$core$Maybe$Nothing, showMenu: false};
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
 var $author$project$Main$emptyModel = F3(
 	function (navKey, theUrl, apiGatewayToken) {
 		return {
@@ -5490,7 +5487,7 @@ var $author$project$Main$emptyModel = F3(
 			checkboxVisible: false,
 			currentFocusAutoComplete: $author$project$Models$BaseModel$None,
 			editableSegment: false,
-			editingMediaFile: A6($author$project$Models$BaseModel$Source, '', 0, '', -1, '', $author$project$Common$StaticVariables$audioTag),
+			editingMediaFile: A6($author$project$Models$BaseModel$Source, '', 0, '', '', '', $author$project$Common$StaticVariables$audioTag),
 			key: navKey,
 			kompost: A8(
 				$author$project$Models$BaseModel$Komposition,
@@ -6544,8 +6541,7 @@ var $author$project$Models$JsonCoding$encodeSource = function (source) {
 				$elm$json$Json$Encode$string(source.checksum)),
 				_Utils_Tuple2(
 				'format',
-				$elm$json$Json$Encode$string(
-					$elm$core$String$fromInt(source.format))),
+				$elm$json$Json$Encode$string(source.format)),
 				_Utils_Tuple2(
 				'extension',
 				$elm$json$Json$Encode$string(source.extensionType)),
@@ -6815,6 +6811,9 @@ var $author$project$Models$JsonCoding$configDecoder = A4(
 				$elm$json$Json$Decode$int,
 				0,
 				$elm$json$Json$Decode$succeed($author$project$Models$BaseModel$VideoConfig)))));
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
 var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 	function (key, valDecoder, decoder) {
 		return A2(
@@ -6857,8 +6856,8 @@ var $author$project$Models$JsonCoding$sourceDecoder = A3(
 		A4(
 			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 			'format',
-			$elm$json$Json$Decode$int,
-			-1,
+			$elm$json$Json$Decode$string,
+			'',
 			A3(
 				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 				'checksums',
@@ -8372,12 +8371,6 @@ var $author$project$Source$SourcesUI$standardFloat = function (value) {
 		0,
 		$elm$core$String$toFloat(value));
 };
-var $author$project$Source$SourcesUI$standardInt = function (value) {
-	return A2(
-		$elm$core$Maybe$withDefault,
-		-1,
-		$elm$core$String$toInt(value));
-};
 var $author$project$Common$AutoComplete$NoOp = {$: 'NoOp'};
 var $author$project$Common$AutoComplete$Reset = {$: 'Reset'};
 var $elm$core$Basics$composeL = F3(
@@ -9068,9 +9061,7 @@ var $author$project$Source$SourcesUI$update = F2(
 						$author$project$Source$SourcesUI$setSource,
 						_Utils_update(
 							source,
-							{
-								format: $author$project$Source$SourcesUI$standardInt(format)
-							}),
+							{format: format}),
 						model),
 					$elm$core$Platform$Cmd$none,
 					$elm$core$Maybe$Nothing);
@@ -9123,7 +9114,7 @@ var $author$project$Source$SourcesUI$update = F2(
 						var mediaFile = _v1.a;
 						return A2($elm$core$Debug$log, 'We found preexisting media file', mediaFile);
 					} else {
-						return A6($author$project$Models$BaseModel$Source, '', 0, '', -1, '', '');
+						return A6($author$project$Models$BaseModel$Source, '', 0, '', '', '', '');
 					}
 				}();
 				return _Utils_Tuple3(
@@ -12006,8 +11997,7 @@ var $author$project$Source$SourcesUI$editSpecifics = function (model) {
 							_List_fromArray(
 								[
 									$rundis$elm_bootstrap$Bootstrap$Form$Input$id('Format'),
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$value(
-									$elm$core$String$fromInt(mediaFile.format)),
+									$rundis$elm_bootstrap$Bootstrap$Form$Input$value(mediaFile.format),
 									$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Source$Msg$SetFormat)
 								]))),
 						A2(

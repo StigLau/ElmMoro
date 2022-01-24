@@ -46,7 +46,7 @@ type alias Source =
     { id : String
     , startingOffset : Float
     , checksum : String
-    , format : Int
+    , format : String
     , extensionType : String
     , mediaType : String
     }

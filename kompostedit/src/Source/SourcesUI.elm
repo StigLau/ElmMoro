@@ -44,7 +44,7 @@ update msg model =
                 source =
                     model.editingMediaFile
             in
-                ( setSource { source | format = standardInt format } model, Cmd.none, Nothing )
+                ( setSource { source | format = format } model, Cmd.none, Nothing )
 
         SetOffset value ->
             let
@@ -75,7 +75,7 @@ update msg model =
                             Debug.log "We found preexisting media file" mediaFile
 
                         _ ->
-                            Source "" 0 "" -1 "" ""
+                            Source "" 0 "" "" "" ""
             in
             ( { model | editingMediaFile = theMediaFile }, Cmd.none, Just (OutNavigateTo Page.MediaFileUI) )
 
@@ -149,7 +149,7 @@ editSpecifics model =
                     ]
                 )
             , wrapping "Checksums" (Input.text [ Input.id "Checksumz", Input.value mediaFile.checksum, Input.onInput SetChecksum ])
-            , wrapping "Format" (Input.text [ Input.id "Format", Input.value (String.fromInt mediaFile.format), Input.onInput SetFormat ])
+            , wrapping "Format" (Input.text [ Input.id "Format", Input.value mediaFile.format, Input.onInput SetFormat ])
             , wrapping "Extension Type"
                 (Select.select [ Select.id "segmentId", Select.onChange SetSourceExtensionType ]
                     (selectItems mediaFile.extensionType Common.StaticVariables.extensionTypes)

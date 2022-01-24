@@ -94,7 +94,7 @@ sourceDecoder =
         |> required "id" JsonD.string
         |> required "startingOffset" JsonD.float
         |> required "checksums" JsonD.string
-        |> optional "format" JsonD.int -1
+        |> optional "format" JsonD.string ""
         |> required "extension" JsonD.string
         |> required "mediatype" JsonD.string
 
@@ -131,7 +131,7 @@ encodeSource source =
         , ( "url", JsonE.string ( "https://heap.kompo.se/" ++ source.id)   )
         , ( "startingOffset", JsonE.float source.startingOffset )
         , ( "checksums", JsonE.string source.checksum )
-        , ( "format", JsonE.string (String.fromInt source.format) )
+        , ( "format", JsonE.string source.format )
         , ( "extension", JsonE.string source.extensionType )
         , ( "mediatype", JsonE.string source.mediaType )
         ]
