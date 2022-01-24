@@ -6722,13 +6722,16 @@ var $elm$json$Json$Decode$float = _Json_decodeFloat;
 var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
 var $elm$json$Json$Decode$andThen = _Json_andThen;
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
 var $elm$json$Json$Decode$decodeValue = _Json_run;
-var $elm$json$Json$Decode$fail = _Json_fail;
 var $elm$json$Json$Decode$null = _Json_decodeNull;
 var $elm$json$Json$Decode$oneOf = _Json_oneOf;
 var $elm$json$Json$Decode$value = _Json_decodeValue;
 var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder = F3(
-	function (pathDecoder, valDecoder, fallback) {
+	function (path, valDecoder, fallback) {
 		var nullOr = function (decoder) {
 			return $elm$json$Json$Decode$oneOf(
 				_List_fromArray(
@@ -6738,7 +6741,10 @@ var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder = F3
 					]));
 		};
 		var handleResult = function (input) {
-			var _v0 = A2($elm$json$Json$Decode$decodeValue, pathDecoder, input);
+			var _v0 = A2(
+				$elm$json$Json$Decode$decodeValue,
+				A2($elm$json$Json$Decode$at, path, $elm$json$Json$Decode$value),
+				input);
 			if (_v0.$ === 'Ok') {
 				var rawValue = _v0.a;
 				var _v1 = A2(
@@ -6749,9 +6755,10 @@ var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder = F3
 					var finalResult = _v1.a;
 					return $elm$json$Json$Decode$succeed(finalResult);
 				} else {
-					var finalErr = _v1.a;
-					return $elm$json$Json$Decode$fail(
-						$elm$json$Json$Decode$errorToString(finalErr));
+					return A2(
+						$elm$json$Json$Decode$at,
+						path,
+						nullOr(valDecoder));
 				}
 			} else {
 				return $elm$json$Json$Decode$succeed(fallback);
@@ -6765,7 +6772,8 @@ var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional = F4(
 			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
 			A3(
 				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder,
-				A2($elm$json$Json$Decode$field, key, $elm$json$Json$Decode$value),
+				_List_fromArray(
+					[key]),
 				valDecoder,
 				fallback),
 			decoder);
@@ -9885,10 +9893,6 @@ var $elm$html$Html$Events$stopPropagationOn = F2(
 			event,
 			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
 	});
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
 var $elm$html$Html$Events$targetValue = A2(
 	$elm$json$Json$Decode$at,
 	_List_fromArray(
@@ -11645,6 +11649,7 @@ var $author$project$Common$AutoComplete$boolToString = function (bool) {
 		return 'false';
 	}
 };
+var $elm$json$Json$Decode$fail = _Json_fail;
 var $elm$html$Html$Events$keyCode = A2($elm$json$Json$Decode$field, 'keyCode', $elm$json$Json$Decode$int);
 var $elm$html$Html$Events$onFocus = function (msg) {
 	return A2(
