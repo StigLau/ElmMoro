@@ -4,7 +4,7 @@ Switche mellom ID og url i Source
 
 Building release file
 =====================
-elm make src/Main.elm --output target/elm/kompost.js
+elm make src/Main.elm --output release/content/src/kompost.js
 upload src/js/kompost.js to s3://app.kompo.st/js/
 
 Installation to capra kompo.se/edit bucket
