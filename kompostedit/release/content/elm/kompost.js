@@ -5398,9 +5398,9 @@ var $author$project$Models$BaseModel$Row = F2(
 	function (id, rev) {
 		return {id: id, rev: rev};
 	});
-var $author$project$Models$BaseModel$Source = F6(
-	function (id, startingOffset, checksum, format, extensionType, mediaType) {
-		return {checksum: checksum, extensionType: extensionType, format: format, id: id, mediaType: mediaType, startingOffset: startingOffset};
+var $author$project$Models$BaseModel$Source = F7(
+	function (id, url, startingOffset, checksum, format, extensionType, mediaType) {
+		return {checksum: checksum, extensionType: extensionType, format: format, id: id, mediaType: mediaType, startingOffset: startingOffset, url: url};
 	});
 var $author$project$Models$BaseModel$VideoConfig = F4(
 	function (width, height, framerate, extensionType) {
@@ -5487,7 +5487,7 @@ var $author$project$Main$emptyModel = F3(
 			checkboxVisible: false,
 			currentFocusAutoComplete: $author$project$Models$BaseModel$None,
 			editableSegment: false,
-			editingMediaFile: A6($author$project$Models$BaseModel$Source, '', 0, '', '', '', $author$project$Common$StaticVariables$audioTag),
+			editingMediaFile: A7($author$project$Models$BaseModel$Source, '', '', 0, '', '', '', $author$project$Common$StaticVariables$audioTag),
 			key: navKey,
 			kompost: A8(
 				$author$project$Models$BaseModel$Komposition,
@@ -6532,7 +6532,7 @@ var $author$project$Models$JsonCoding$encodeSource = function (source) {
 				$elm$json$Json$Encode$string(source.id)),
 				_Utils_Tuple2(
 				'url',
-				$elm$json$Json$Encode$string('https://heap.kompo.se/' + source.id)),
+				$elm$json$Json$Encode$string(source.url)),
 				_Utils_Tuple2(
 				'startingOffset',
 				$elm$json$Json$Encode$float(source.startingOffset)),
@@ -6868,9 +6868,13 @@ var $author$project$Models$JsonCoding$sourceDecoder = A3(
 					$elm$json$Json$Decode$float,
 					A3(
 						$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-						'id',
+						'url',
 						$elm$json$Json$Decode$string,
-						$elm$json$Json$Decode$succeed($author$project$Models$BaseModel$Source)))))));
+						A3(
+							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+							'id',
+							$elm$json$Json$Decode$string,
+							$elm$json$Json$Decode$succeed($author$project$Models$BaseModel$Source))))))));
 var $author$project$Models$JsonCoding$kompositionDecoder = A4(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 	'beatpattern',
@@ -9041,6 +9045,18 @@ var $author$project$Source$SourcesUI$update = F2(
 						{checkboxVisible: isVisible}),
 					$elm$core$Platform$Cmd$none,
 					$elm$core$Maybe$Nothing);
+			case 'SetUrl':
+				var url = msg.a;
+				var source = model.editingMediaFile;
+				return _Utils_Tuple3(
+					A2(
+						$author$project$Source$SourcesUI$setSource,
+						_Utils_update(
+							source,
+							{url: url}),
+						model),
+					$elm$core$Platform$Cmd$none,
+					$elm$core$Maybe$Nothing);
 			case 'SetChecksum':
 				var checksum = msg.a;
 				var source = model.editingMediaFile;
@@ -9114,7 +9130,7 @@ var $author$project$Source$SourcesUI$update = F2(
 						var mediaFile = _v1.a;
 						return A2($elm$core$Debug$log, 'We found preexisting media file', mediaFile);
 					} else {
-						return A6($author$project$Models$BaseModel$Source, '', 0, '', '', '', '');
+						return A7($author$project$Models$BaseModel$Source, '', '', 0, '', '', '', '');
 					}
 				}();
 				return _Utils_Tuple3(
@@ -11278,6 +11294,9 @@ var $author$project$Source$Msg$SetOffset = function (a) {
 var $author$project$Source$Msg$SetSourceExtensionType = function (a) {
 	return {$: 'SetSourceExtensionType', a: a};
 };
+var $author$project$Source$Msg$SetUrl = function (a) {
+	return {$: 'SetUrl', a: a};
+};
 var $author$project$Source$Msg$SourceSearchVisible = function (a) {
 	return {$: 'SourceSearchVisible', a: a};
 };
@@ -11969,6 +11988,16 @@ var $author$project$Source$SourcesUI$editSpecifics = function (model) {
 						$rundis$elm_bootstrap$Bootstrap$Form$row,
 						_List_Nil,
 						$author$project$Source$SourcesUI$sourceSelector(model)),
+						A2(
+						$author$project$Source$SourcesUI$wrapping,
+						'Url',
+						$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
+							_List_fromArray(
+								[
+									$rundis$elm_bootstrap$Bootstrap$Form$Input$id('Url'),
+									$rundis$elm_bootstrap$Bootstrap$Form$Input$value(mediaFile.url),
+									$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Source$Msg$SetUrl)
+								]))),
 						A2(
 						$author$project$Source$SourcesUI$wrapping,
 						'Starting Offset',

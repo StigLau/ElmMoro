@@ -44,6 +44,7 @@ type alias Komposition =
 
 type alias Source =
     { id : String
+    , url : String
     , startingOffset : Float
     , checksum : String
     , format : String

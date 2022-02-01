@@ -31,6 +31,13 @@ update msg model =
         SourceSearchVisible isVisible ->
             ({model | checkboxVisible = isVisible }, Cmd.none, Nothing)
 
+        SetUrl url ->
+            let
+                source =
+                    model.editingMediaFile
+            in
+            ( setSource { source | url = url } model, Cmd.none, Nothing )
+
         SetChecksum checksum ->
             let
                 source =
@@ -75,7 +82,7 @@ update msg model =
                             Debug.log "We found preexisting media file" mediaFile
 
                         _ ->
-                            Source "" 0 "" "" "" ""
+                            Source "" "" 0 "" "" "" ""
             in
             ( { model | editingMediaFile = theMediaFile }, Cmd.none, Just (OutNavigateTo Page.MediaFileUI) )
 
@@ -141,6 +148,7 @@ editSpecifics model =
         [ h1 [] [Checkbox.checkbox [ Checkbox.onCheck SourceSearchVisible, Checkbox.checked model.checkboxVisible ] ("Editing Source") ]
         , Form.form [ class "container" ]
             [ Form.row [] (sourceSelector model)
+            , wrapping "Url" (Input.text [ Input.id "Url", Input.value mediaFile.url, Input.onInput SetUrl ])
             , wrapping "Starting Offset"
                 (Input.text
                     [ Input.id "Starting Offset"
