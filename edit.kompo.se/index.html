@@ -1,0 +1,43 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Authorization info</title>
+</head>
+
+<body>
+<a href="https://app.kompo.st">app.kompo.st</a>
+<h1>Kompost Debug Info</h1>
+
+<h2>Cognito User</h2>
+
+<p style="white-space:pre-line;" id="token_status"></p>
+
+<p>Id Token</p>
+<p style="white-space:pre-line;" id="id_token"></p>
+
+<p>Access Token</p>
+<p style="white-space:pre-line;" id="access_token"></p>
+
+<p style="white-space:pre-line;" id="kompost"></p>
+
+<p>User Profile</p>
+<p style="white-space:pre-line;" id="userInfo"></p>
+</body>
+<script>
+  const domain = "auth.kompo.st";
+  const userPoolId = "eu-west-1:a1b9f42e-56c9-4625-9ea0-013c449dc8ce";
+  const appClientId = "2ai1pt4ve00t1igv7sb0c9gucl";
+  const redirectURI = "https://app.kompo.st/index.html";
+  // Initialize the Amazon Cognito credentials provider
+  AWS.config.region = 'eu-west-1';
+  AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: userPoolId});
+  console.log("Authed user ", AWS.config.credentials)
+</script>
+<script src="js/jsrsasign-latest-all-min.js"></script>
+<script src="js/verifier.js"></script>
+<script src="js/userprofile.js"></script>
+<script src="elm/interop.js"></script>
+<script src="elm/kompost.js"></script>
+</html>
