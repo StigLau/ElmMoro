@@ -58,6 +58,14 @@ update msg model =
             , KompostApi.getKomposition id model.apiToken
             )
 
+        KompositionMetadataFromYT id ->
+            let
+                empModel = emptyModel model.key model.url model.apiToken
+            in
+            ( { empModel | activePage = Page.KompostUI, listings = model.listings }
+            , KompostApi.getYoutubeMetadata id model.apiToken
+            )
+
         NewKomposition ->
             let
                 empModel = emptyModel model.key model.url model.apiToken

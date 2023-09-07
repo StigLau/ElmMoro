@@ -15,6 +15,7 @@ type Msg
     = ListingsUpdated (WebData DataRepresentation)
     | NavigateTo Page
     | ChooseDvl String
+    | KompositionMetadataFromYT String
     | EditSpecifics
     | NewKomposition
     | ChangeKompositionType String

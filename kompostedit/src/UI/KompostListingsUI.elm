@@ -22,7 +22,13 @@ listings model =
                         , ButtonGroup.radioButton False [ Button.success, Button.onClick (ChangeKompositionType "Audio") ] [ Html.text "Audio" ]
                         ]
                     , tbody [] (List.map (chooseDvlButton model) model.listings.docs)
-                    , Grid.simpleRow [ Grid.col [] [ Button.button [ Button.primary, Button.small, Button.onClick NewKomposition ] [ text "New Komposition" ] ] ]                    ]
+                    , Grid.simpleRow [ Grid.col [] [
+                    Button.button [ Button.primary, Button.small, Button.onClick NewKomposition ] [ text "New Komposition" ] ] ]
+                    , Button.button [ Button.primary, onClick <| KompositionMetadataFromYT "short-example.json"] [ text "YT"]
+                    ]
+                    , Grid.simpleRow [ Grid.col [] [
+
+                                        ] ]
                 ]
             ]
         ]
