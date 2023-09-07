@@ -5488,7 +5488,9 @@ var $author$project$Main$emptyModel = F3(
 			currentFocusAutoComplete: $author$project$Models$BaseModel$None,
 			editableSegment: false,
 			editingMediaFile: A7($author$project$Models$BaseModel$Source, '', '', 0, '', '', '', $author$project$Common$StaticVariables$audioTag),
+			integrationDestination: '',
 			key: navKey,
+			kompoUrl: '/kompost/',
 			kompost: A8(
 				$author$project$Models$BaseModel$Komposition,
 				'',
@@ -5509,6 +5511,7 @@ var $author$project$Main$emptyModel = F3(
 					]),
 				'',
 				''),
+			metaUrl: '/meta/',
 			segment: $author$project$Main$emptySegment,
 			statusMessage: _List_Nil,
 			subSegmentList: $elm$core$Set$empty,
@@ -6660,7 +6663,6 @@ var $author$project$Models$KompostApi$createKompo = F2(
 				url: _Utils_ap($author$project$Models$KompostApi$kompoUrl, komposition.name)
 			});
 	});
-var $author$project$Models$KompostApi$kvaernUrl = '/kvaern';
 var $author$project$Models$KompostApi$createVideo = F2(
 	function (komposition, apiToken) {
 		return $elm$http$Http$request(
@@ -6680,7 +6682,7 @@ var $author$project$Models$KompostApi$createVideo = F2(
 				method: 'POST',
 				timeout: $elm$core$Maybe$Nothing,
 				tracker: $elm$core$Maybe$Nothing,
-				url: $author$project$Models$KompostApi$kvaernUrl + ('/createvideo?' + komposition.name)
+				url: '/kvaern/createvideo?' + komposition.name
 			});
 	});
 var $elm$http$Http$emptyBody = _Http_emptyBody;
@@ -7204,8 +7206,8 @@ var $author$project$Navigation$AppRouting$fromUrl = function (url) {
 var $author$project$Models$Msg$KompositionUpdated = function (a) {
 	return {$: 'KompositionUpdated', a: a};
 };
-var $author$project$Models$KompostApi$getKomposition = F2(
-	function (id, apiToken) {
+var $author$project$Models$KompostApi$getFromURL = F2(
+	function (integrationDestination, apiToken) {
 		return $elm$http$Http$request(
 			{
 				body: $elm$http$Http$emptyBody,
@@ -7220,7 +7222,7 @@ var $author$project$Models$KompostApi$getKomposition = F2(
 				method: 'GET',
 				timeout: $elm$core$Maybe$Nothing,
 				tracker: $elm$core$Maybe$Nothing,
-				url: _Utils_ap($author$project$Models$KompostApi$kompoUrl, id)
+				url: _Utils_ap(integrationDestination.urlPart, integrationDestination.id)
 			});
 	});
 var $elm$browser$Browser$Navigation$load = _Browser_load;
@@ -7732,6 +7734,10 @@ var $author$project$Segment$Model$update = F2(
 					$elm$core$Platform$Cmd$none,
 					$elm$core$Maybe$Nothing);
 		}
+	});
+var $author$project$Models$BaseModel$IntegrationDestination = F2(
+	function (id, urlPart) {
+		return {id: id, urlPart: urlPart};
 	});
 var $author$project$Models$BaseModel$Simple = {$: 'Simple'};
 var $author$project$Source$SourcesUI$addMediaFileToKomposition = F2(
@@ -9204,7 +9210,10 @@ var $author$project$Source$SourcesUI$update = F2(
 					_Utils_update(
 						model,
 						{activePage: $author$project$Navigation$Page$KompostUI}),
-					A2($author$project$Models$KompostApi$getKomposition, mediaId, model.apiToken),
+					A2(
+						$author$project$Models$KompostApi$getFromURL,
+						A2($author$project$Models$BaseModel$IntegrationDestination, mediaId, model.kompoUrl),
+						model.apiToken),
 					$elm$core$Maybe$Nothing);
 			default:
 				var autoMsg = msg.a;
@@ -9285,14 +9294,14 @@ var $author$project$Main$update = F2(
 						model,
 						{activePage: page}),
 					A2($author$project$Navigation$AppRouting$replaceUrl, page, model.key));
-			case 'ChooseDvl':
-				var id = _v0.a;
+			case 'FetchLocalIntegration':
+				var integrationDestination = _v0.a;
 				var empModel = A3($author$project$Main$emptyModel, model.key, model.url, model.apiToken);
 				return _Utils_Tuple2(
 					_Utils_update(
 						empModel,
 						{activePage: $author$project$Navigation$Page$KompostUI, listings: model.listings}),
-					A2($author$project$Models$KompostApi$getKomposition, id, model.apiToken));
+					A2($author$project$Models$KompostApi$getFromURL, integrationDestination, model.apiToken));
 			case 'NewKomposition':
 				var empModel = A3($author$project$Main$emptyModel, model.key, model.url, model.apiToken);
 				return _Utils_Tuple2(
@@ -9305,6 +9314,13 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					model,
 					A2($author$project$Models$KompostApi$fetchKompositionList, searchType, model.apiToken));
+			case 'ChangedIntegrationId':
+				var integrationId = _v0.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{integrationDestination: integrationId}),
+					$elm$core$Platform$Cmd$none);
 			case 'KompositionUpdated':
 				var webKomposition = _v0.a;
 				return _Utils_Tuple2(
@@ -12718,10 +12734,13 @@ var $author$project$UI$KompostUI$kompost = function (model) {
 var $author$project$Models$Msg$ChangeKompositionType = function (a) {
 	return {$: 'ChangeKompositionType', a: a};
 };
-var $author$project$Models$Msg$NewKomposition = {$: 'NewKomposition'};
-var $author$project$Models$Msg$ChooseDvl = function (a) {
-	return {$: 'ChooseDvl', a: a};
+var $author$project$Models$Msg$ChangedIntegrationId = function (a) {
+	return {$: 'ChangedIntegrationId', a: a};
 };
+var $author$project$Models$Msg$FetchLocalIntegration = function (a) {
+	return {$: 'FetchLocalIntegration', a: a};
+};
+var $author$project$Models$Msg$NewKomposition = {$: 'NewKomposition'};
 var $author$project$UI$KompostListingsUI$chooseDvlButton = F2(
 	function (model, row) {
 		return A2(
@@ -12735,7 +12754,8 @@ var $author$project$UI$KompostListingsUI$chooseDvlButton = F2(
 						])),
 					$rundis$elm_bootstrap$Bootstrap$Button$secondary,
 					$rundis$elm_bootstrap$Bootstrap$Button$onClick(
-					$author$project$Models$Msg$ChooseDvl(row.id))
+					$author$project$Models$Msg$FetchLocalIntegration(
+						A2($author$project$Models$BaseModel$IntegrationDestination, row.id, model.kompoUrl)))
 				]),
 			_List_fromArray(
 				[
@@ -12971,7 +12991,32 @@ var $author$project$UI$KompostListingsUI$listings = function (model) {
 																$elm$html$Html$text('New Komposition')
 															]))
 													]))
+											])),
+										$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
+										_List_fromArray(
+											[
+												$rundis$elm_bootstrap$Bootstrap$Form$Input$id('id'),
+												$rundis$elm_bootstrap$Bootstrap$Form$Input$value(model.integrationDestination),
+												$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Models$Msg$ChangedIntegrationId)
+											])),
+										A2(
+										$rundis$elm_bootstrap$Bootstrap$Button$button,
+										_List_fromArray(
+											[
+												$rundis$elm_bootstrap$Bootstrap$Button$primary,
+												$rundis$elm_bootstrap$Bootstrap$Button$onClick(
+												$author$project$Models$Msg$FetchLocalIntegration(
+													A2($author$project$Models$BaseModel$IntegrationDestination, model.integrationDestination, model.metaUrl)))
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('YT')
 											]))
+									])),
+								$rundis$elm_bootstrap$Bootstrap$Grid$simpleRow(
+								_List_fromArray(
+									[
+										A2($rundis$elm_bootstrap$Bootstrap$Grid$col, _List_Nil, _List_Nil)
 									]))
 							]))
 					]))

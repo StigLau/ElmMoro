@@ -1,4 +1,4 @@
-module Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Komposition, Model, OutMsg(..), Row, Segment, SegmentGap, Source, VideoConfig, Focused(..))
+module Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Komposition, Model, OutMsg(..), Row, Segment, SegmentGap, Source, VideoConfig, IntegrationDestination, Focused(..))
 
 import Navigation.Page exposing (Page)
 import Set
@@ -23,6 +23,9 @@ type alias Model =
     , accessibleAutocomplete : AutoComplete.Model
     , currentFocusAutoComplete : Focused
     , apiToken : String
+    , integrationDestination : String
+    , kompoUrl : String
+    , metaUrl : String
     }
 
 type Focused
@@ -111,7 +114,10 @@ type alias Row =
     , rev : String
     }
 
-
+type alias IntegrationDestination =
+    { id: String
+    , urlPart: String
+    }
 
 {--Navigation between pages--}
 

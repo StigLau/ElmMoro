@@ -1,23 +1,16 @@
-module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchHeaderParam, fetchKompositionList, getKomposition, getYoutubeMetadata, fetchSource, updateKompo)
+module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchHeaderParam, fetchKompositionList, getFromURL, fetchSource, updateKompo)
 
 import Debug
 import Dict
 import Http exposing (Error, Header, Response   )
 import MD5
-import Models.BaseModel exposing (Komposition)
+import Models.BaseModel exposing (IntegrationDestination, Komposition)
 import Models.JsonCoding exposing (..)
 import Models.Msg exposing (Msg(..))
 import RemoteData
 
-
-kompoUrl : String
+kompoUrl:String
 kompoUrl = "/kompost/"
-
-getKomposition : String -> String -> Cmd Msg
-getKomposition id apiToken = getFromURL (kompoUrl ++ id) apiToken
-
-getYoutubeMetadata : String -> String -> Cmd Msg
-getYoutubeMetadata id apiToken = getFromURL ("/meta/" ++ id) apiToken
 
 fetchKompositionList : String -> String -> Cmd Msg
 fetchKompositionList typeIdentifier token = Http.request
@@ -30,11 +23,11 @@ fetchKompositionList typeIdentifier token = Http.request
     , tracker = Nothing
     }
 
-getFromURL : String -> String -> Cmd Msg
-getFromURL url apiToken = Http.request
+getFromURL : IntegrationDestination -> String -> Cmd Msg
+getFromURL integrationDestination apiToken = Http.request
     { method = "GET"
     , headers = [Http.header "Authy" apiToken ]
-    , url = url
+    , url = integrationDestination.urlPart ++ integrationDestination.id
     , body = Http.emptyBody
     , expect = Http.expectJson (RemoteData.fromResult >> KompositionUpdated) kompositionDecoder
     , timeout = Nothing

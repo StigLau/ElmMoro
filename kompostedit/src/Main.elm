@@ -50,20 +50,12 @@ update msg model =
                 , replaceUrl page model.key
                 )
 
-        ChooseDvl id ->
+        FetchLocalIntegration integrationDestination ->
             let
                 empModel = emptyModel model.key model.url model.apiToken
             in
             ( { empModel | activePage = Page.KompostUI, listings = model.listings }
-            , KompostApi.getKomposition id model.apiToken
-            )
-
-        KompositionMetadataFromYT id ->
-            let
-                empModel = emptyModel model.key model.url model.apiToken
-            in
-            ( { empModel | activePage = Page.KompostUI, listings = model.listings }
-            , KompostApi.getYoutubeMetadata id model.apiToken
+            , KompostApi.getFromURL integrationDestination model.apiToken
             )
 
         NewKomposition ->
@@ -78,6 +70,9 @@ update msg model =
             ( model
             , fetchKompositionList searchType model.apiToken
             )
+
+        ChangedIntegrationId integrationId ->
+            ( {model | integrationDestination =  integrationId }, Cmd.none )
 
         KompositionUpdated webKomposition ->
             ( case RemoteData.toMaybe webKomposition of
@@ -364,6 +359,9 @@ emptyModel  navKey theUrl apiGatewayToken =
     , accessibleAutocomplete = Common.AutoComplete.init
     , currentFocusAutoComplete = None
     , apiToken = apiGatewayToken
+    , integrationDestination = ""
+    , kompoUrl = "/kompost/"
+    , metaUrl = "/meta/"
     }
 
 

@@ -14,8 +14,7 @@ import Segment.Msg
 type Msg
     = ListingsUpdated (WebData DataRepresentation)
     | NavigateTo Page
-    | ChooseDvl String
-    | KompositionMetadataFromYT String
+    | FetchLocalIntegration IntegrationDestination
     | EditSpecifics
     | NewKomposition
     | ChangeKompositionType String
@@ -34,3 +33,4 @@ type Msg
     | ShowKompositionJson
     | ClickedLink UrlRequest
     | ChangedUrl Url
+    | ChangedIntegrationId String

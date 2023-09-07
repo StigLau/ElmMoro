@@ -12,7 +12,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class)
 import Html.Attributes as Attrs
 import Common.AutoComplete
-import Models.BaseModel exposing (Focused(..), Komposition, Model, OutMsg(..), Row, Source)
+import Models.BaseModel exposing (Focused(..), Komposition, Model, OutMsg(..), Row, Source, IntegrationDestination)
 import Models.KompostApi exposing (fetchHeaderParam, fetchKompositionList)
 import Models.Msg
 import Navigation.Page as Page
@@ -120,7 +120,7 @@ update msg model =
 
         JumpToSourceKomposition mediaId ->
             let _ = Debug.log "Navigating to Komposition" mediaId
-            in ({ model | activePage = Page.KompostUI}, Models.KompostApi.getKomposition mediaId model.apiToken, Nothing)
+            in ({ model | activePage = Page.KompostUI}, Models.KompostApi.getFromURL (IntegrationDestination mediaId model.kompoUrl) model.apiToken, Nothing)
 
         AutoComplete autoMsg ->
             let
