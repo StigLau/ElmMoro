@@ -2,10 +2,16 @@
 Switche mellom ID og url i Source
 =================================
 
+Setting up local dev environment
+================================
+Run "elm reactor" from kompostedit root. Follow to http://localhost:8000/index_without_auth.html
+This should start the app with testdata.
+Beware that you may need to run "elm make src....." below to update the running code of the app
+
 Building release file
 =====================
 elm make src/Main.elm --output release/content/elm/kompost.js
-upload release/content/js/kompost.js to s3://app.kompo.st/js/
+upload release/content/elm/kompost.js to PRIVATE s3://app.kompo.st/elm/
 Can be done via "terraform apply from release dir"
 
 Installation to capra kompo.se/edit bucket
