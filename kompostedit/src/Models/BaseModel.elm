@@ -1,11 +1,10 @@
-module Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Komposition, Model, OutMsg(..), Row, Segment, SegmentGap, Source, VideoConfig, IntegrationDestination, Focused(..))
+module Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Focused(..), IntegrationDestination, Komposition, Model, OutMsg(..), Row, Segment, SegmentGap, Source, VideoConfig)
 
+import Browser.Navigation
+import Common.AutoComplete as AutoComplete
 import Navigation.Page exposing (Page)
 import Set
 import Url exposing (Url)
-import Browser.Navigation
-import Common.AutoComplete as AutoComplete
-
 
 
 type alias Model =
@@ -24,9 +23,12 @@ type alias Model =
     , currentFocusAutoComplete : Focused
     , apiToken : String
     , integrationDestination : String
+    , integrationFormat : String
     , kompoUrl : String
     , metaUrl : String
+    , cacheUrl : String
     }
+
 
 type Focused
     = Simple
@@ -114,10 +116,13 @@ type alias Row =
     , rev : String
     }
 
+
 type alias IntegrationDestination =
-    { id: String
-    , urlPart: String
+    { id : String
+    , urlPart : String
     }
+
+
 
 {--Navigation between pages--}
 

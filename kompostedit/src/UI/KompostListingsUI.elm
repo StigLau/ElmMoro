@@ -6,7 +6,7 @@ import Bootstrap.Form.Input as Input
 import Bootstrap.Grid as Grid
 import Html exposing (..)
 import Html.Attributes exposing (class, style)
-import Models.BaseModel exposing (DataRepresentation, Model, Row, IntegrationDestination)
+import Models.BaseModel exposing (DataRepresentation, IntegrationDestination, Model, Row)
 import Models.Msg as Msg exposing (Msg(..))
 
 
@@ -23,14 +23,20 @@ listings model =
                         , ButtonGroup.radioButton False [ Button.success, Button.onClick (ChangeKompositionType "Audio") ] [ Html.text "Audio" ]
                         ]
                     , tbody [] (List.map (chooseDvlButton model) model.listings.docs)
-                    , Grid.simpleRow [ Grid.col [] [
-                    Button.button [ Button.primary, Button.small, Button.onClick NewKomposition ] [ text "New Komposition" ] ] ]
+                    , Grid.simpleRow
+                        [ Grid.col []
+                            [ Button.button [ Button.primary, Button.small, Button.onClick NewKomposition ] [ text "New Komposition" ]
+                            ]
+                        ]
                     , Input.text [ Input.id "id", Input.value model.integrationDestination, Input.onInput Msg.ChangedIntegrationId ]
-                    , Button.button [ Button.primary, onClick <| FetchLocalIntegration (IntegrationDestination model.integrationDestination model.metaUrl) ] [ text "YT"]
+                    , Button.button [ Button.primary, onClick <| FetchLocalIntegration (IntegrationDestination model.integrationDestination model.metaUrl) ] [ text "YT" ]
+                    , Input.text [ Input.id "format", Input.value model.integrationFormat, Input.onInput Msg.ChangedIntegrationFormat ]
+                    , Button.button [ Button.primary, onClick <| FetchLocalIntegration (IntegrationDestination (model.integrationDestination ++ "/" ++ model.integrationFormat) model.cacheUrl) ] [ text "Cache Media" ]
                     ]
-                    , Grid.simpleRow [ Grid.col [] [
-
-                                        ] ]
+                , Grid.simpleRow
+                    [ Grid.col []
+                        []
+                    ]
                 ]
             ]
         ]

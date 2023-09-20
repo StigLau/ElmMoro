@@ -1,14 +1,14 @@
 module Models.Msg exposing (Msg(..))
 
+import Browser exposing (UrlRequest(..))
+import DvlSpecifics.Msg
 import Http exposing (Error)
 import Models.BaseModel exposing (..)
-import Browser exposing (UrlRequest(..))
 import Navigation.Page exposing (Page)
 import RemoteData exposing (WebData)
-import Source.Msg
-import DvlSpecifics.Msg
-import Url exposing (Url)
 import Segment.Msg
+import Source.Msg
+import Url exposing (Url)
 
 
 type Msg
@@ -34,3 +34,4 @@ type Msg
     | ClickedLink UrlRequest
     | ChangedUrl Url
     | ChangedIntegrationId String
+    | ChangedIntegrationFormat String

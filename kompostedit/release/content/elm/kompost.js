@@ -5484,11 +5484,13 @@ var $author$project$Main$emptyModel = F3(
 			accessibleAutocomplete: $author$project$Common$AutoComplete$init,
 			activePage: $author$project$Navigation$Page$ListingsUI,
 			apiToken: apiGatewayToken,
+			cacheUrl: '/fetch/',
 			checkboxVisible: false,
 			currentFocusAutoComplete: $author$project$Models$BaseModel$None,
 			editableSegment: false,
 			editingMediaFile: A7($author$project$Models$BaseModel$Source, '', '', 0, '', '', '', $author$project$Common$StaticVariables$audioTag),
-			integrationDestination: '',
+			integrationDestination: 'Sj3fFoojcnQ',
+			integrationFormat: '136',
 			key: navKey,
 			kompoUrl: '/kompost/',
 			kompost: A8(
@@ -9321,6 +9323,13 @@ var $author$project$Main$update = F2(
 						model,
 						{integrationDestination: integrationId}),
 					$elm$core$Platform$Cmd$none);
+			case 'ChangedIntegrationFormat':
+				var formatId = _v0.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{integrationFormat: formatId}),
+					$elm$core$Platform$Cmd$none);
 			case 'KompositionUpdated':
 				var webKomposition = _v0.a;
 				return _Utils_Tuple2(
@@ -12734,6 +12743,9 @@ var $author$project$UI$KompostUI$kompost = function (model) {
 var $author$project$Models$Msg$ChangeKompositionType = function (a) {
 	return {$: 'ChangeKompositionType', a: a};
 };
+var $author$project$Models$Msg$ChangedIntegrationFormat = function (a) {
+	return {$: 'ChangedIntegrationFormat', a: a};
+};
 var $author$project$Models$Msg$ChangedIntegrationId = function (a) {
 	return {$: 'ChangedIntegrationId', a: a};
 };
@@ -13011,6 +13023,26 @@ var $author$project$UI$KompostListingsUI$listings = function (model) {
 										_List_fromArray(
 											[
 												$elm$html$Html$text('YT')
+											])),
+										$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
+										_List_fromArray(
+											[
+												$rundis$elm_bootstrap$Bootstrap$Form$Input$id('format'),
+												$rundis$elm_bootstrap$Bootstrap$Form$Input$value(model.integrationFormat),
+												$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Models$Msg$ChangedIntegrationFormat)
+											])),
+										A2(
+										$rundis$elm_bootstrap$Bootstrap$Button$button,
+										_List_fromArray(
+											[
+												$rundis$elm_bootstrap$Bootstrap$Button$primary,
+												$rundis$elm_bootstrap$Bootstrap$Button$onClick(
+												$author$project$Models$Msg$FetchLocalIntegration(
+													A2($author$project$Models$BaseModel$IntegrationDestination, model.integrationDestination + ('/' + model.integrationFormat), model.cacheUrl)))
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Cache Media')
 											]))
 									])),
 								$rundis$elm_bootstrap$Bootstrap$Grid$simpleRow(
