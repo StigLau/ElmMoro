@@ -29,7 +29,7 @@ listings model =
                             ]
                         ]
                     , Input.text [ Input.id "id", Input.value model.integrationDestination, Input.onInput Msg.ChangedIntegrationId ]
-                    , Button.button [ Button.primary, onClick <| FetchLocalIntegration (IntegrationDestination model.integrationDestination model.metaUrl) ] [ text "YT" ]
+                    , Button.button [ Button.primary, onClick <| FetchLocalIntegration (IntegrationDestination model.integrationDestination model.metaUrl) ] [ text "Fetch YT metadata" ]
                     , Input.text [ Input.id "format", Input.value model.integrationFormat, Input.onInput Msg.ChangedIntegrationFormat ]
                     , Button.button [ Button.primary, onClick <| FetchLocalIntegration (IntegrationDestination (model.integrationDestination ++ "/" ++ model.integrationFormat) model.cacheUrl) ] [ text "Cache Media" ]
                     ]
