@@ -5492,7 +5492,7 @@ var $author$project$Main$emptyModel = F3(
 			integrationDestination: 'Sj3fFoojcnQ',
 			integrationFormat: '136',
 			key: navKey,
-			kompoUrl: '/kompost/',
+			kompoUrl: '/heap/',
 			kompost: A8(
 				$author$project$Models$BaseModel$Komposition,
 				'',
@@ -6155,7 +6155,7 @@ var $elm$http$Http$Header = F2(
 		return {$: 'Header', a: a, b: b};
 	});
 var $elm$http$Http$header = $elm$http$Http$Header;
-var $author$project$Models$KompostApi$kompoUrl = '/kompost/';
+var $author$project$Models$KompostApi$kompoUrl = '/heap/';
 var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$list = _Json_decodeList;
 var $elm$json$Json$Decode$map3 = _Json_map3;

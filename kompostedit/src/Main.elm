@@ -391,7 +391,7 @@ emptyModel navKey theUrl apiGatewayToken =
     , apiToken = apiGatewayToken
     , integrationDestination = "Sj3fFoojcnQ"
     , integrationFormat = "136"
-    , kompoUrl = "/kompost/"
+    , kompoUrl = "/heap/"
     , metaUrl = "/meta/"
     , cacheUrl = "/fetch/"
     }

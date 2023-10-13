@@ -122,8 +122,6 @@ type alias IntegrationDestination =
     , urlPart : String
     }
 
-
-
 {--Navigation between pages--}
 
 

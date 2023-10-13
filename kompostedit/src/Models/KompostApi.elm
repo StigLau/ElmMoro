@@ -10,7 +10,7 @@ import Models.Msg exposing (Msg(..))
 import RemoteData
 
 kompoUrl:String
-kompoUrl = "/kompost/"
+kompoUrl = "/heap/"
 
 fetchKompositionList : String -> String -> Cmd Msg
 fetchKompositionList typeIdentifier token = Http.request
@@ -52,7 +52,7 @@ createKompo komposition apiToken = Http.request
     { method = "PUT"
     , headers = [Http.header "Authy" apiToken ]
     , url = kompoUrl ++ komposition.name
-    , body = (Http.stringBody "application/json" <| kompositionEncoder komposition)
+    , body = Http.stringBody "application/json" <| kompositionEncoder komposition
     , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
     , timeout = Nothing
     , tracker = Nothing
