@@ -6,6 +6,7 @@ import Browser
 import Browser.Navigation as Nav
 import Common.AutoComplete
 import Common.StaticVariables exposing (audioTag, kompositionTag)
+import Debug exposing (log)
 import DvlSpecifics.DvlSpecificsModel exposing (update)
 import DvlSpecifics.DvlSpecificsUI
 import Html exposing (Html, div, text)
@@ -120,13 +121,19 @@ update msg model =
             )
 
         StoreKomposition ->
-            ( model
-            , updateKompo model.kompost model.apiToken
-            )
+            let -- Set a minimal id when storing
+                updateId = case model.kompost.id of
+                    "" -> model.kompost.name ++ ".json"
+                    _  -> model.kompost.id
+                kompost = model.kompost
+            in
+                ( model
+                , updateKompo { kompost | id = updateId } model.apiToken
+                )
 
         DeleteKomposition ->
-            ( model
-            , deleteKompo model.kompost model.apiToken
+            ( { model | activePage = Page.ListingsUI }
+            , log "Deleting komposition" deleteKompo model.kompost model.apiToken
             )
 
         EditSpecifics ->

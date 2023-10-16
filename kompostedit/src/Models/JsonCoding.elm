@@ -11,7 +11,7 @@ kompositionDecoder =
     JsonD.succeed Komposition
         |> required "_id" JsonD.string
         |> optional "name" JsonD.string ""
-        |> required "_rev" JsonD.string
+        |> optional "_rev" JsonD.string ""
         |> optional "type" JsonD.string ""
         |> optional "bpm" JsonD.float -1
         |> optional "segments" (JsonD.list segmentDecoder) []
