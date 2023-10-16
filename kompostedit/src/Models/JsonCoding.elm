@@ -10,6 +10,7 @@ kompositionDecoder : JsonD.Decoder Komposition
 kompositionDecoder =
     JsonD.succeed Komposition
         |> required "_id" JsonD.string
+        |> optional "name" JsonD.string ""
         |> required "_rev" JsonD.string
         |> optional "type" JsonD.string ""
         |> optional "bpm" JsonD.float -1
@@ -54,7 +55,8 @@ kompositionEncoder kompo =
 
     in
         JsonE.encode 0 <| JsonE.object
-            ([ ( "_id", JsonE.string kompo.name )
+            ([ ( "_id", JsonE.string kompo.id )
+             , ( "name", JsonE.string kompo.name )
              , ( "type", JsonE.string kompo.dvlType )
              , ( "bpm", JsonE.float kompo.bpm )
              ]

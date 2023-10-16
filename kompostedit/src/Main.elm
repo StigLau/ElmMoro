@@ -120,17 +120,8 @@ update msg model =
             )
 
         StoreKomposition ->
-            let
-                command =
-                    case model.kompost.revision of
-                        "" ->
-                            KompostApi.createKompo model.kompost model.apiToken
-
-                        _ ->
-                            updateKompo model.kompost model.apiToken
-            in
             ( model
-            , command
+            , updateKompo model.kompost model.apiToken
             )
 
         DeleteKomposition ->
@@ -376,7 +367,7 @@ subscriptions model =
 emptyModel : Nav.Key -> Url -> String -> Model
 emptyModel navKey theUrl apiGatewayToken =
     { listings = DataRepresentation [ Row "demokompo1" "rev1", Row "demokomp2" "rev1" ] "" ""
-    , kompost = Komposition "" "" "Video" 120 defaultSegments [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
+    , kompost = Komposition "" "Example" "" "Video" 120 defaultSegments [] (VideoConfig 0 0 0 "") (Just (BeatPattern 0 0 0))
     , statusMessage = []
     , activePage = Page.ListingsUI
     , editableSegment = False

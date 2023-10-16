@@ -1,4 +1,4 @@
-module Models.KompostApi exposing (createKompo, createVideo, deleteKompo, fetchHeaderParam, fetchKompositionList, getFromURL, fetchSource, updateKompo)
+module Models.KompostApi exposing (createVideo, deleteKompo, fetchHeaderParam, fetchKompositionList, getFromURL, fetchSource, updateKompo)
 
 import Debug
 import Dict
@@ -47,23 +47,11 @@ fetchSource id apiToken = Http.request
     }
 
 
-createKompo : Komposition -> String -> Cmd Msg
-createKompo komposition apiToken = Http.request
-    { method = "PUT"
-    , headers = [Http.header "Authy" apiToken ]
-    , url = kompoUrl ++ komposition.name
-    , body = Http.stringBody "application/json" <| kompositionEncoder komposition
-    , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
-    , timeout = Nothing
-    , tracker = Nothing
-    }
-
-
 createVideo : Komposition -> String -> Cmd Msg
 createVideo komposition apiToken = Http.request
     { method = "POST"
     , headers = [Http.header "Authy" apiToken ]
-    , url = "/kvaern/createvideo?" ++ komposition.name
+    , url = "/kvaern/createvideo?" ++ komposition.id
     , body = Http.stringBody "application/json" <| kompositionEncoder komposition
     , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
     , timeout = Nothing
@@ -74,8 +62,8 @@ createVideo komposition apiToken = Http.request
 updateKompo : Komposition -> String -> Cmd Msg
 updateKompo komposition apiToken = Http.request
     { method = "PUT"
-    , headers = [Http.header "Authy" apiToken ]
-    , url = kompoUrl ++ komposition.name
+    , headers = [Http.header "Authy" apiToken, Http.header "x-amz-version-id" komposition.revision]
+    , url = kompoUrl ++ komposition.id
     , body = Http.stringBody "application/json" <| kompositionEncoder komposition
     , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
     , timeout = Nothing
@@ -87,7 +75,7 @@ deleteKompo : Komposition -> String -> Cmd Msg
 deleteKompo komposition apiToken = Http.request
     { method = "DELETE"
     , headers = [Http.header "Authy" apiToken ]
-    , url = kompoUrl ++ komposition.name ++ "?rev=" ++ komposition.revision
+    , url = kompoUrl ++ komposition.id ++ "?rev=" ++ komposition.revision
     , body = Http.emptyBody
     , expect = Http.expectJson (RemoteData.fromResult >> CouchServerStatus) couchServerStatusDecoder
     , timeout = Nothing

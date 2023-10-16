@@ -5388,9 +5388,9 @@ var $author$project$Models$BaseModel$DataRepresentation = F3(
 	function (docs, warning, bookmark) {
 		return {bookmark: bookmark, docs: docs, warning: warning};
 	});
-var $author$project$Models$BaseModel$Komposition = F8(
-	function (name, revision, dvlType, bpm, segments, sources, config, beatpattern) {
-		return {beatpattern: beatpattern, bpm: bpm, config: config, dvlType: dvlType, name: name, revision: revision, segments: segments, sources: sources};
+var $author$project$Models$BaseModel$Komposition = F9(
+	function (id, name, revision, dvlType, bpm, segments, sources, config, beatpattern) {
+		return {beatpattern: beatpattern, bpm: bpm, config: config, dvlType: dvlType, id: id, name: name, revision: revision, segments: segments, sources: sources};
 	});
 var $author$project$Navigation$Page$ListingsUI = {$: 'ListingsUI'};
 var $author$project$Models$BaseModel$None = {$: 'None'};
@@ -5493,9 +5493,10 @@ var $author$project$Main$emptyModel = F3(
 			integrationFormat: '136',
 			key: navKey,
 			kompoUrl: '/heap/',
-			kompost: A8(
+			kompost: A9(
 				$author$project$Models$BaseModel$Komposition,
 				'',
+				'Example',
 				'',
 				'Video',
 				120,
@@ -6627,6 +6628,9 @@ var $author$project$Models$JsonCoding$kompositionEncoder = function (kompo) {
 					[
 						_Utils_Tuple2(
 						'_id',
+						$elm$json$Json$Encode$string(kompo.id)),
+						_Utils_Tuple2(
+						'name',
 						$elm$json$Json$Encode$string(kompo.name)),
 						_Utils_Tuple2(
 						'type',
@@ -6643,31 +6647,12 @@ var $author$project$Models$JsonCoding$kompositionEncoder = function (kompo) {
 							beatpattern,
 							_Utils_ap(segments, sources)))))));
 };
-var $author$project$Models$KompostApi$createKompo = F2(
-	function (komposition, apiToken) {
-		return $elm$http$Http$request(
-			{
-				body: A2(
-					$elm$http$Http$stringBody,
-					'application/json',
-					$author$project$Models$JsonCoding$kompositionEncoder(komposition)),
-				expect: A2(
-					$elm$http$Http$expectJson,
-					A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Models$Msg$CouchServerStatus),
-					$author$project$Models$JsonCoding$couchServerStatusDecoder),
-				headers: _List_fromArray(
-					[
-						A2($elm$http$Http$header, 'Authy', apiToken)
-					]),
-				method: 'PUT',
-				timeout: $elm$core$Maybe$Nothing,
-				tracker: $elm$core$Maybe$Nothing,
-				url: _Utils_ap($author$project$Models$KompostApi$kompoUrl, komposition.name)
-			});
-	});
 var $author$project$Models$KompostApi$createVideo = F2(
 	function (komposition, apiToken) {
-		return $elm$http$Http$request(
+		return A3(
+			$elm$core$Debug$log,
+			'CreateVideo',
+			$elm$http$Http$request,
 			{
 				body: A2(
 					$elm$http$Http$stringBody,
@@ -6684,7 +6669,7 @@ var $author$project$Models$KompostApi$createVideo = F2(
 				method: 'POST',
 				timeout: $elm$core$Maybe$Nothing,
 				tracker: $elm$core$Maybe$Nothing,
-				url: '/kvaern/createvideo?' + komposition.name
+				url: '/kvaern/createvideo?' + komposition.id
 			});
 	});
 var $elm$http$Http$emptyBody = _Http_emptyBody;
@@ -6704,7 +6689,7 @@ var $author$project$Models$KompostApi$deleteKompo = F2(
 				method: 'DELETE',
 				timeout: $elm$core$Maybe$Nothing,
 				tracker: $elm$core$Maybe$Nothing,
-				url: $author$project$Models$KompostApi$kompoUrl + (komposition.name + ('?rev=' + komposition.revision))
+				url: $author$project$Models$KompostApi$kompoUrl + (komposition.id + ('?rev=' + komposition.revision))
 			});
 	});
 var $author$project$DvlSpecifics$DvlSpecificsModel$extractFromOutmessage = function (childMsg) {
@@ -6913,14 +6898,22 @@ var $author$project$Models$JsonCoding$kompositionDecoder = A4(
 							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 							'_rev',
 							$elm$json$Json$Decode$string,
-							A3(
-								$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-								'_id',
+							A4(
+								$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+								'name',
 								$elm$json$Json$Decode$string,
-								$elm$json$Json$Decode$succeed($author$project$Models$BaseModel$Komposition)))))))));
+								'',
+								A3(
+									$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+									'_id',
+									$elm$json$Json$Decode$string,
+									$elm$json$Json$Decode$succeed($author$project$Models$BaseModel$Komposition))))))))));
 var $author$project$Models$KompostApi$fetchSource = F2(
 	function (id, apiToken) {
-		return $elm$http$Http$request(
+		return A3(
+			$elm$core$Debug$log,
+			'FetchSource',
+			$elm$http$Http$request,
 			{
 				body: $elm$http$Http$emptyBody,
 				expect: A2(
@@ -7210,7 +7203,10 @@ var $author$project$Models$Msg$KompositionUpdated = function (a) {
 };
 var $author$project$Models$KompostApi$getFromURL = F2(
 	function (integrationDestination, apiToken) {
-		return $elm$http$Http$request(
+		return A3(
+			$elm$core$Debug$log,
+			'getFromURL',
+			$elm$http$Http$request,
 			{
 				body: $elm$http$Http$emptyBody,
 				expect: A2(
@@ -8346,7 +8342,10 @@ var $author$project$Models$KompostApi$extractHeaderResponse = F3(
 	});
 var $author$project$Models$KompostApi$fetchHeaderParam = F3(
 	function (urlId, headerName, apiToken) {
-		return $elm$http$Http$request(
+		return A3(
+			$elm$core$Debug$log,
+			'FetchHeaderParam',
+			$elm$http$Http$request,
 			{
 				body: $elm$http$Http$emptyBody,
 				expect: A2(
@@ -9238,7 +9237,10 @@ var $author$project$Source$SourcesUI$update = F2(
 	});
 var $author$project$Models$KompostApi$updateKompo = F2(
 	function (komposition, apiToken) {
-		return $elm$http$Http$request(
+		return A3(
+			$elm$core$Debug$log,
+			'UpdateKompo',
+			$elm$http$Http$request,
 			{
 				body: A2(
 					$elm$http$Http$stringBody,
@@ -9250,12 +9252,13 @@ var $author$project$Models$KompostApi$updateKompo = F2(
 					$author$project$Models$JsonCoding$couchServerStatusDecoder),
 				headers: _List_fromArray(
 					[
-						A2($elm$http$Http$header, 'Authy', apiToken)
+						A2($elm$http$Http$header, 'Authy', apiToken),
+						A2($elm$http$Http$header, 'x-amz-version-id', komposition.revision)
 					]),
 				method: 'PUT',
 				timeout: $elm$core$Maybe$Nothing,
 				tracker: $elm$core$Maybe$Nothing,
-				url: _Utils_ap($author$project$Models$KompostApi$kompoUrl, komposition.name)
+				url: _Utils_ap($author$project$Models$KompostApi$kompoUrl, komposition.id)
 			});
 	});
 var $author$project$Main$update = F2(
@@ -9398,15 +9401,9 @@ var $author$project$Main$update = F2(
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'StoreKomposition':
-				var command = function () {
-					var _v8 = model.kompost.revision;
-					if (_v8 === '') {
-						return A2($author$project$Models$KompostApi$createKompo, model.kompost, model.apiToken);
-					} else {
-						return A2($author$project$Models$KompostApi$updateKompo, model.kompost, model.apiToken);
-					}
-				}();
-				return _Utils_Tuple2(model, command);
+				return _Utils_Tuple2(
+					model,
+					A2($author$project$Models$KompostApi$updateKompo, model.kompost, model.apiToken));
 			case 'DeleteKomposition':
 				return _Utils_Tuple2(
 					model,
@@ -9425,10 +9422,10 @@ var $author$project$Main$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'CouchServerStatus':
 				var serverstatus = _v0.a;
-				var _v9 = function () {
-					var _v10 = $krisajenkins$remotedata$RemoteData$toMaybe(serverstatus);
-					if (_v10.$ === 'Just') {
-						var status = _v10.a;
+				var _v8 = function () {
+					var _v9 = $krisajenkins$remotedata$RemoteData$toMaybe(serverstatus);
+					if (_v9.$ === 'Just') {
+						var status = _v9.a;
 						var kompost = model.kompost;
 						return _Utils_Tuple2(
 							_Utils_update(
@@ -9443,20 +9440,20 @@ var $author$project$Main$update = F2(
 						return _Utils_Tuple2(model, $author$project$Navigation$Page$KompostUI);
 					}
 				}();
-				var newModel = _v9.a;
-				var page = _v9.b;
+				var newModel = _v8.a;
+				var page = _v8.b;
 				return _Utils_Tuple2(
 					newModel,
 					A2($author$project$Navigation$AppRouting$replaceUrl, page, model.key));
 			case 'SourceMsg':
 				var theMsg = _v0.a;
-				var _v11 = A2($author$project$Source$SourcesUI$update, theMsg, model);
-				var newModel = _v11.a;
-				var sourceMsg = _v11.b;
-				var childMsg = _v11.c;
-				var _v12 = $author$project$DvlSpecifics$DvlSpecificsModel$extractFromOutmessage(childMsg);
-				if (_v12.$ === 'Just') {
-					var page = _v12.a;
+				var _v10 = A2($author$project$Source$SourcesUI$update, theMsg, model);
+				var newModel = _v10.a;
+				var sourceMsg = _v10.b;
+				var childMsg = _v10.c;
+				var _v11 = $author$project$DvlSpecifics$DvlSpecificsModel$extractFromOutmessage(childMsg);
+				if (_v11.$ === 'Just') {
+					var page = _v11.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							newModel,
@@ -9467,12 +9464,12 @@ var $author$project$Main$update = F2(
 				}
 			case 'DvlSpecificsMsg':
 				var theMsg = _v0.a;
-				var _v13 = A2($author$project$DvlSpecifics$DvlSpecificsModel$update, theMsg, model);
-				var newModel = _v13.a;
-				var childMsg = _v13.b;
-				var _v14 = $author$project$DvlSpecifics$DvlSpecificsModel$extractFromOutmessage(childMsg);
-				if (_v14.$ === 'Just') {
-					var page = _v14.a;
+				var _v12 = A2($author$project$DvlSpecifics$DvlSpecificsModel$update, theMsg, model);
+				var newModel = _v12.a;
+				var childMsg = _v12.b;
+				var _v13 = $author$project$DvlSpecifics$DvlSpecificsModel$extractFromOutmessage(childMsg);
+				if (_v13.$ === 'Just') {
+					var page = _v13.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							newModel,
@@ -9483,32 +9480,32 @@ var $author$project$Main$update = F2(
 				}
 			case 'SegmentMsg':
 				var theMsg = _v0.a;
-				var _v15 = A2($author$project$Segment$Model$update, theMsg, model);
-				if (_v15.c.$ === 'Just') {
-					if (_v15.c.a.$ === 'OutNavigateTo') {
-						var newModel = _v15.a;
-						var page = _v15.c.a.a;
+				var _v14 = A2($author$project$Segment$Model$update, theMsg, model);
+				if (_v14.c.$ === 'Just') {
+					if (_v14.c.a.$ === 'OutNavigateTo') {
+						var newModel = _v14.a;
+						var page = _v14.c.a.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								newModel,
 								{activePage: page}),
 							$elm$core$Platform$Cmd$none);
 					} else {
-						var newModel = _v15.a;
-						var sourceId = _v15.c.a.a;
+						var newModel = _v14.a;
+						var sourceId = _v14.c.a.a;
 						return _Utils_Tuple2(
 							newModel,
 							A2($author$project$Models$KompostApi$fetchSource, sourceId, model.apiToken));
 					}
 				} else {
-					var newModel = _v15.a;
-					var command = _v15.b;
-					var childMsg = _v15.c;
-					var _v16 = A2($elm$core$Debug$log, 'Extracting outmessage failed', childMsg);
+					var newModel = _v14.a;
+					var command = _v14.b;
+					var childMsg = _v14.c;
+					var _v15 = A2($elm$core$Debug$log, 'Extracting outmessage failed', childMsg);
 					return _Utils_Tuple2(newModel, command);
 				}
 			case 'CreateVideo':
-				var _v17 = A2($elm$core$Debug$log, 'Creating video', model.kompost);
+				var _v16 = A2($elm$core$Debug$log, 'Creating video', model.kompost);
 				return _Utils_Tuple2(
 					model,
 					A2($author$project$Models$KompostApi$createVideo, model.kompost, model.apiToken));
@@ -9538,8 +9535,8 @@ var $author$project$Main$update = F2(
 				var urlRequest = _v0.a;
 				if (urlRequest.$ === 'Internal') {
 					var url = urlRequest.a;
-					var _v19 = url.fragment;
-					if (_v19.$ === 'Nothing') {
+					var _v18 = url.fragment;
+					if (_v18.$ === 'Nothing') {
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					} else {
 						return A2(
@@ -9563,7 +9560,7 @@ var $author$project$Main$update = F2(
 				}
 			default:
 				var url = _v0.a;
-				var _v20 = A2($elm$core$Debug$log, 'ChangedUrl', url);
+				var _v19 = A2($elm$core$Debug$log, 'ChangedUrl', url);
 				return A2(
 					$author$project$Main$changeRouteTo,
 					$author$project$Navigation$AppRouting$fromUrl(url),
@@ -11126,7 +11123,17 @@ var $author$project$DvlSpecifics$DvlSpecificsUI$editSpecifics = function (kompo)
 							$rundis$elm_bootstrap$Bootstrap$Form$Input$id('Name'),
 							$rundis$elm_bootstrap$Bootstrap$Form$Input$value(kompo.name),
 							$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$DvlSpecifics$Msg$SetKompositionName),
-							$rundis$elm_bootstrap$Bootstrap$Form$Input$disabled(kompo.revision !== '')
+							$rundis$elm_bootstrap$Bootstrap$Form$Input$disabled(false)
+						]))),
+				A2(
+				$author$project$DvlSpecifics$DvlSpecificsUI$wrapping,
+				'Id',
+				$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
+					_List_fromArray(
+						[
+							$rundis$elm_bootstrap$Bootstrap$Form$Input$id('Id'),
+							$rundis$elm_bootstrap$Bootstrap$Form$Input$value(kompo.id),
+							$rundis$elm_bootstrap$Bootstrap$Form$Input$disabled(false)
 						]))),
 				A2(
 				$author$project$DvlSpecifics$DvlSpecificsUI$wrapping,
@@ -13022,7 +13029,7 @@ var $author$project$UI$KompostListingsUI$listings = function (model) {
 											]),
 										_List_fromArray(
 											[
-												$elm$html$Html$text('YT')
+												$elm$html$Html$text('Fetch YT metadata')
 											])),
 										$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
 										_List_fromArray(

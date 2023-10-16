@@ -36,7 +36,8 @@ type Focused
 
 
 type alias Komposition =
-    { name : String
+    { id : String
+    , name : String
     , revision : String
     , dvlType : String
     , bpm : Float

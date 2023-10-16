@@ -22,7 +22,8 @@ editSpecifics kompo =
         specificsUI =
             Form.form [ class "container" ]
                 [ h1 [] [ text "Editing Specifics" ]
-                , (wrapping "Name" (Input.text [ Input.id "Name", Input.value kompo.name, Input.onInput DvlSpecifics.Msg.SetKompositionName, Input.disabled (kompo.revision /= "") ]))
+                , (wrapping "Name" (Input.text [ Input.id "Name", Input.value kompo.name, Input.onInput DvlSpecifics.Msg.SetKompositionName, Input.disabled False ]))
+                , (wrapping "Id" (Input.text [ Input.id "Id", Input.value kompo.id, Input.disabled True ]))
                 , (wrapping "Revision" (Input.text [ Input.id "Revision", Input.value kompo.revision, Input.disabled True ]))
                 , (wrapping "BPM" (Input.number [ Input.id "bpm", Input.value (String.fromFloat kompo.bpm), Input.onInput SetBpm ]))
                 , (wrapping "Type" (Select.select [ Select.onChange DvlSpecifics.Msg.SetDvlType ] (selectItems kompo.dvlType Common.StaticVariables.komposionTypes)))

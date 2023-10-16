@@ -22,6 +22,7 @@ listings model =
                         , ButtonGroup.radioButton False [ Button.warning, Button.onClick (ChangeKompositionType "Video") ] [ Html.text "Video" ]
                         , ButtonGroup.radioButton False [ Button.success, Button.onClick (ChangeKompositionType "Audio") ] [ Html.text "Audio" ]
                         ]
+                        --Show Komposition/Video list
                     , tbody [] (List.map (chooseDvlButton model) model.listings.docs)
                     , Grid.simpleRow
                         [ Grid.col []
