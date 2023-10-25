@@ -12762,6 +12762,7 @@ var $author$project$Models$Msg$FetchLocalIntegration = function (a) {
 	return {$: 'FetchLocalIntegration', a: a};
 };
 var $author$project$Models$Msg$NewKomposition = {$: 'NewKomposition'};
+var $elm$html$Html$a = _VirtualDom_node('a');
 var $author$project$UI$KompostListingsUI$chooseDvlButton = F2(
 	function (model, row) {
 		return A2(
@@ -12783,6 +12784,12 @@ var $author$project$UI$KompostListingsUI$chooseDvlButton = F2(
 					$elm$html$Html$text(row.id)
 				]));
 	});
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
 var $rundis$elm_bootstrap$Bootstrap$ButtonGroup$RadioButtonItem = function (a) {
 	return {$: 'RadioButtonItem', a: a};
 };
@@ -13052,6 +13059,22 @@ var $author$project$UI$KompostListingsUI$listings = function (model) {
 										_List_fromArray(
 											[
 												$elm$html$Html$text('Cache Media')
+											])),
+										A2(
+										$elm$html$Html$li,
+										_List_Nil,
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$a,
+												_List_fromArray(
+													[
+														$elm$html$Html$Attributes$href('fileupload.html?authy=' + model.apiToken)
+													]),
+												_List_fromArray(
+													[
+														$elm$html$Html$text('Upload file')
+													]))
 											]))
 									])),
 								$rundis$elm_bootstrap$Bootstrap$Grid$simpleRow(
@@ -13062,12 +13085,6 @@ var $author$project$UI$KompostListingsUI$listings = function (model) {
 							]))
 					]))
 			]));
-};
-var $elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
 };
 var $elm$virtual_dom$VirtualDom$node = function (tag) {
 	return _VirtualDom_node(

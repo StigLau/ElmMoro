@@ -5,7 +5,7 @@ import Bootstrap.ButtonGroup as ButtonGroup
 import Bootstrap.Form.Input as Input
 import Bootstrap.Grid as Grid
 import Html exposing (..)
-import Html.Attributes exposing (class, style)
+import Html.Attributes exposing (class, href, style)
 import Models.BaseModel exposing (DataRepresentation, IntegrationDestination, Model, Row)
 import Models.Msg as Msg exposing (Msg(..))
 
@@ -33,6 +33,7 @@ listings model =
                     , Button.button [ Button.primary, onClick <| FetchLocalIntegration (IntegrationDestination model.integrationDestination model.metaUrl) ] [ text "Fetch YT metadata" ]
                     , Input.text [ Input.id "format", Input.value model.integrationFormat, Input.onInput Msg.ChangedIntegrationFormat ]
                     , Button.button [ Button.primary, onClick <| FetchLocalIntegration (IntegrationDestination (model.integrationDestination ++ "/" ++ model.integrationFormat) model.cacheUrl) ] [ text "Cache Media" ]
+                    , li [] [ a [ href ("fileupload.html?authy="++model.apiToken) ] [ text "Upload file" ] ]
                     ]
                 , Grid.simpleRow
                     [ Grid.col []
