@@ -1,5 +1,7 @@
 module CustomerMedia.FileUpload exposing (..)
 
+import Bootstrap.Button as Button
+import Bootstrap.Grid as Grid
 import Browser
 import File exposing (File)
 import Html exposing (..)
@@ -38,6 +40,7 @@ init _ =
 type Msg
   = GotFiles (List File)
   | Uploaded (Result Http.Error ())
+  | ConvertToSource File
   --| InternalNavigateTo Page
 
 
@@ -56,9 +59,8 @@ update msg model =
         let _ = Debug.log "Upload result" result
         in (model, Cmd.none)
 
---    InternalNavigateTo page ->
---        ( model, Cmd.none )
-
+    ConvertToSource file ->
+        (model, createMeta file model.auth)
 
 
 -- SUBSCRIPTIONS
@@ -81,9 +83,29 @@ view model =
         ]
         []
     , div [] [ text (Debug.toString model) ]
+    --, Html.map SegmentMsg (Segment.SegmentUI.showSegmentList model.kompost.segments)
+    --, div [] (List.map showSingleSegment model.files)
+    , div [] [showSegmentList model.files]
+
 --    , Button.button [ Button.primary, Button.onClick (InternalNavigateTo Page.KompostUI) ] [ text "<- Back" ]
     ]
 
+showSegmentList : List File -> Html Msg
+showSegmentList files =
+    div []
+        (Grid.row []
+            [ Grid.col [] [ text "Segment" ], Grid.col [] [ text "Start" ], Grid.col [] [ text "Duration" ] ]
+            ::  List.map showSingleSegment files
+        )
+
+
+showSingleSegment : File -> Html Msg
+showSingleSegment file  =
+    Grid.row []
+        [ Grid.col [] [ Button.button [ Button.secondary, Button.small, Button.onClick (ConvertToSource file) ] [ text <| "Extract Metadata for " ++ File.name file ] ]
+        , Grid.col [] [  ]
+        , Grid.col [] [  ]
+        ]
 
 filesDecoder : D.Decoder (List File)
 filesDecoder =
@@ -94,8 +116,20 @@ uploadMedia fileId apiToken =
     Http.request
           { method = "PUT"
           , headers = [Http.header "Authy" apiToken]
-          , url = "/kompo-storage/" ++ File.name fileId
+          , url = "/functions/kompo-storage/" ++ File.name fileId
           , body = Http.fileBody fileId
+          , expect = Http.expectWhatever Uploaded
+          , timeout = Nothing
+          , tracker = Nothing
+        }
+
+createMeta : File -> String -> Cmd Msg
+createMeta fileId apiToken =
+    Http.request
+          { method = "PUT"
+          , headers = [Http.header "Authy" apiToken]
+          , url = "/functions/metadata-extractor/" ++ File.name fileId
+          , body = Http.emptyBody
           , expect = Http.expectWhatever Uploaded
           , timeout = Nothing
           , tracker = Nothing
