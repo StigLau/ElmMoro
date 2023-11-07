@@ -51,11 +51,13 @@ type alias Komposition =
 type alias Source =
     { id : String
     , url : String
-    , startingOffset : Float
+    , startingOffset : Maybe Float
     , checksum : String
     , format : String
     , extensionType : String
     , mediaType : String
+    , width: Maybe Int
+    , height: Maybe Int
     }
 
 

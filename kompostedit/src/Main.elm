@@ -16,7 +16,7 @@ import Models.KompostApi as KompostApi exposing (createVideo, deleteKompo, fetch
 import Models.Msg exposing (Msg(..))
 import Navigation.AppRouting as AppRouting exposing (replaceUrl)
 import Navigation.Page as Page exposing (Page)
-import RemoteData exposing (RemoteData(..), WebData)
+import RemoteData exposing (RemoteData(..))
 import Segment.Model exposing (update)
 import Segment.SegmentUI
 import Set
@@ -380,7 +380,7 @@ emptyModel navKey theUrl apiGatewayToken =
     , editableSegment = False
     , checkboxVisible = False
     , segment = emptySegment
-    , editingMediaFile = Source "" "" 0 "" "" "" audioTag
+    , editingMediaFile = Source "" "" Nothing "" "" "" audioTag Nothing Nothing
     , subSegmentList = Set.empty
     , url = theUrl
     , key = navKey

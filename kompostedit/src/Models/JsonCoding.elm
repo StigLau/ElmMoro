@@ -95,11 +95,13 @@ sourceDecoder =
     JsonD.succeed Source
         |> required "id" JsonD.string
         |> required "url" JsonD.string
-        |> required "startingOffset" JsonD.float
+        |> optional "startingOffset" (JsonD.maybe JsonD.float) Nothing
         |> required "checksums" JsonD.string
         |> optional "format" JsonD.string ""
         |> required "extension" JsonD.string
         |> required "mediatype" JsonD.string
+        |> optional "width" (JsonD.maybe JsonD.int) Nothing
+        |> optional "height" (JsonD.maybe JsonD.int) Nothing
 
 configDecoder : JsonD.Decoder VideoConfig
 configDecoder =
@@ -129,10 +131,13 @@ encodeBeatPattern beatpattern =
 
 encodeSource : Source -> JsonE.Value
 encodeSource source =
-    JsonE.object
+    let start = case source.startingOffset of
+         Just x -> JsonE.float x
+         _ -> JsonE.null
+    in JsonE.object
         [ ( "id", JsonE.string source.id )
         , ( "url", JsonE.string source.url ) -- "https://heap.kompo.se/" was pulled out
-        , ( "startingOffset", JsonE.float source.startingOffset )
+        , ( "startingOffset", start )
         , ( "checksums", JsonE.string source.checksum )
         , ( "format", JsonE.string source.format )
         , ( "extension", JsonE.string source.extensionType )

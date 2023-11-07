@@ -58,7 +58,7 @@ update msg model =
                 source =
                     model.editingMediaFile
             in
-            ( setSource { source | startingOffset = standardFloat value } model, Cmd.none, Nothing )
+            ( setSource { source | startingOffset = Just (standardFloat value)} model, Cmd.none, Nothing )
 
         SetSourceExtensionType value ->
             let
@@ -82,7 +82,7 @@ update msg model =
                             Debug.log "We found preexisting media file" mediaFile
 
                         _ ->
-                            Source "" "" 0 "" "" "" ""
+                            Source "" "" Nothing "" "" "" "" Nothing Nothing
             in
             ( { model | editingMediaFile = theMediaFile }, Cmd.none, Just (OutNavigateTo Page.MediaFileUI) )
 
@@ -143,21 +143,18 @@ editSpecifics model =
     let
         mediaFile =
             model.editingMediaFile
+        offset = case mediaFile.startingOffset of
+                    Just a -> String.fromFloat a
+                    Nothing -> ""
     in
     div []
         [ h1 [] [Checkbox.checkbox [ Checkbox.onCheck SourceSearchVisible, Checkbox.checked model.checkboxVisible ] ("Editing Source") ]
         , Form.form [ class "container" ]
             [ Form.row [] (sourceSelector model)
-            , wrapping "Url" (Input.text [ Input.id "Url", Input.value mediaFile.url, Input.onInput SetUrl ])
-            , wrapping "Starting Offset"
-                (Input.text
-                    [ Input.id "Starting Offset"
-                    , Input.value (String.fromFloat mediaFile.startingOffset)
-                    , Input.onInput SetOffset
-                    ]
-                )
-            , wrapping "Checksums" (Input.text [ Input.id "Checksumz", Input.value mediaFile.checksum, Input.onInput SetChecksum ])
-            , wrapping "Format" (Input.text [ Input.id "Format", Input.value mediaFile.format, Input.onInput SetFormat ])
+            , wrapTextField "Url" mediaFile.url SetUrl
+            , wrapTextField "Starting Offset" offset SetOffset
+            , wrapTextField "Checksums" mediaFile.checksum SetChecksum
+            , wrapTextField "Format" mediaFile.format SetFormat
             , wrapping "Extension Type"
                 (Select.select [ Select.id "segmentId", Select.onChange SetSourceExtensionType ]
                     (selectItems mediaFile.extensionType Common.StaticVariables.extensionTypes)
@@ -191,12 +188,20 @@ sourceSelector model =
              , Form.col [Col.xs2] [ Button.button [ Button.primary, Button.small, Button.onClick (JumpToSourceKomposition mediaFile.id)] [ text "Navigate To" ] ]
              ]
 
-wrapping identifier funk =
+wrapTextField: String -> String -> (String -> msg) -> Html msg
+wrapTextField stringref inputvalue func =
+    wrapping stringref (textField stringref inputvalue func)
+
+textField: String -> String -> (String -> msg) -> Html msg
+textField ref inputvalue func = (Input.text [ Input.id ref , Input.value inputvalue, Input.onInput func])
+
+wrapping: String -> Html msg -> Html msg
+wrapping identifier htmlPart =
     Form.row []
         [ Form.colLabel [ Col.xs4 ]
             [ text identifier ]
         , Form.col [ Col.xs8 ]
-            [ funk ]
+            [ htmlPart ]
         ]
 
 setSource funk model =
