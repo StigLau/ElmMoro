@@ -1,0 +1,39 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Authorization info</title>
+</head>
+
+<body>
+<a href="https://app.kompo.st">app.kompo.st</a>
+<h1>Kompost Debug Info</h1>
+
+<h2>Cognito User</h2>
+
+<p style="white-space:pre-line;" id="token_status"></p>
+
+<p>Id Token</p>
+<p style="white-space:pre-line;" id="id_token"></p>
+
+<p>Access Token</p>
+<p style="white-space:pre-line;" id="access_token"></p>
+
+<p style="white-space:pre-line;" id="kompost"></p>
+
+<p>User Profile</p>
+<p style="white-space:pre-line;" id="userInfo"></p>
+</body>
+<script>
+    const domain = "auth.makeshitapp.com";
+    const userPoolId = "eu-west-1_MzC8FKjET";
+    const appClientId = "2pht2lc3d7toi6gd4m7ke40f6k"; //Kompo.se
+    const redirectURI = "https://kompo.makeshitapp.com/index.html";
+</script>
+<script src="js/jsrsasign-latest-all-min.js"></script>
+<script src="js/verifier.js"></script>
+<script src="js/userprofile.js"></script>
+<script src="elm/interop.js"></script>
+<script src="elm/kompost.js"></script>
+</html>
