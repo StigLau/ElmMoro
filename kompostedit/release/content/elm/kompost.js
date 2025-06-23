@@ -5398,9 +5398,9 @@ var $author$project$Models$BaseModel$Row = F2(
 	function (id, rev) {
 		return {id: id, rev: rev};
 	});
-var $author$project$Models$BaseModel$Source = F7(
-	function (id, url, startingOffset, checksum, format, extensionType, mediaType) {
-		return {checksum: checksum, extensionType: extensionType, format: format, id: id, mediaType: mediaType, startingOffset: startingOffset, url: url};
+var $author$project$Models$BaseModel$Source = F9(
+	function (id, url, startingOffset, checksum, format, extensionType, mediaType, width, height) {
+		return {checksum: checksum, extensionType: extensionType, format: format, height: height, id: id, mediaType: mediaType, startingOffset: startingOffset, url: url, width: width};
 	});
 var $author$project$Models$BaseModel$VideoConfig = F4(
 	function (width, height, framerate, extensionType) {
@@ -5488,7 +5488,7 @@ var $author$project$Main$emptyModel = F3(
 			checkboxVisible: false,
 			currentFocusAutoComplete: $author$project$Models$BaseModel$None,
 			editableSegment: false,
-			editingMediaFile: A7($author$project$Models$BaseModel$Source, '', '', 0, '', '', '', $author$project$Common$StaticVariables$audioTag),
+			editingMediaFile: A9($author$project$Models$BaseModel$Source, '', '', $elm$core$Maybe$Nothing, '', '', '', $author$project$Common$StaticVariables$audioTag, $elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing),
 			integrationDestination: 'Sj3fFoojcnQ',
 			integrationFormat: '136',
 			key: navKey,
@@ -6529,7 +6529,17 @@ var $author$project$Models$JsonCoding$encodeSegment = function (segment) {
 				$elm$json$Json$Encode$int(segment.end))
 			]));
 };
+var $elm$json$Json$Encode$null = _Json_encodeNull;
 var $author$project$Models$JsonCoding$encodeSource = function (source) {
+	var start = function () {
+		var _v0 = source.startingOffset;
+		if (_v0.$ === 'Just') {
+			var x = _v0.a;
+			return $elm$json$Json$Encode$float(x);
+		} else {
+			return $elm$json$Json$Encode$null;
+		}
+	}();
 	return $elm$json$Json$Encode$object(
 		_List_fromArray(
 			[
@@ -6539,9 +6549,7 @@ var $author$project$Models$JsonCoding$encodeSource = function (source) {
 				_Utils_Tuple2(
 				'url',
 				$elm$json$Json$Encode$string(source.url)),
-				_Utils_Tuple2(
-				'startingOffset',
-				$elm$json$Json$Encode$float(source.startingOffset)),
+				_Utils_Tuple2('startingOffset', start),
 				_Utils_Tuple2(
 				'checksums',
 				$elm$json$Json$Encode$string(source.checksum)),
@@ -6831,36 +6839,55 @@ var $author$project$Models$JsonCoding$segmentDecoder = A4(
 					'id',
 					$elm$json$Json$Decode$string,
 					$elm$json$Json$Decode$succeed($author$project$Models$BaseModel$Segment))))));
-var $author$project$Models$JsonCoding$sourceDecoder = A3(
-	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-	'mediatype',
-	$elm$json$Json$Decode$string,
-	A3(
-		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'extension',
-		$elm$json$Json$Decode$string,
-		A4(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
-			'format',
+var $elm$json$Json$Decode$maybe = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder),
+				$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing)
+			]));
+};
+var $author$project$Models$JsonCoding$sourceDecoder = A4(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+	'height',
+	$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int),
+	$elm$core$Maybe$Nothing,
+	A4(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+		'width',
+		$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int),
+		$elm$core$Maybe$Nothing,
+		A3(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+			'mediatype',
 			$elm$json$Json$Decode$string,
-			'',
 			A3(
 				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-				'checksums',
+				'extension',
 				$elm$json$Json$Decode$string,
-				A3(
-					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-					'startingOffset',
-					$elm$json$Json$Decode$float,
+				A4(
+					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+					'format',
+					$elm$json$Json$Decode$string,
+					'',
 					A3(
 						$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-						'url',
+						'checksums',
 						$elm$json$Json$Decode$string,
-						A3(
-							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-							'id',
-							$elm$json$Json$Decode$string,
-							$elm$json$Json$Decode$succeed($author$project$Models$BaseModel$Source))))))));
+						A4(
+							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+							'startingOffset',
+							$elm$json$Json$Decode$maybe($elm$json$Json$Decode$float),
+							$elm$core$Maybe$Nothing,
+							A3(
+								$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+								'url',
+								$elm$json$Json$Decode$string,
+								A3(
+									$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+									'id',
+									$elm$json$Json$Decode$string,
+									$elm$json$Json$Decode$succeed($author$project$Models$BaseModel$Source))))))))));
 var $author$project$Models$JsonCoding$kompositionDecoder = A4(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 	'beatpattern',
@@ -9086,7 +9113,8 @@ var $author$project$Source$SourcesUI$update = F2(
 						_Utils_update(
 							source,
 							{
-								startingOffset: $author$project$Source$SourcesUI$standardFloat(value)
+								startingOffset: $elm$core$Maybe$Just(
+									$author$project$Source$SourcesUI$standardFloat(value))
 							}),
 						model),
 					$elm$core$Platform$Cmd$none,
@@ -9126,7 +9154,7 @@ var $author$project$Source$SourcesUI$update = F2(
 						var mediaFile = _v1.a;
 						return A2($elm$core$Debug$log, 'We found preexisting media file', mediaFile);
 					} else {
-						return A7($author$project$Models$BaseModel$Source, '', '', 0, '', '', '', '');
+						return A9($author$project$Models$BaseModel$Source, '', '', $elm$core$Maybe$Nothing, '', '', '', '', $elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing);
 					}
 				}();
 				return _Utils_Tuple3(
@@ -11966,8 +11994,18 @@ var $author$project$Common$AutoComplete$view = function (model) {
 var $rundis$elm_bootstrap$Bootstrap$Internal$Button$Warning = {$: 'Warning'};
 var $rundis$elm_bootstrap$Bootstrap$Button$warning = $rundis$elm_bootstrap$Bootstrap$Internal$Button$Coloring(
 	$rundis$elm_bootstrap$Bootstrap$Internal$Button$Roled($rundis$elm_bootstrap$Bootstrap$Internal$Button$Warning));
+var $author$project$Source$SourcesUI$textField = F3(
+	function (ref, inputvalue, func) {
+		return $rundis$elm_bootstrap$Bootstrap$Form$Input$text(
+			_List_fromArray(
+				[
+					$rundis$elm_bootstrap$Bootstrap$Form$Input$id(ref),
+					$rundis$elm_bootstrap$Bootstrap$Form$Input$value(inputvalue),
+					$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput(func)
+				]));
+	});
 var $author$project$Source$SourcesUI$wrapping = F2(
-	function (identifier, funk) {
+	function (identifier, htmlPart) {
 		return A2(
 			$rundis$elm_bootstrap$Bootstrap$Form$row,
 			_List_Nil,
@@ -11986,11 +12024,27 @@ var $author$project$Source$SourcesUI$wrapping = F2(
 					_List_fromArray(
 						[$rundis$elm_bootstrap$Bootstrap$Grid$Col$xs8]),
 					_List_fromArray(
-						[funk]))
+						[htmlPart]))
 				]));
+	});
+var $author$project$Source$SourcesUI$wrapTextField = F3(
+	function (stringref, inputvalue, func) {
+		return A2(
+			$author$project$Source$SourcesUI$wrapping,
+			stringref,
+			A3($author$project$Source$SourcesUI$textField, stringref, inputvalue, func));
 	});
 var $author$project$Source$SourcesUI$editSpecifics = function (model) {
 	var mediaFile = model.editingMediaFile;
+	var offset = function () {
+		var _v0 = mediaFile.startingOffset;
+		if (_v0.$ === 'Just') {
+			var a = _v0.a;
+			return $elm$core$String$fromFloat(a);
+		} else {
+			return '';
+		}
+	}();
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -12022,47 +12076,10 @@ var $author$project$Source$SourcesUI$editSpecifics = function (model) {
 						$rundis$elm_bootstrap$Bootstrap$Form$row,
 						_List_Nil,
 						$author$project$Source$SourcesUI$sourceSelector(model)),
-						A2(
-						$author$project$Source$SourcesUI$wrapping,
-						'Url',
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
-							_List_fromArray(
-								[
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$id('Url'),
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$value(mediaFile.url),
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Source$Msg$SetUrl)
-								]))),
-						A2(
-						$author$project$Source$SourcesUI$wrapping,
-						'Starting Offset',
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
-							_List_fromArray(
-								[
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$id('Starting Offset'),
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$value(
-									$elm$core$String$fromFloat(mediaFile.startingOffset)),
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Source$Msg$SetOffset)
-								]))),
-						A2(
-						$author$project$Source$SourcesUI$wrapping,
-						'Checksums',
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
-							_List_fromArray(
-								[
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$id('Checksumz'),
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$value(mediaFile.checksum),
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Source$Msg$SetChecksum)
-								]))),
-						A2(
-						$author$project$Source$SourcesUI$wrapping,
-						'Format',
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
-							_List_fromArray(
-								[
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$id('Format'),
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$value(mediaFile.format),
-									$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Source$Msg$SetFormat)
-								]))),
+						A3($author$project$Source$SourcesUI$wrapTextField, 'Url', mediaFile.url, $author$project$Source$Msg$SetUrl),
+						A3($author$project$Source$SourcesUI$wrapTextField, 'Starting Offset', offset, $author$project$Source$Msg$SetOffset),
+						A3($author$project$Source$SourcesUI$wrapTextField, 'Checksums', mediaFile.checksum, $author$project$Source$Msg$SetChecksum),
+						A3($author$project$Source$SourcesUI$wrapTextField, 'Format', mediaFile.format, $author$project$Source$Msg$SetFormat),
 						A2(
 						$author$project$Source$SourcesUI$wrapping,
 						'Extension Type',

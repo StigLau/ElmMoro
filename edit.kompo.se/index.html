@@ -26,12 +26,12 @@
 <p style="white-space:pre-line;" id="userInfo"></p>
 </body>
 <script>
-  const domain = "auth.kompo.st";
-  const userPoolId = "eu-west-1:a1b9f42e-56c9-4625-9ea0-013c449dc8ce";
-  const appClientId = "1rtqd0p7lfvjrdn06dcpvgbbgo";
+  const domain = "auth.kompo.se";
+  const userPoolId = "us-east-2_lDnNxUlQo";
+  const appClientId = "5lav0lhrasepgakfkgr9j0tfv5";
   const redirectURI = "https://api.kompo.se/index.html";
   // Initialize the Amazon Cognito credentials provider
-  AWS.config.region = 'eu-west-1';
+  AWS.config.region = 'us-east-2';
   AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: userPoolId});
   console.log("Authed user ", AWS.config.credentials)
 </script>

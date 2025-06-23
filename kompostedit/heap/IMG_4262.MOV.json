@@ -1,0 +1,25 @@
+{
+  "_id": "",
+  "name": "s3://kompo-customer-storage/IMG_4262.MOV",
+  "_rev": null,
+  "type": "Komposition",
+  "segments": [],
+  "sources": [
+    {
+      "id": "Google VP9",
+      "url": "s3://kompo-customer-storage/IMG_4262.MOV",
+      "format": "Google VP9-yuv420p",
+      "extension": "vp09",
+      "mediaType": "Video",
+      "height": 1080,
+      "width": 1920
+    },
+    {
+      "id": "AAC (Advanced Audio Coding)",
+      "url": "s3://kompo-customer-storage/IMG_4262.MOV",
+      "format": "AAC (Advanced Audio Coding)-",
+      "extension": "mp4a",
+      "mediaType": "Audio"
+    }
+  ]
+}

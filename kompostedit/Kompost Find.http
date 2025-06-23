@@ -1,0 +1,74 @@
+# curl 'https://api.kompo.se/heap/long.ex.json'
+#  -H 'authority: api.kompo.se'
+#  -H 'accept: */*'
+#  -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8,no;q=0.7'
+#  -H 'authy: eyJraWQiOiJRamdTQmF5RFlZckVyQnYwb25VV1A5MCtGbnh0ZjB0OHpYMElNM2plRzVzPSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiYmxHaUNvUHBpRXNwWDZ2dTczVVBzZyIsInN1YiI6ImEzNmU2NjJhLTQ2NDgtNDFlYS1hMjk0LTMzMTMxNWY5MTQxNiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9NekM4RktqRVQiLCJjb2duaXRvOnVzZXJuYW1lIjoidGVzdHVsZiIsIm9yaWdpbl9qdGkiOiIxYTMxMzVjMS01ODYxLTRkMzMtYWQ0Mi1mZWY5ZTEzYzhmYjQiLCJhdWQiOiI1NGE4OXEzY3VjbmFrNGNkZnNldXF2ZGF2ZiIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjk3MTAxMjIwLCJleHAiOjE2OTcxMDQ4MjAsImlhdCI6MTY5NzEwMTIyMCwianRpIjoiMDRkMWYzOWYtZjlkNi00YzY0LTg5ZGEtNmJmODE2OGQyMGJmIiwiZW1haWwiOiJ0ZXN0QGxhdS5ubyJ9.atGyq_WDHC28L5xGpLpStmtEpuTAlQ3cJ05zvfcVhJafvYj6ylq1gsaflpxM0cZJpTIGS7HlttFRWJL753ntb0BDpbYq-zn3XHtjQRCXPqL9vNGUKt9h8jSBSDf7KB-MW1N9yC665df4QSnwtStAMxR7oD_Mf9uMR627c1BNNeDd8YCepXEdlqhnC-lI9p3XfhDKWChiO0xR4IU27phz82h9-KMnYCHKFKMRgmKYFmjC6wAz8NMVsGmPuMhhfT0QVN-a_q2Md3wOFjZNbIcAhQ0RpYcC_b8Aab8u-TFzjh75hKwo9WNR2k3SUkq8g-QV6hw0gxYzpWOCUOWM_-1ObA'
+#  -H 'referer: https://api.kompo.se/index.html?'
+#  -H 'sec-ch-ua: "Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"'
+#  -H 'sec-ch-ua-mobile: ?0'
+#  -H 'sec-ch-ua-platform: "macOS"'
+#  -H 'sec-fetch-dest: empty'
+#  -H 'sec-fetch-mode: cors'
+#  -H 'sec-fetch-site: same-origin'
+#  -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'
+#  --compressed
+GET https://api.kompo.se/heap/long.ex.json
+authority: api.kompo.se
+accept: */*
+accept-language: en-GB,en-US;q=0.9,en;q=0.8,no;q=0.7
+authy: eyJraWQiOiJRamdTQmF5RFlZckVyQnYwb25VV1A5MCtGbnh0ZjB0OHpYMElNM2plRzVzPSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiYmxHaUNvUHBpRXNwWDZ2dTczVVBzZyIsInN1YiI6ImEzNmU2NjJhLTQ2NDgtNDFlYS1hMjk0LTMzMTMxNWY5MTQxNiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9NekM4RktqRVQiLCJjb2duaXRvOnVzZXJuYW1lIjoidGVzdHVsZiIsIm9yaWdpbl9qdGkiOiIxYTMxMzVjMS01ODYxLTRkMzMtYWQ0Mi1mZWY5ZTEzYzhmYjQiLCJhdWQiOiI1NGE4OXEzY3VjbmFrNGNkZnNldXF2ZGF2ZiIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjk3MTAxMjIwLCJleHAiOjE2OTcxMDQ4MjAsImlhdCI6MTY5NzEwMTIyMCwianRpIjoiMDRkMWYzOWYtZjlkNi00YzY0LTg5ZGEtNmJmODE2OGQyMGJmIiwiZW1haWwiOiJ0ZXN0QGxhdS5ubyJ9.atGyq_WDHC28L5xGpLpStmtEpuTAlQ3cJ05zvfcVhJafvYj6ylq1gsaflpxM0cZJpTIGS7HlttFRWJL753ntb0BDpbYq-zn3XHtjQRCXPqL9vNGUKt9h8jSBSDf7KB-MW1N9yC665df4QSnwtStAMxR7oD_Mf9uMR627c1BNNeDd8YCepXEdlqhnC-lI9p3XfhDKWChiO0xR4IU27phz82h9-KMnYCHKFKMRgmKYFmjC6wAz8NMVsGmPuMhhfT0QVN-a_q2Md3wOFjZNbIcAhQ0RpYcC_b8Aab8u-TFzjh75hKwo9WNR2k3SUkq8g-QV6hw0gxYzpWOCUOWM_-1ObA
+referer: https://api.kompo.se/index.html?
+sec-ch-ua: "Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+sec-fetch-dest: empty
+sec-fetch-mode: cors
+sec-fetch-site: same-origin
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36
+
+###
+
+
+###
+#POST https://34jrdf7et3.execute-api.eu-west-1.amazonaws.com/public/heap/_find
+
+POST https://api.kompo.se/heap/_find
+
+
+
+###
+
+# curl 'https://api.kompo.se/functions/metadata-extractor/IMG_4262.MOV'
+#-X 'POST'
+#-H 'Accept: */*'
+#-H 'Sec-Fetch-Site: same-origin'
+#-H 'Accept-Encoding: gzip, deflate, br'
+#-H 'Accept-Language: en-GB,en;q=0.9'
+#-H 'Sec-Fetch-Mode: cors'
+#-H 'Host: api.kompo.se'
+#-H 'Origin: https://api.kompo.se'
+#-H 'Content-Length: 0'
+#-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15'
+#-H 'Referer: https://api.kompo.se/fileupload.html?authy=eyJraWQiOiJRamdTQmF5RFlZckVyQnYwb25VV1A5MCtGbnh0ZjB0OHpYMElNM2plRzVzPSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiejl3SmhHREwwcEY4X2xON3hBSnRVdyIsInN1YiI6ImEzNmU2NjJhLTQ2NDgtNDFlYS1hMjk0LTMzMTMxNWY5MTQxNiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9NekM4RktqRVQiLCJjb2duaXRvOnVzZXJuYW1lIjoidGVzdHVsZiIsIm9yaWdpbl9qdGkiOiI4MzhhOTcyZC0yYzRhLTQzMTAtOGNjMS1jYTc4ZDBjMTJhYjUiLCJhdWQiOiI1NGE4OXEzY3VjbmFrNGNkZnNldXF2ZGF2ZiIsImV2ZW50X2lkIjoiYTRmZTFkNjYtOGNmZi00MzJiLTkyMmItYzAwOGIxYzZjNDcxIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE2OTkyMTE5MDEsImV4cCI6MTY5OTIxNTUwMSwiaWF0IjoxNjk5MjExOTAxLCJqdGkiOiIzODVhMGY2MC02OGIwLTQzMTUtYThkMy02YTkxOWUyMTdkOGQiLCJlbWFpbCI6InRlc3RAbGF1Lm5vIn0.F4qvOkb2Niq00jdI5GA3465OzHEfI9in5tFPKEGanC52HmTYTUbdBLzNiAiDjByg8b1OBLYJOTriV1A8XosIKl8Mt-M5zmh1os4wPhSEH1-e4o9NWuSt9_DmdvFbjXRm_vcNoueFuzeidPwWiyn7FLGx3MHf_a1Z-HpRslFwIEp8aYxUqfTJjqCOnGPFJ8b5DdOQHuyG_ElFI9G-xe1zypEPFLPpHddD6nq6IEjEXoDROwu2P3hEd9zYZ5JsByXep0iPGX6Ya1PQVZ69of7QGLa6Dp6KhonUMg9IH8yYLNrYcvuEnMEyt_fSR4SgJ1yVCn7tEpoNg0TsRx8jiY2Diw'
+#-H 'Connection: keep-alive'
+#-H 'Sec-Fetch-Dest: empty'
+#-H 'Authy: eyJraWQiOiJRamdTQmF5RFlZckVyQnYwb25VV1A5MCtGbnh0ZjB0OHpYMElNM2plRzVzPSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiejl3SmhHREwwcEY4X2xON3hBSnRVdyIsInN1YiI6ImEzNmU2NjJhLTQ2NDgtNDFlYS1hMjk0LTMzMTMxNWY5MTQxNiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9NekM4RktqRVQiLCJjb2duaXRvOnVzZXJuYW1lIjoidGVzdHVsZiIsIm9yaWdpbl9qdGkiOiI4MzhhOTcyZC0yYzRhLTQzMTAtOGNjMS1jYTc4ZDBjMTJhYjUiLCJhdWQiOiI1NGE4OXEzY3VjbmFrNGNkZnNldXF2ZGF2ZiIsImV2ZW50X2lkIjoiYTRmZTFkNjYtOGNmZi00MzJiLTkyMmItYzAwOGIxYzZjNDcxIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE2OTkyMTE5MDEsImV4cCI6MTY5OTIxNTUwMSwiaWF0IjoxNjk5MjExOTAxLCJqdGkiOiIzODVhMGY2MC02OGIwLTQzMTUtYThkMy02YTkxOWUyMTdkOGQiLCJlbWFpbCI6InRlc3RAbGF1Lm5vIn0.F4qvOkb2Niq00jdI5GA3465OzHEfI9in5tFPKEGanC52HmTYTUbdBLzNiAiDjByg8b1OBLYJOTriV1A8XosIKl8Mt-M5zmh1os4wPhSEH1-e4o9NWuSt9_DmdvFbjXRm_vcNoueFuzeidPwWiyn7FLGx3MHf_a1Z-HpRslFwIEp8aYxUqfTJjqCOnGPFJ8b5DdOQHuyG_ElFI9G-xe1zypEPFLPpHddD6nq6IEjEXoDROwu2P3hEd9zYZ5JsByXep0iPGX6Ya1PQVZ69of7QGLa6Dp6KhonUMg9IH8yYLNrYcvuEnMEyt_fSR4SgJ1yVCn7tEpoNg0TsRx8jiY2Diw'
+POST https://api.kompo.se/functions/metadata-extractor/IMG_4262.MOV
+Accept: */*
+Sec-Fetch-Site: same-origin
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en;q=0.9
+Sec-Fetch-Mode: cors
+Host: api.kompo.se
+Origin: https://api.kompo.se
+Content-Length: 0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15
+Referer: https://api.kompo.se/fileupload.html?authy=eyJraWQiOiJRamdTQmF5RFlZckVyQnYwb25VV1A5MCtGbnh0ZjB0OHpYMElNM2plRzVzPSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiejl3SmhHREwwcEY4X2xON3hBSnRVdyIsInN1YiI6ImEzNmU2NjJhLTQ2NDgtNDFlYS1hMjk0LTMzMTMxNWY5MTQxNiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9NekM4RktqRVQiLCJjb2duaXRvOnVzZXJuYW1lIjoidGVzdHVsZiIsIm9yaWdpbl9qdGkiOiI4MzhhOTcyZC0yYzRhLTQzMTAtOGNjMS1jYTc4ZDBjMTJhYjUiLCJhdWQiOiI1NGE4OXEzY3VjbmFrNGNkZnNldXF2ZGF2ZiIsImV2ZW50X2lkIjoiYTRmZTFkNjYtOGNmZi00MzJiLTkyMmItYzAwOGIxYzZjNDcxIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE2OTkyMTE5MDEsImV4cCI6MTY5OTIxNTUwMSwiaWF0IjoxNjk5MjExOTAxLCJqdGkiOiIzODVhMGY2MC02OGIwLTQzMTUtYThkMy02YTkxOWUyMTdkOGQiLCJlbWFpbCI6InRlc3RAbGF1Lm5vIn0.F4qvOkb2Niq00jdI5GA3465OzHEfI9in5tFPKEGanC52HmTYTUbdBLzNiAiDjByg8b1OBLYJOTriV1A8XosIKl8Mt-M5zmh1os4wPhSEH1-e4o9NWuSt9_DmdvFbjXRm_vcNoueFuzeidPwWiyn7FLGx3MHf_a1Z-HpRslFwIEp8aYxUqfTJjqCOnGPFJ8b5DdOQHuyG_ElFI9G-xe1zypEPFLPpHddD6nq6IEjEXoDROwu2P3hEd9zYZ5JsByXep0iPGX6Ya1PQVZ69of7QGLa6Dp6KhonUMg9IH8yYLNrYcvuEnMEyt_fSR4SgJ1yVCn7tEpoNg0TsRx8jiY2Diw
+Connection: keep-alive
+Sec-Fetch-Dest: empty
+Authy: eyJraWQiOiJRamdTQmF5RFlZckVyQnYwb25VV1A5MCtGbnh0ZjB0OHpYMElNM2plRzVzPSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiejl3SmhHREwwcEY4X2xON3hBSnRVdyIsInN1YiI6ImEzNmU2NjJhLTQ2NDgtNDFlYS1hMjk0LTMzMTMxNWY5MTQxNiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9NekM4RktqRVQiLCJjb2duaXRvOnVzZXJuYW1lIjoidGVzdHVsZiIsIm9yaWdpbl9qdGkiOiI4MzhhOTcyZC0yYzRhLTQzMTAtOGNjMS1jYTc4ZDBjMTJhYjUiLCJhdWQiOiI1NGE4OXEzY3VjbmFrNGNkZnNldXF2ZGF2ZiIsImV2ZW50X2lkIjoiYTRmZTFkNjYtOGNmZi00MzJiLTkyMmItYzAwOGIxYzZjNDcxIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE2OTkyMTE5MDEsImV4cCI6MTY5OTIxNTUwMSwiaWF0IjoxNjk5MjExOTAxLCJqdGkiOiIzODVhMGY2MC02OGIwLTQzMTUtYThkMy02YTkxOWUyMTdkOGQiLCJlbWFpbCI6InRlc3RAbGF1Lm5vIn0.F4qvOkb2Niq00jdI5GA3465OzHEfI9in5tFPKEGanC52HmTYTUbdBLzNiAiDjByg8b1OBLYJOTriV1A8XosIKl8Mt-M5zmh1os4wPhSEH1-e4o9NWuSt9_DmdvFbjXRm_vcNoueFuzeidPwWiyn7FLGx3MHf_a1Z-HpRslFwIEp8aYxUqfTJjqCOnGPFJ8b5DdOQHuyG_ElFI9G-xe1zypEPFLPpHddD6nq6IEjEXoDROwu2P3hEd9zYZ5JsByXep0iPGX6Ya1PQVZ69of7QGLa6Dp6KhonUMg9IH8yYLNrYcvuEnMEyt_fSR4SgJ1yVCn7tEpoNg0TsRx8jiY2Diw
+
+###
+
+
+

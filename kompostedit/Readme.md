@@ -11,10 +11,17 @@ Beware that you may need to run "elm make src....." below to update the running 
 Building release file
 =====================
 elm make src/Main.elm --output release/content/elm/kompost.js
+elm make src/CustomerMedia/FileUpload.elm --output release/content/elm/fileupload.js
 upload release/content/elm/kompost.js to PRIVATE s3://app.kompo.st/elm/
 Can be done via "terraform apply from release dir"
 
 Installation to capra kompo.se/edit bucket
+
+Extreme packaging
+=================
+elm make src/Main.elm --optimize --output=elm.js
+uglifyjs elm.js --compress "pure_funcs=[F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9],pure_getters,keep_fargs=false,unsafe_comps,unsafe" | uglifyjs --mangle --output elm.min.js
+https://github.com/elm/compiler/blob/master/hints/optimize.md
 
 Getting Canonical ID for file permissions
 -----------------------------------------
@@ -47,3 +54,8 @@ then run
 Goto
 -------
 http://0.0.0.0:8001/src/
+
+
+NOTE: Jeg skriver kompost id feil. Nå er det full URL.
+av s3://kompo-customer-storage/long-term-availability/b3ch/IMG_4262.MOV 
+Burde kun inneholde b3ch/IMG_4262.MOV 

@@ -12,8 +12,10 @@ import DvlSpecifics.DvlSpecificsUI
 import Html exposing (Html, div, text)
 import Models.BaseModel exposing (..)
 import Models.JsonCoding as JsonCoding
-import Models.KompostApi as KompostApi exposing (createVideo, deleteKompo, fetchKompositionList, fetchSource, updateKompo)
+import Models.KompostApi as KompostApi exposing (createVideo, deleteKompo, fetchKompositionList, fetchSource, updateKompo, fetchMultimediaList)
 import Models.Msg exposing (Msg(..))
+import MultimediaSearch.MultimediaSearch as MultimediaSearch
+import MultimediaSearch.SimpleModal as MultimediaModal
 import Navigation.AppRouting as AppRouting exposing (replaceUrl)
 import Navigation.Page as Page exposing (Page)
 import RemoteData exposing (RemoteData(..))
@@ -122,9 +124,9 @@ update msg model =
 
         StoreKomposition ->
             let -- Set a minimal id when storing
-                updateId = case model.kompost.id of
+                updateId = case model.kompost.name of
                     "" -> model.kompost.name ++ ".json"
-                    _  -> model.kompost.id
+                    _  -> model.kompost.name
                 kompost = model.kompost
             in
                 ( model
@@ -259,6 +261,29 @@ update msg model =
                         , Nav.load href
                         )
 
+        ShowMultimediaSearch ->
+            ( { model | showMultimediaModal = not model.showMultimediaModal }, Cmd.none )
+
+        MultimediaSearchMsg multimediaMsg ->
+            -- For now, just handle basic multimedia search without the complex state machine
+            ( model, Cmd.none )
+
+        MultimediaApiResponse result ->
+            case result of
+                Ok sources ->
+                    let
+                        searchState = model.multimediaSearchState
+                        updatedSearchState = { searchState | sources = sources, isLoading = False }
+                    in
+                    ( { model | multimediaSearchState = updatedSearchState }, Cmd.none )
+                
+                Err error ->
+                    let
+                        searchState = model.multimediaSearchState
+                        updatedSearchState = { searchState | isLoading = False }
+                    in
+                    ( { model | multimediaSearchState = updatedSearchState }, Cmd.none )
+
         ChangedUrl url ->
             let
                 _ =
@@ -324,6 +349,7 @@ findOutWhatPageToView model =
 
         Page.NotFound ->
             div [] [ text "Sorry, nothing< here :(" ]
+    , MultimediaModal.view model
     ]
 
 
@@ -392,6 +418,19 @@ emptyModel navKey theUrl apiGatewayToken =
     , kompoUrl = "/heap/"
     , metaUrl = "/meta/"
     , cacheUrl = "/fetch/"
+    , multimediaSearchState = initMultimediaSearchState
+    , showMultimediaModal = False
+    }
+
+
+initMultimediaSearchState : MultimediaSearchState
+initMultimediaSearchState =
+    { sources = []
+    , query = ""
+    , selectedSource = Nothing
+    , showMenu = False
+    , isLoading = False
+    , mediaTypeFilter = "all"
     }
 
 

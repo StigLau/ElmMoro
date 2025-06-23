@@ -1,4 +1,4 @@
-module Models.JsonCoding exposing (couchServerStatusDecoder, kompositionDecoder, kompositionEncoder, kompositionListDecoder, searchEncoder)
+module Models.JsonCoding exposing (couchServerStatusDecoder, kompositionDecoder, kompositionEncoder, kompositionListDecoder, searchEncoder, multimediaSearchDecoder)
 
 import Json.Decode as JsonD
 import Json.Decode.Pipeline exposing (optional, required)
@@ -178,3 +178,24 @@ rowDecoder =
     JsonD.map2 Row
         (JsonD.field "_id" JsonD.string)
         (JsonD.field "_rev" JsonD.string)
+
+
+-- Multimedia search response decoder
+multimediaSearchDecoder : JsonD.Decoder (List Source)
+multimediaSearchDecoder =
+    JsonD.field "items" (JsonD.list multimediaItemDecoder)
+
+
+-- Convert multimedia API response to Source
+multimediaItemDecoder : JsonD.Decoder Source
+multimediaItemDecoder =
+    JsonD.succeed Source
+        |> required "id" JsonD.string
+        |> optional "url" JsonD.string ""
+        |> optional "startingOffset" (JsonD.maybe JsonD.float) Nothing
+        |> optional "checksum" JsonD.string ""
+        |> optional "format" JsonD.string ""
+        |> optional "extensionType" JsonD.string ""
+        |> optional "mediaType" JsonD.string "audio"
+        |> optional "width" (JsonD.maybe JsonD.int) Nothing
+        |> optional "height" (JsonD.maybe JsonD.int) Nothing
