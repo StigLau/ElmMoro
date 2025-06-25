@@ -262,27 +262,83 @@ update msg model =
                         )
 
         ShowMultimediaSearch ->
-            ( { model | showMultimediaModal = not model.showMultimediaModal }, Cmd.none )
+            if model.showMultimediaModal then
+                -- Closing modal
+                ( { model | showMultimediaModal = False }, Cmd.none )
+            else
+                -- Opening modal - trigger initial search
+                let
+                    searchState = model.multimediaSearchState
+                    updatedSearchState = { searchState | isLoading = True, query = "", mediaTypeFilter = "all" }
+                in
+                ( { model | showMultimediaModal = True, multimediaSearchState = updatedSearchState }
+                , fetchMultimediaList "" "all" model.apiToken
+                )
 
         MultimediaSearchMsg multimediaMsg ->
-            -- For now, just handle basic multimedia search without the complex state machine
-            ( model, Cmd.none )
-
-        MultimediaApiResponse result ->
-            case result of
-                Ok sources ->
+            case multimediaMsg of
+                MultimediaSearch.SearchMultimedia query mediaType ->
+                    let
+                        searchState = model.multimediaSearchState
+                        updatedSearchState = { searchState | query = query, isLoading = True, mediaTypeFilter = mediaType }
+                    in
+                    ( { model | multimediaSearchState = updatedSearchState }
+                    , fetchMultimediaList query mediaType model.apiToken
+                    )
+                
+                MultimediaSearch.MultimediaReceived sources ->
                     let
                         searchState = model.multimediaSearchState
                         updatedSearchState = { searchState | sources = sources, isLoading = False }
                     in
                     ( { model | multimediaSearchState = updatedSearchState }, Cmd.none )
                 
+                MultimediaSearch.SetQuery query ->
+                    let
+                        searchState = model.multimediaSearchState
+                        updatedSearchState = { searchState | query = query }
+                    in
+                    ( { model | multimediaSearchState = updatedSearchState }, Cmd.none )
+                
+                _ ->
+                    ( model, Cmd.none )
+
+        MultimediaApiResponse result ->
+            case result of
+                Ok sources ->
+                    -- Forward the API response to the MultimediaSearch component
+                    update (MultimediaSearchMsg (MultimediaSearch.MultimediaReceived sources)) model
+                
                 Err error ->
+                    -- Forward the error to the MultimediaSearch component
                     let
                         searchState = model.multimediaSearchState
                         updatedSearchState = { searchState | isLoading = False }
                     in
                     ( { model | multimediaSearchState = updatedSearchState }, Cmd.none )
+
+        AddSelectedMultimediaSource ->
+            case model.multimediaSearchState.selectedSource of
+                Just selectedSource ->
+                    -- Add the selected source to the komposition's sources list
+                    let
+                        currentKomposition = model.kompost
+                        updatedSources = selectedSource :: currentKomposition.sources
+                        updatedKomposition = { currentKomposition | sources = updatedSources }
+                        searchState = model.multimediaSearchState
+                        updatedSearchState = { searchState | selectedSource = Nothing }
+                    in
+                    ( { model 
+                        | kompost = updatedKomposition
+                        , showMultimediaModal = False -- Close the modal after adding
+                        , multimediaSearchState = updatedSearchState
+                      }
+                    , Cmd.none
+                    )
+                
+                Nothing ->
+                    -- No source selected, just close the modal
+                    ( { model | showMultimediaModal = False }, Cmd.none )
 
         ChangedUrl url ->
             let

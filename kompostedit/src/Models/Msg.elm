@@ -39,3 +39,4 @@ type Msg
     | ShowMultimediaSearch
     | MultimediaSearchMsg MultimediaSearch.MultimediaSearch.Msg
     | MultimediaApiResponse (Result Http.Error (List Source))
+    | AddSelectedMultimediaSource
