@@ -23,6 +23,7 @@ import Segment.Model exposing (update)
 import Segment.SegmentUI
 import Set
 import Source.SourcesUI exposing (update)
+import String
 import UI.KompostListingsUI
 import UI.KompostUI
 import Url exposing (Url)
@@ -293,10 +294,16 @@ update msg model =
                     in
                     ( { model | multimediaSearchState = updatedSearchState }, Cmd.none )
                 
-                MultimediaSearch.SetQuery query ->
+                MultimediaSearch.SelectSource sourceId ->
                     let
                         searchState = model.multimediaSearchState
-                        updatedSearchState = { searchState | query = query }
+                        selectedSource = 
+                            if String.isEmpty sourceId then
+                                Nothing
+                            else
+                                List.filter (\s -> s.id == sourceId) searchState.sources
+                                    |> List.head
+                        updatedSearchState = { searchState | selectedSource = selectedSource }
                     in
                     ( { model | multimediaSearchState = updatedSearchState }, Cmd.none )
                 
@@ -481,7 +488,7 @@ emptyModel navKey theUrl apiGatewayToken =
 
 initMultimediaSearchState : MultimediaSearchState
 initMultimediaSearchState =
-    { sources = []
+    { sources = [Source "" "" (Just 0) "" "" "" "" Nothing Nothing]
     , query = ""
     , selectedSource = Nothing
     , showMenu = False

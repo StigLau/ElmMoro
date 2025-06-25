@@ -45,11 +45,7 @@ view model =
 stateToModel : MultimediaSearchState -> MultimediaSearch.Model
 stateToModel state =
     { sources = state.sources
-    , autoState = Menu.empty
-    , howManyToShow = 10
-    , query = state.query
     , selectedSource = state.selectedSource
-    , showMenu = state.showMenu
     , isLoading = state.isLoading
     , filters = { mediaType = state.mediaTypeFilter }
     }
