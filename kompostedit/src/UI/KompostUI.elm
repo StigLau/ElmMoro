@@ -17,7 +17,7 @@ kompost : Model -> Html Models.Msg.Msg
 kompost model =
     div []
         [ Grid.row []
-            [ Grid.col [] []
+            [ Grid.col [] [ a [ Html.Attributes.href "/", Html.Attributes.target "_self" ] [ Button.button [ Button.outlineInfo ] [ text "🏠 Dashboard" ] ] ]
             , Grid.col [] [ Button.button [ Button.secondary, Button.onClick (NavigateTo Page.ListingsUI) ] [ text "List Komposti" ] ]
             ]
         , div [] [ h4 [ style "flex" "1" ] [ text model.kompost.dvlType ] ]
