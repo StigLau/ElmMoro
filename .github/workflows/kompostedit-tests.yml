@@ -1,0 +1,62 @@
+name: KompostEdit Tests
+
+on:
+  push:
+    branches: [ master, main ]
+    paths: [ 'kompostedit/**' ]
+  pull_request:
+    branches: [ master, main ]
+    paths: [ 'kompostedit/**' ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: kompostedit
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: kompostedit/package.json
+    
+    - name: Setup Elm
+      uses: jorelali/setup-elm@v5
+      with:
+        elm-version: 0.19.1
+    
+    - name: Cache Elm dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          kompostedit/elm-stuff
+          ~/.elm
+        key: ${{ runner.os }}-elm-${{ hashFiles('**/elm.json') }}
+        restore-keys: |
+          ${{ runner.os }}-elm-
+    
+    - name: Install Node dependencies
+      run: npm install
+    
+    - name: Install Elm test runner
+      run: npm install -g elm-test
+    
+    - name: Build Elm application
+      run: make compile
+    
+    - name: Run Elm tests
+      run: elm-test
+    
+    - name: Verify build artifacts
+      run: |
+        echo "✅ Checking build artifacts..."
+        ls -la main.js
+        echo "📊 Build size:"
+        du -h main.js
+        echo "🎯 Build completed successfully!"
