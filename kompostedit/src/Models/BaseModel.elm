@@ -1,4 +1,4 @@
-module Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Focused(..), IntegrationDestination, Komposition, Model, OutMsg(..), Row, Segment, SegmentGap, Source, VideoConfig)
+module Models.BaseModel exposing (BeatPattern, CouchStatusMessage, DataRepresentation, Focused(..), IntegrationDestination, Komposition, Model, MultimediaSearchState, OutMsg(..), Row, Segment, SegmentGap, Source, VideoConfig)
 
 import Browser.Navigation
 import Common.AutoComplete as AutoComplete
@@ -27,6 +27,19 @@ type alias Model =
     , kompoUrl : String
     , metaUrl : String
     , cacheUrl : String
+    , multimediaSearchState : MultimediaSearchState
+    , showMultimediaModal : Bool
+    }
+
+
+-- Opaque type for multimedia search to avoid import cycles
+type alias MultimediaSearchState =
+    { sources : List Source
+    , query : String
+    , selectedSource : Maybe Source
+    , showMenu : Bool
+    , isLoading : Bool
+    , mediaTypeFilter : String
     }
 
 

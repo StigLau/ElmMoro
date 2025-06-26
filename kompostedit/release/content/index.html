@@ -26,14 +26,18 @@
 <p style="white-space:pre-line;" id="userInfo"></p>
 </body>
 <script>
-  const domain = "auth.kompo.st";
-  const userPoolId = "eu-west-1:a1b9f42e-56c9-4625-9ea0-013c449dc8ce";
-  const appClientId = "2ai1pt4ve00t1igv7sb0c9gucl";
-  const redirectURI = "https://app.kompo.st/index.html";
+  const domain = "https://kompzy.auth.eu-west-1.amazoncognito.com";
+  //const userPoolId = "eu-west-1:a1b9f42e-56c9-4625-9ea0-013c449dc8ce";
+  const userPoolId = "eu-west-1_MzC8FKjET";
+ //const appClientId = "2ai1pt4ve00t1igv7sb0c9gucl"; //Kompo.st
+  //const appClientId = "1rtqd0p7lfvjrdn06dcpvgbbgo"; //Kompo.se
+  const appClientId = "54a89q3cucnak4cdfseuqvdavf"; //Kompo.se på kapræ
+ const redirectURI = "https://api.kompo.se/index.html";
+  //const redirectURI = "http://localhost:63342/kompostedit/kompostedit/release/content/index.html";
   // Initialize the Amazon Cognito credentials provider
-  AWS.config.region = 'eu-west-1';
-  AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: userPoolId});
-  console.log("Authed user ", AWS.config.credentials)
+  //AWS.config.region = 'eu-west-1';
+  //AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: userPoolId});
+  //console.log("Authed user ", AWS.config.credentials)
 </script>
 <script src="js/jsrsasign-latest-all-min.js"></script>
 <script src="js/verifier.js"></script>

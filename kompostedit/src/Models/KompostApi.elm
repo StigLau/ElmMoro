@@ -1,22 +1,23 @@
-module Models.KompostApi exposing (createVideo, deleteKompo, fetchHeaderParam, fetchKompositionList, getFromURL, fetchSource, updateKompo)
+module Models.KompostApi exposing (createVideo, deleteKompo, fetchHeaderParam, fetchKompositionList, getFromURL, fetchSource, updateKompo, fetchMultimediaList)
 
 import Debug
 import Dict
 import Http exposing (Error, Header, Response   )
 import MD5
-import Models.BaseModel exposing (IntegrationDestination, Komposition)
+import Models.BaseModel exposing (IntegrationDestination, Komposition, Source)
 import Models.JsonCoding exposing (..)
 import Models.Msg exposing (Msg(..))
 import RemoteData
+import Url.Builder as Url
 
 kompoUrl:String
-kompoUrl = "/heap/"
+kompoUrl = "/api/heap/"
 
 fetchKompositionList : String -> String -> Cmd Msg
 fetchKompositionList typeIdentifier token = Http.request
     { method = "POST"
     , headers = [Http.header "Authy" token ]
-    , url = kompoUrl ++ "_find"
+    , url = kompoUrl ++ "find"
     , body = Http.stringBody "application/json" (searchEncoder typeIdentifier)
     , expect = Http.expectJson (RemoteData.fromResult >> ListingsUpdated) kompositionListDecoder
     , timeout = Nothing
@@ -129,3 +130,25 @@ performGenericHttp method url headers body expectation = Http.request
     , tracker = Nothing
     }
 --}
+
+
+fetchMultimediaList : String -> String -> String -> Cmd Msg
+fetchMultimediaList query mediaType apiToken = 
+    let
+        queryParams = 
+            [ Url.string "q" query
+            , Url.string "mediaType" mediaType
+            , Url.int "limit" 20
+            ]
+        
+        url = Url.absolute ["api", "multimedia", "search"] queryParams
+    in
+    Http.request
+        { method = "GET"
+        , headers = [Http.header "Authy" apiToken ]
+        , url = url
+        , body = Http.emptyBody
+        , expect = Http.expectJson MultimediaApiResponse multimediaSearchDecoder
+        , timeout = Nothing
+        , tracker = Nothing
+        }

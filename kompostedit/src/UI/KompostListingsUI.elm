@@ -33,7 +33,7 @@ listings model =
                     , Button.button [ Button.primary, onClick <| FetchLocalIntegration (IntegrationDestination model.integrationDestination model.metaUrl) ] [ text "Fetch YT metadata" ]
                     , Input.text [ Input.id "format", Input.value model.integrationFormat, Input.onInput Msg.ChangedIntegrationFormat ]
                     , Button.button [ Button.primary, onClick <| FetchLocalIntegration (IntegrationDestination (model.integrationDestination ++ "/" ++ model.integrationFormat) model.cacheUrl) ] [ text "Cache Media" ]
-                    , li [] [ a [ href ("fileupload.html?authy="++model.apiToken) ] [ text "Upload file" ] ]
+                    , li [] [ a [ href "/", Html.Attributes.target "_self" ] [ text "🏠 Dashboard" ] ]
                     ]
                 , Grid.simpleRow
                     [ Grid.col []

@@ -4,6 +4,7 @@ import Browser exposing (UrlRequest(..))
 import DvlSpecifics.Msg
 import Http exposing (Error)
 import Models.BaseModel exposing (..)
+import MultimediaSearch.MultimediaSearch
 import Navigation.Page exposing (Page)
 import RemoteData exposing (WebData)
 import Segment.Msg
@@ -35,3 +36,7 @@ type Msg
     | ChangedUrl Url
     | ChangedIntegrationId String
     | ChangedIntegrationFormat String
+    | ShowMultimediaSearch
+    | MultimediaSearchMsg MultimediaSearch.MultimediaSearch.Msg
+    | MultimediaApiResponse (Result Http.Error (List Source))
+    | AddSelectedMultimediaSource

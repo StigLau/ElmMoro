@@ -12,8 +12,10 @@ import DvlSpecifics.DvlSpecificsUI
 import Html exposing (Html, div, text)
 import Models.BaseModel exposing (..)
 import Models.JsonCoding as JsonCoding
-import Models.KompostApi as KompostApi exposing (createVideo, deleteKompo, fetchKompositionList, fetchSource, updateKompo)
+import Models.KompostApi as KompostApi exposing (createVideo, deleteKompo, fetchKompositionList, fetchSource, updateKompo, fetchMultimediaList)
 import Models.Msg exposing (Msg(..))
+import MultimediaSearch.MultimediaSearch as MultimediaSearch
+import MultimediaSearch.SimpleModal as MultimediaModal
 import Navigation.AppRouting as AppRouting exposing (replaceUrl)
 import Navigation.Page as Page exposing (Page)
 import RemoteData exposing (RemoteData(..))
@@ -21,6 +23,7 @@ import Segment.Model exposing (update)
 import Segment.SegmentUI
 import Set
 import Source.SourcesUI exposing (update)
+import String
 import UI.KompostListingsUI
 import UI.KompostUI
 import Url exposing (Url)
@@ -122,9 +125,9 @@ update msg model =
 
         StoreKomposition ->
             let -- Set a minimal id when storing
-                updateId = case model.kompost.id of
+                updateId = case model.kompost.name of
                     "" -> model.kompost.name ++ ".json"
-                    _  -> model.kompost.id
+                    _  -> model.kompost.name
                 kompost = model.kompost
             in
                 ( model
@@ -259,6 +262,91 @@ update msg model =
                         , Nav.load href
                         )
 
+        ShowMultimediaSearch ->
+            if model.showMultimediaModal then
+                -- Closing modal
+                ( { model | showMultimediaModal = False }, Cmd.none )
+            else
+                -- Opening modal - trigger initial search
+                let
+                    searchState = model.multimediaSearchState
+                    updatedSearchState = { searchState | isLoading = True, query = "", mediaTypeFilter = "all" }
+                in
+                ( { model | showMultimediaModal = True, multimediaSearchState = updatedSearchState }
+                , fetchMultimediaList "" "all" model.apiToken
+                )
+
+        MultimediaSearchMsg multimediaMsg ->
+            case multimediaMsg of
+                MultimediaSearch.SearchMultimedia query mediaType ->
+                    let
+                        searchState = model.multimediaSearchState
+                        updatedSearchState = { searchState | query = query, isLoading = True, mediaTypeFilter = mediaType }
+                    in
+                    ( { model | multimediaSearchState = updatedSearchState }
+                    , fetchMultimediaList query mediaType model.apiToken
+                    )
+                
+                MultimediaSearch.MultimediaReceived sources ->
+                    let
+                        searchState = model.multimediaSearchState
+                        updatedSearchState = { searchState | sources = sources, isLoading = False }
+                    in
+                    ( { model | multimediaSearchState = updatedSearchState }, Cmd.none )
+                
+                MultimediaSearch.SelectSource sourceId ->
+                    let
+                        searchState = model.multimediaSearchState
+                        selectedSource = 
+                            if String.isEmpty sourceId then
+                                Nothing
+                            else
+                                List.filter (\s -> s.id == sourceId) searchState.sources
+                                    |> List.head
+                        updatedSearchState = { searchState | selectedSource = selectedSource }
+                    in
+                    ( { model | multimediaSearchState = updatedSearchState }, Cmd.none )
+                
+                _ ->
+                    ( model, Cmd.none )
+
+        MultimediaApiResponse result ->
+            case result of
+                Ok sources ->
+                    -- Forward the API response to the MultimediaSearch component
+                    update (MultimediaSearchMsg (MultimediaSearch.MultimediaReceived sources)) model
+                
+                Err error ->
+                    -- Forward the error to the MultimediaSearch component
+                    let
+                        searchState = model.multimediaSearchState
+                        updatedSearchState = { searchState | isLoading = False }
+                    in
+                    ( { model | multimediaSearchState = updatedSearchState }, Cmd.none )
+
+        AddSelectedMultimediaSource ->
+            case model.multimediaSearchState.selectedSource of
+                Just selectedSource ->
+                    -- Add the selected source to the komposition's sources list
+                    let
+                        currentKomposition = model.kompost
+                        updatedSources = selectedSource :: currentKomposition.sources
+                        updatedKomposition = { currentKomposition | sources = updatedSources }
+                        searchState = model.multimediaSearchState
+                        updatedSearchState = { searchState | selectedSource = Nothing }
+                    in
+                    ( { model 
+                        | kompost = updatedKomposition
+                        , showMultimediaModal = False -- Close the modal after adding
+                        , multimediaSearchState = updatedSearchState
+                      }
+                    , Cmd.none
+                    )
+                
+                Nothing ->
+                    -- No source selected, just close the modal
+                    ( { model | showMultimediaModal = False }, Cmd.none )
+
         ChangedUrl url ->
             let
                 _ =
@@ -324,6 +412,7 @@ findOutWhatPageToView model =
 
         Page.NotFound ->
             div [] [ text "Sorry, nothing< here :(" ]
+    , MultimediaModal.view model
     ]
 
 
@@ -392,6 +481,19 @@ emptyModel navKey theUrl apiGatewayToken =
     , kompoUrl = "/heap/"
     , metaUrl = "/meta/"
     , cacheUrl = "/fetch/"
+    , multimediaSearchState = initMultimediaSearchState
+    , showMultimediaModal = False
+    }
+
+
+initMultimediaSearchState : MultimediaSearchState
+initMultimediaSearchState =
+    { sources = [Source "" "" (Just 0) "" "" "" "" Nothing Nothing]
+    , query = ""
+    , selectedSource = Nothing
+    , showMenu = False
+    , isLoading = False
+    , mediaTypeFilter = "all"
     }
 
 
