@@ -1,7 +1,7 @@
 {
   "name": "KompostEdit",
   "version": "1.0.0",
-  "description": "KompostEdit v3",
+  "description": "KompostEdit v3 - Pure Elm Application",
   "main": "index.js",
   "scripts": {
     "build": "elm make src/Main.elm --output=release/content/elm/kompost.js",
@@ -22,32 +22,6 @@
     "url": "https://github.com/stiglau/ElmMoro/issues"
   },
   "homepage": "https://github.com/stiglau/ElmMoro#readme",
-  "dependencies": {
-    "create-elm-app": "^0.3.2",
-    "elm": "^0.18.0"
-  },
-  "devDependencies": {
-    "assets-webpack-plugin": "^3.5.0",
-    "autoprefixer": "6.5.4",
-    "chalk": "1.1.3",
-    "clean-webpack-plugin": "0.1.14",
-    "connect-history-api-fallback": "^1.3.0",
-    "css-loader": "0.26.1",
-    "dotenv": "^2.0.0",
-    "elm": "^0.18.0",
-    "elm-hot-loader": "0.4.2",
-    "elm-test": "0.18.0",
-    "elm-webpack-loader": "3.1.0",
-    "extract-text-webpack-plugin": "1.0.1",
-    "file-loader": "0.9.0",
-    "html-webpack-plugin": "2.24.1",
-    "http-proxy-middleware": "^0.17.3",
-    "minimist": "1.2.5",
-    "postcss-loader": "1.2.1",
-    "react-dev-utils": "11.0.4",
-    "style-loader": "0.13.1",
-    "url-loader": "^0.5.7",
-    "webpack": "5.94.0",
-    "webpack-dev-server": "3.1.11"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
