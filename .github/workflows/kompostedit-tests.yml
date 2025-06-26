@@ -23,8 +23,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: kompostedit/package.json
     
     - name: Setup Elm
       uses: jorelali/setup-elm@v5
@@ -40,9 +38,6 @@ jobs:
         key: ${{ runner.os }}-elm-${{ hashFiles('**/elm.json') }}
         restore-keys: |
           ${{ runner.os }}-elm-
-    
-    - name: Install Node dependencies
-      run: npm install
     
     - name: Install Elm test runner
       run: npm install -g elm-test
